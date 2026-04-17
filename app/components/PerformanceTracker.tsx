@@ -11,62 +11,70 @@ import {
 } from "recharts";
 import type { DailyChartRow } from "../types";
 
-const PLAYER_NAMES = [
-  "Deccan Dominators",
-  "Watapi",
-  "SquadSeven9",
-  "VATVAGHOOL XI",
-  "RSAwesome 11",
-];
+interface PerformanceTrackerProps {
+  data: DailyChartRow[];
+}
 
-const COLORS = [
-  "#6366F1",
-  "#22C55E",
-  "#F59E0B",
-  "#EF4444",
-  "#06B6D4",
-  "#A855F7",
-];
-
-const generateDummyData = (): DailyChartRow[] => {
-  return Array.from({ length: 24 }, (_, index) => {
-    const day = `Day ${index + 1}`;
-    const row: DailyChartRow = { day };
-
-    PLAYER_NAMES.forEach((name, playerIndex) => {
-      const base = 30 + playerIndex * 6;
-      const trend = (index + 1) * (1 + playerIndex * 0.08);
-      const variance = Math.sin((index + 1) / 3 + playerIndex) * 4;
-      row[name] = Math.max(10, Math.round(base + trend + variance));
-    });
-
-    return row;
-  });
-};
-
-const dummyData = generateDummyData();
-
-export default function PerformanceTracker() {
-  const players = Object.keys(dummyData[0] || {}).filter(
-    (key) => key !== "day",
-  );
-
-  return (
-    <div className="w-full p-6 rounded-3xl bg-gradient-to-br from-slate-700/20 via-slate-800/30 to-slate-900/40 shadow-2xl border border-white/10 backdrop-blur-2xl hover:border-white/20 hover:shadow-3xl hover:from-slate-700/30 hover:via-slate-800/40 hover:to-slate-900/50 transition-all duration-500">
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-transparent via-white/5 to-white/10 pointer-events-none" />
-      <div className="relative z-10">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent mb-1 tracking-wide">
+export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
+  if (!data || data.length === 0) {
+    return (
+      <div className="w-full p-6 rounded-3xl bg-linear-to-br from-slate-700/20 via-slate-800/30 to-slate-900/40 shadow-2xl border border-white/10 backdrop-blur-2xl">
+        <div className="absolute inset-0 rounded-3xl bg-linear-to-t from-transparent via-white/5 to-white/10 pointer-events-none" />
+        <div className="relative z-10">
+          <h2 className="text-2xl font-bold bg-linear-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent mb-1 tracking-wide">
             📈 Performance Tracker
           </h2>
           <p className="text-slate-400 text-sm">
-            24-day trend analysis across all teams
+            No performance data available.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const players = Object.keys(data[0] || {}).filter((key) => key !== "day");
+
+  const cumulativeData = data.reduce<DailyChartRow[]>((acc, row, index) => {
+    const previous = acc[index - 1] ?? { day: "" };
+    const cumulativeRow: DailyChartRow = { day: row.day };
+
+    players.forEach((player) => {
+      const current = Number(row[player]) || 0;
+      const previousTotal = Number(previous[player]) || 0;
+      cumulativeRow[player] = previousTotal + current;
+    });
+
+    acc.push(cumulativeRow);
+    return acc;
+  }, []);
+
+  const COLORS = [
+    "#6366F1",
+    "#22C55E",
+    "#F59E0B",
+    "#EF4444",
+    "#06B6D4",
+    "#A855F7",
+    "#EC4899",
+    "#14B8A6",
+  ];
+
+  return (
+    <div className="w-full p-6 rounded-3xl bg-linear-to-br from-slate-700/20 via-slate-800/30 to-slate-900/40 shadow-2xl border border-white/10 backdrop-blur-2xl hover:border-white/20 hover:shadow-3xl hover:from-slate-700/30 hover:via-slate-800/40 hover:to-slate-900/50 transition-all duration-500">
+      <div className="absolute inset-0 rounded-3xl bg-linear-to-t from-transparent via-white/5 to-white/10 pointer-events-none" />
+      <div className="relative z-10">
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold bg-linear-to-r from-violet-300 to-cyan-300 bg-clip-text text-transparent mb-1 tracking-wide">
+            📈 Performance Tracker
+          </h2>
+          <p className="text-slate-400 text-sm">
+            25-match trend analysis across all teams
           </p>
         </div>
 
         <div style={{ height: "380px" }}>
           <ResponsiveContainer>
-            <LineChart data={dummyData}>
+            <LineChart data={cumulativeData}>
               <XAxis
                 dataKey="day"
                 stroke="#64748b"
