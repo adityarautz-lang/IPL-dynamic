@@ -43,11 +43,11 @@ const COLORS = [
 
 export default function OverallChart({ data }: { data: OverallChartItem[] }) {
   return (
-    <div className="w-full p-6 rounded-3xl bg-gradient-to-br from-slate-700/20 via-slate-800/30 to-slate-900/40 shadow-2xl border border-white/10 backdrop-blur-2xl hover:border-white/20 hover:shadow-3xl hover:from-slate-700/30 hover:via-slate-800/40 hover:to-slate-900/50 transition-all duration-500">
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-transparent via-white/5 to-white/10 pointer-events-none" />
+    <div className="w-full p-6 rounded-3xl bg-linear-to-br from-slate-700/20 via-slate-800/30 to-slate-900/40 shadow-2xl border border-white/10 backdrop-blur-2xl hover:border-white/20 hover:shadow-3xl hover:from-slate-700/30 hover:via-slate-800/40 hover:to-slate-900/50 transition-all duration-500">
+      <div className="absolute inset-0 rounded-3xl bg-linear-to-t from-transparent via-white/5 to-white/10 pointer-events-none" />
       <div className="relative z-10">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent mb-1 tracking-wide">
+          <h2 className="text-2xl font-bold bg-linear-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent mb-1 tracking-wide">
             🏆 Overall Leaderboard
           </h2>
           <p className="text-slate-400 text-sm">
@@ -72,11 +72,13 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
 
               <Tooltip
                 contentStyle={{
-                  background: "rgba(15, 23, 42, 0.9)",
+                  background: "rgba(15, 23, 42, 0.95)",
                   border: "1px solid #475569",
                   borderRadius: "8px",
                   color: "#fff",
                 }}
+                itemStyle={{ color: "#fff" }}
+                labelStyle={{ color: "#fff" }}
                 formatter={(value, name, props) => {
                   if (name === "points" || name === "rank") {
                     return [value, name];
@@ -95,9 +97,15 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
                 ))}
 
                 <LabelList
-                  dataKey="rank"
+                  dataKey="points"
                   position="top"
-                  className="fill-slate-300 text-xs"
+                  style={{ fill: "#ffffff", fontSize: 12, fontWeight: 600 }}
+                />
+                <LabelList
+                  dataKey="rank"
+                  position="insideTop"
+                  offset={12}
+                  style={{ fill: "#cbd5e1", fontSize: 10 }}
                 />
               </Bar>
             </BarChart>

@@ -18,6 +18,10 @@ export type RawApiUser = {
   rno: number;
   temname: string;
   points: number;
+  matches: Array<{
+    matchId: number;
+    points: number;
+  }>;
 };
 
 export type RawOverviewUser = {

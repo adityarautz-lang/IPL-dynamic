@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import OverallChart from "./components/OverallChart";
 import DailyChart from "./components/DailyChart";
 import PerformanceTracker from "./components/PerformanceTracker";
+import Summary from "./components/Summary";
 import type { DashboardData } from "./types";
 
 export default function Home() {
@@ -22,6 +23,11 @@ export default function Home() {
       </div>
     );
 
+  const highestMatchId = data.daily.reduce((maxId, row) => {
+    const parsed = Number(row.day.replace("Match ", ""));
+    return Number.isFinite(parsed) ? Math.max(maxId, parsed) : maxId;
+  }, 0);
+
   return (
     <main className="min-h-screen bg-linear-to-br from-[#0f172a] via-[#020617] to-[#0a0e27] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -38,7 +44,10 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           {/* Daily Match Performance */}
           <div>
-            <DailyChart data={data.daily[0]} />
+            <DailyChart
+              data={data.daily[data.daily.length - 1]}
+              matchId={highestMatchId}
+            />
           </div>
 
           {/* Overall Leaderboard */}
@@ -49,7 +58,12 @@ export default function Home() {
 
         {/* Second Row: Full Width Performance Tracker */}
         <div>
-          <PerformanceTracker />
+          <PerformanceTracker data={data.daily} />
+        </div>
+
+        {/* Third Row: Season Summary */}
+        <div className="mt-10">
+          <Summary data={data} />
         </div>
       </div>
     </main>
