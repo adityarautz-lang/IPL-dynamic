@@ -32,11 +32,14 @@ export default function Home() {
     <main className="min-h-screen bg-linear-to-br from-[#0f172a] via-[#020617] to-[#0a0e27] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-12">
-          <h1 className="text-5xl font-bold mb-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            🏏 IPL Fantasy Dashboard
-          </h1>
-          <p className="text-slate-400 text-lg">
-            Track your team&apos;s performance across all matches
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-6xl">🏏</span>
+            <h1 className="text-5xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Autodesk IPL Fantasy 2026
+            </h1>
+          </div>
+          <p className="text-slate-400 text-lg ml-24">
+            Real-time Performance Analytics
           </p>
         </div>
 
