@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-04-18T12:02:49.990Z",
+  "updatedAt": "2026-04-18T12:57:28.288Z",
   "leaders": [
     {
       "rank": 1,
       "name": "Deccan Dominators",
-      "points": 7172.5,
-      "lastMatchPoints": 115.5,
+      "points": 7316.5,
+      "lastMatchPoints": 245.5,
       "transfersLeft": 101,
       "boostersUsed": "1"
     },
@@ -20,32 +20,32 @@
     {
       "rank": 3,
       "name": "SquadSeven9",
-      "points": 6135,
-      "lastMatchPoints": 148,
+      "points": 6237,
+      "lastMatchPoints": 213,
       "transfersLeft": 121,
       "boostersUsed": "0"
     },
     {
       "rank": 4,
       "name": "Vijay Swami",
-      "points": 5780.5,
-      "lastMatchPoints": 110.5,
+      "points": 6067.5,
+      "lastMatchPoints": 380,
       "transfersLeft": 108,
       "boostersUsed": "0"
     },
     {
       "rank": 5,
       "name": "RSAwesome 11",
-      "points": 5759.5,
-      "lastMatchPoints": 170,
+      "points": 5767.5,
+      "lastMatchPoints": 178,
       "transfersLeft": 113,
       "boostersUsed": "0"
     },
     {
       "rank": 6,
       "name": "PKs11",
-      "points": 5307.5,
-      "lastMatchPoints": 167,
+      "points": 5496,
+      "lastMatchPoints": 297,
       "transfersLeft": 121,
       "boostersUsed": "0"
     },
@@ -60,8 +60,8 @@
     {
       "rank": 8,
       "name": "RushS01",
-      "points": 2840,
-      "lastMatchPoints": 39,
+      "points": 2952,
+      "lastMatchPoints": 134,
       "transfersLeft": 157,
       "boostersUsed": "0"
     }
