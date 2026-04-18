@@ -40,7 +40,7 @@ export default function Home() {
         <div className="absolute w-125 h-125 bg-blue-500/20 blur-[120px] -top-25 -left-25" />
         <div className="absolute w-100 h-100 bg-purple-500/20 blur-[120px] -bottom-25 -right-25" />
       </div>
-
+      <LiveMatchTicker />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <motion.div
@@ -71,11 +71,6 @@ export default function Home() {
                 Real-time Performance Analytics (aka stress simulator)
               </p>
             </motion.div>
-
-            {/* RIGHT: Upcoming Matches */}
-            <GlassCard delay={0.1}>
-              <LiveMatchTicker />
-            </GlassCard>
           </div>
         </motion.div>
 
