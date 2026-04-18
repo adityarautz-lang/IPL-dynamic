@@ -62,13 +62,8 @@ export default function Home() {
                   🏏
                 </span>
 
-<<<<<<< HEAD
-            <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-              ADSK IPL Fun Fantasy league 2026
-            </h1>
-=======
                 <h1 className="text-3xl md:text-4xl font-extrabold bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Autodesk IPL Fantasy 2026
+                  Autodesk IPL Fun Fantasy 2026
                 </h1>
               </div>
 
@@ -81,7 +76,6 @@ export default function Home() {
             <GlassCard delay={0.1}>
               <LiveMatchTicker />
             </GlassCard>
->>>>>>> 7112b546554270316a308576042f7c13d6aee2c2
           </div>
         </motion.div>
 
