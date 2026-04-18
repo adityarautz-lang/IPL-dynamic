@@ -101,13 +101,13 @@ export default function DailyChart({
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
       {/* glow layer */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-500/10 blur-2xl pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 via-transparent to-blue-500/10 blur-2xl pointer-events-none" />
 
       {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
       <div className="relative z-10 p-6 mb-4">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <h2 className="text-2xl font-bold bg-linear-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
           📊 Match {matchId ?? "Latest"} Performance
         </h2>
         <p className="text-slate-400 text-sm">
@@ -143,7 +143,7 @@ export default function DailyChart({
               radius={[10, 10, 0, 0]}
               animationDuration={900}
             >
-              {chartData.map((entry, index) => (
+              {chartData.map((entry) => (
                 <Cell
                   key={entry.name}
                   fill={getRandomColor(entry.name)}
