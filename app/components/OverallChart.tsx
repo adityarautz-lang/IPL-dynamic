@@ -69,6 +69,8 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
+  const sortedData = [...data].sort((a, b) => a.rank - b.rank);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40, scale: 0.98 }}
@@ -97,7 +99,7 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
         style={{ height: "320px", width: "95%", margin: "0 auto" }}
       >
         <ResponsiveContainer minWidth={0}>
-          <BarChart data={data}>
+          <BarChart data={sortedData} barCategoryGap="80%" maxBarSize={22}>
             <XAxis
               dataKey="name"
               stroke="#475569"
@@ -123,7 +125,7 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
               radius={[10, 10, 0, 0]}
               animationDuration={1000}
             >
-              {data.map((entry, index) => {
+              {sortedData.map((entry, index) => {
                 const isLeader = entry.rank === 1;
 
                 return (
@@ -167,6 +169,7 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
     </motion.div>
   );
 }
