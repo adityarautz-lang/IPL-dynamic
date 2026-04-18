@@ -53,7 +53,7 @@ export default function Home() {
             </span>
 
             <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
-              ADSK IPL Fantasy league 2026
+              ADSK IPL Fun Fantasy league 2026
             </h1>
           </div>
 
