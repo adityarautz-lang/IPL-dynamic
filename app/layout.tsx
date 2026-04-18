@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Autodesk IPL 2026 Fantasy League",
+  title: "Autodesk IPL 2026 Fun Fantasy League",
   description: "Real-time performance analytics and team statistics for the Autodesk IPL 2026 fantasy league.",
 };
 
