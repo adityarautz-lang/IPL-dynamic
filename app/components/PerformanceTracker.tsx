@@ -62,13 +62,13 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden p-6"
     >
       {/* glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-violet-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
 
       {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
       <div className="relative z-10 mb-6">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-violet-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+        <h2 className="text-2xl font-bold bg-linear-to-r from-violet-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
           📈 Performance Tracker
         </h2>
         <p className="text-slate-400 text-sm">
