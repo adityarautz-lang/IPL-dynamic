@@ -168,7 +168,7 @@ export default function Summary({ data }: { data: DashboardData }) {
           </p>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-3 lg:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
           {cards.map((card, i) => (
             <motion.div
               key={i}
@@ -176,16 +176,22 @@ export default function Summary({ data }: { data: DashboardData }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
               whileHover={{
-                scale: 1.03,
-                boxShadow: "0px 0px 30px rgba(139,92,246,0.25)",
+                scale: 1.02,
+                boxShadow: "0px 0px 18px rgba(139,92,246,0.2)",
               }}
-              className="p-5 rounded-3xl bg-white/5 border border-white/10"
+              className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md"
             >
-              <p className="text-xs uppercase text-slate-400">{card.title}</p>
-              <p className="mt-3 text-xl font-semibold text-white">
+              <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                {card.title}
+              </p>
+
+              <p className="mt-1 text-base font-semibold text-white truncate">
                 {card.team}
               </p>
-              <p className="text-slate-300 text-sm mt-1">{card.desc}</p>
+
+              <p className="text-xs text-slate-300 mt-1 line-clamp-2">
+                {card.desc}
+              </p>
             </motion.div>
           ))}
         </div>
