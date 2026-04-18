@@ -9,14 +9,28 @@ import Summary from "./components/Summary";
 import PointDifferences from "./components/PointDifferences";
 import type { DashboardData } from "./types";
 import LiveMatchTicker from "./components/LiveMatchTicker";
+import DetailedDataTable from "./components/DetailedDataTable";
 
 export default function Home() {
   const [data, setData] = useState<DashboardData | null>(null);
 
   useEffect(() => {
-    fetch("/api/ipl")
-      .then((res) => res.json() as Promise<DashboardData>)
-      .then(setData);
+    const loadDashboardData = () => {
+      fetch(`/api/ipl?t=${Date.now()}`, { cache: "no-store" })
+        .then((res) => res.json() as Promise<DashboardData>)
+        .then(setData);
+    };
+
+    loadDashboardData();
+    const intervalId = window.setInterval(loadDashboardData, 30000);
+    window.addEventListener("focus", loadDashboardData);
+    document.addEventListener("visibilitychange", loadDashboardData);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", loadDashboardData);
+      document.removeEventListener("visibilitychange", loadDashboardData);
+    };
   }, []);
 
   if (!data)
@@ -84,7 +98,10 @@ export default function Home() {
           </GlassCard>
 
           <GlassCard delay={0.2} className="p-0 lg:p-6">
-            <OverallChart data={data.overall} />
+            <OverallChart
+              key={`overall-${data.updatedAt ?? data.source ?? "manual"}`}
+              data={data.overall}
+            />
           </GlassCard>
         </div>
 
@@ -104,6 +121,13 @@ export default function Home() {
         <div className="mt-8">
           <GlassCard delay={0.5} className="p-0 lg:p-6">
             <Summary data={data} />
+          </GlassCard>
+        </div>
+
+        {/* Fifth Row */}
+        <div className="mt-8">
+          <GlassCard delay={0.6} className="p-0 lg:p-6">
+            <DetailedDataTable data={data} />
           </GlassCard>
         </div>
       </div>
