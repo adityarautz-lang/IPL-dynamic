@@ -24,3 +24,56 @@ body {
   color: var(--foreground);
   font-family: var(--font-mukta), sans-serif;
 }
+
+/* Animated gradient text */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientMove 6s ease infinite;
+}
+/* shimmer animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite linear;
+}
+
+/* reusable glass card (optional cleanup) */
+.glass-card {
+  @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl;
+}
+
+.title {
+  @apply text-2xl font-bold bg-linear-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s infinite linear;
+}
