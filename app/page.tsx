@@ -76,33 +76,33 @@ export default function Home() {
 
         {/* First Row */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
-          <GlassCard delay={0.1}>
+          <GlassCard delay={0.1} className="p-0 lg:p-6">
             <DailyChart
               data={data.daily[data.daily.length - 1]}
               matchId={highestMatchId}
             />
           </GlassCard>
 
-          <GlassCard delay={0.2}>
+          <GlassCard delay={0.2} className="p-0 lg:p-6">
             <OverallChart data={data.overall} />
           </GlassCard>
         </div>
 
         {/* Second Row */}
-        <GlassCard delay={0.3}>
+        <GlassCard delay={0.3} className="p-0 lg:p-6">
           <PerformanceTracker data={data.daily} />
         </GlassCard>
 
         {/* Third Row */}
         <div className="mt-8">
-          <GlassCard delay={0.4}>
+          <GlassCard delay={0.4} className="p-0 lg:p-6">
             <PointDifferences data={data.overall} />
           </GlassCard>
         </div>
 
         {/* Fourth Row */}
         <div className="mt-8">
-          <GlassCard delay={0.5}>
+          <GlassCard delay={0.5} className="p-0 lg:p-6">
             <Summary data={data} />
           </GlassCard>
         </div>
@@ -115,9 +115,11 @@ export default function Home() {
 function GlassCard({
   children,
   delay = 0,
+  className = "p-6",
 }: {
   children: React.ReactNode;
   delay?: number;
+  className?: string;
 }) {
   return (
     <motion.div
@@ -128,7 +130,7 @@ function GlassCard({
         scale: 1.02,
         boxShadow: "0px 0px 40px rgba(99,102,241,0.25)",
       }}
-      className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-xl transition-all"
+      className={`relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl transition-all ${className}`}
     >
       {/* subtle inner glow */}
       <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/5 to-transparent pointer-events-none" />

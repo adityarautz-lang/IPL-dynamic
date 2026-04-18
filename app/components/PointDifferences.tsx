@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -15,7 +16,51 @@ interface PointDifferencesProps {
   data: OverallChartItem[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TeamAxisTick = (props: any) => {
+  const { x, y, payload, isMobile } = props;
+
+  if (isMobile) {
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          transform="rotate(-90)"
+          textAnchor="middle"
+          dominantBaseline="central"
+          fill="#94a3b8"
+          fontSize={10}
+        >
+          {payload.value}
+        </text>
+      </g>
+    );
+  }
+
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={-4}
+        textAnchor="end"
+        dominantBaseline="central"
+        fill="#94a3b8"
+        fontSize={12}
+      >
+        {payload.value}
+      </text>
+    </g>
+  );
+};
+
 export default function PointDifferences({ data }: PointDifferencesProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateMobile = () => setIsMobile(window.innerWidth < 640);
+    updateMobile();
+    window.addEventListener("resize", updateMobile);
+    return () => window.removeEventListener("resize", updateMobile);
+  }, []);
+
   if (!data || data.length === 0) {
     return (
       <div className="glass-card p-6">
@@ -38,6 +83,9 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
       vs: nextTeam.name,
     };
   });
+  const chartHeight = isMobile
+    ? Math.max(420, differences.length * 76)
+    : 320;
 
   // 🔥 Find biggest gap
   const maxDiff = Math.max(...differences.map((d) => d.difference));
@@ -60,18 +108,27 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <span className="text-2xl">📊</span>
-        <h2 className="text-2xl font-bold text-white">Point Differences</h2>
+    <div>
+      <div className="relative z-10 p-6">
+        <h2 className="text-2xl font-bold bg-linear-to-r from-rose-300 via-amber-300 to-cyan-300 bg-clip-text text-transparent">
+          📊 Point Differences
+        </h2>
+        <p className="text-slate-400 text-sm">
+          Every gap, chase, and tiny little panic zone
+        </p>
       </div>
 
-      <div className="h-80">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="min-w-0 w-full p-0" style={{ height: chartHeight }}>
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <BarChart
             data={differences}
             layout="vertical"
-            margin={{ top: 20, right: 60, left: 100, bottom: 5 }}
+            margin={{
+              top: isMobile ? 16 : 0,
+              right: 56,
+              left: isMobile ? 40 : 96,
+              bottom: isMobile ? 16 : 0,
+            }}
           >
             <XAxis
               type="number"
@@ -85,8 +142,8 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
               dataKey="team"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
-              width={100}
+              tick={<TeamAxisTick isMobile={isMobile} />}
+              width={isMobile ? 48 : 100}
             />
 
             {/* 😈 Roast Tooltip */}

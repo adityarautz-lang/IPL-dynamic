@@ -115,8 +115,11 @@ export default function DailyChart({
         </p>
       </div>
 
-      <div style={{ height: "320px", width: "95%", margin: "0 auto" }}>
-        <ResponsiveContainer>
+      <div
+        className="min-w-0"
+        style={{ height: "320px", width: "95%", margin: "0 auto" }}
+      >
+        <ResponsiveContainer minWidth={0}>
           <BarChart data={chartData}>
             <XAxis
               dataKey="name"

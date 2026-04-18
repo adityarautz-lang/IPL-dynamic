@@ -153,7 +153,7 @@ export default function Summary({ data }: { data: DashboardData }) {
     <motion.section
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative w-full mt-10 p-6 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
+      className="relative w-full p-6 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
       <div className="absolute inset-0 bg-linear-to-br from-fuchsia-500/10 via-transparent to-cyan-500/10 blur-2xl" />
       <div className="absolute inset-0 opacity-20 animate-shimmer" />
