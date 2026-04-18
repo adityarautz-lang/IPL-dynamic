@@ -76,8 +76,8 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
         </p>
       </div>
 
-      <div style={{ height: "380px" }}>
-        <ResponsiveContainer>
+      <div className="min-w-0" style={{ height: "380px" }}>
+        <ResponsiveContainer minWidth={0}>
           <LineChart data={cumulativeData}>
             <XAxis
               dataKey="day"

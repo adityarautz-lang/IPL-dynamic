@@ -31,7 +31,7 @@ export default function RootLayout({
       className={`${mukta.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <div className="pt-8">{children}</div>
+        {children}
         <Analytics />
       </body>
     </html>
