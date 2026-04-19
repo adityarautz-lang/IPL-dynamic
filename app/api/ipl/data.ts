@@ -118,7 +118,11 @@ export const rawApiUsers: RawApiUser[] = [
       },
       {
         "matchId": 27,
+<<<<<<< HEAD
         "points": 340.5
+=======
+        "points": 315.5
+>>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       }
     ]
   },
@@ -233,7 +237,11 @@ export const rawApiUsers: RawApiUser[] = [
       },
       {
         "matchId": 27,
+<<<<<<< HEAD
         "points": 174.5
+=======
+        "points": 134.5
+>>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       }
     ]
   },
@@ -463,7 +471,11 @@ export const rawApiUsers: RawApiUser[] = [
       },
       {
         "matchId": 27,
+<<<<<<< HEAD
         "points": 385.5
+=======
+        "points": 369.5
+>>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       }
     ]
   },
@@ -808,7 +820,11 @@ export const rawApiUsers: RawApiUser[] = [
       },
       {
         "matchId": 27,
+<<<<<<< HEAD
         "points": 56.5
+=======
+        "points": 31.5
+>>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       }
     ]
   },
@@ -920,10 +936,6 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 134
-      },
-      {
-        "matchId": 27,
-        "points": 281
       }
     ]
   }
