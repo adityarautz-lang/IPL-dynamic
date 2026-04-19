@@ -25,22 +25,31 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
       </div>
     );
   }
+  // ✅ 1. Remove live update row (prevents graph distortion)
+  const filteredData = data.filter((row) => row.day !== "Live Update");
 
-  const players = Object.keys(data[0] || {}).filter((key) => key !== "day");
+  // ✅ 2. Get all players dynamically from all rows
+  const players = Array.from(
+    new Set(filteredData.flatMap((row) => Object.keys(row))),
+  ).filter((key) => key !== "day");
 
-  const cumulativeData = data.reduce<DailyChartRow[]>((acc, row, index) => {
-    const previous = acc[index - 1] ?? { day: "" };
-    const cumulativeRow: DailyChartRow = { day: row.day };
+  // ✅ 3. Build cumulative data safely
+  const cumulativeData = filteredData.reduce<DailyChartRow[]>(
+    (acc, row, index) => {
+      const previous = acc[index - 1] ?? { day: "" };
+      const cumulativeRow: DailyChartRow = { day: row.day };
 
-    players.forEach((player) => {
-      const current = Number(row[player]) || 0;
-      const previousTotal = Number(previous[player]) || 0;
-      cumulativeRow[player] = previousTotal + current;
-    });
+      players.forEach((player) => {
+        const current = Number(row[player] ?? 0);
+        const previousTotal = Number(previous[player] ?? 0);
+        cumulativeRow[player] = previousTotal + current;
+      });
 
-    acc.push(cumulativeRow);
-    return acc;
-  }, []);
+      acc.push(cumulativeRow);
+      return acc;
+    },
+    [],
+  );
 
   const COLORS = [
     "#6366F1",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -9,47 +9,13 @@ import {
   ResponsiveContainer,
   Cell,
   Tooltip,
+  LabelList,
 } from "recharts";
 import type { OverallChartItem } from "../types";
 
 interface PointDifferencesProps {
   data: OverallChartItem[];
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TeamAxisTick = (props: any) => {
-  const { x, y, payload, isMobile } = props;
-
-  if (isMobile) {
-    return (
-      <g transform={`translate(${x},${y})`}>
-        <text
-          transform="rotate(-90)"
-          textAnchor="middle"
-          dominantBaseline="central"
-          fill="#94a3b8"
-          fontSize={10}
-        >
-          {payload.value}
-        </text>
-      </g>
-    );
-  }
-
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text
-        x={-4}
-        textAnchor="end"
-        dominantBaseline="central"
-        fill="#94a3b8"
-        fontSize={12}
-      >
-        {payload.value}
-      </text>
-    </g>
-  );
-};
 
 export default function PointDifferences({ data }: PointDifferencesProps) {
   const [isMobile, setIsMobile] = useState(false);
@@ -61,146 +27,114 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  if (!data || data.length === 0) {
+  // ✅ ALWAYS run hooks (even if data is empty)
+  const { differences, maxDiff } = useMemo(() => {
+    if (!data || data.length < 2) {
+      return { differences: [], maxDiff: 0 };
+    }
+
+    const safeSorted = [...data]
+      .map((d) => ({
+        ...d,
+        points: Number(d.points ?? 0),
+      }))
+      .sort((a, b) => b.points - a.points);
+
+    const diffs = safeSorted.slice(0, -1).map((team, index) => {
+      const nextTeam = safeSorted[index + 1];
+
+      return {
+        team: team.name,
+        difference: team.points - (nextTeam?.points ?? 0),
+        vs: nextTeam?.name ?? "—",
+      };
+    });
+
+    const max =
+      diffs.length > 0 ? Math.max(...diffs.map((d) => d.difference)) : 0;
+
+    return { differences: diffs, maxDiff: max };
+  }, [data]);
+
+  const chartHeight = isMobile ? Math.max(420, differences.length * 76) : 320;
+
+  // ✅ Now safe to early return AFTER hooks
+  if (!data || data.length < 2) {
     return (
       <div className="glass-card p-6">
         <h2 className="title">📊 Point Differences</h2>
-        <p className="text-slate-400 text-sm">No data available.</p>
+        <p className="text-slate-400 text-sm">
+          Not enough data to compare teams.
+        </p>
       </div>
     );
   }
 
-  // ✅ Sort data
-  const sortedData = [...data].sort((a, b) => b.points - a.points);
-
-  const differences = sortedData.slice(0, -1).map((team, index) => {
-    const nextTeam = sortedData[index + 1];
-    const diff = team.points - nextTeam.points;
-
-    return {
-      team: team.name,
-      difference: diff,
-      vs: nextTeam.name,
-    };
-  });
-  const chartHeight = isMobile
-    ? Math.max(420, differences.length * 76)
-    : 320;
-
-  // 🔥 Find biggest gap
-  const maxDiff = Math.max(...differences.map((d) => d.difference));
-
-  // 🎨 Dynamic color logic
   const getColor = (value: number) => {
-    if (value === maxDiff) return "#F43F5E"; // highlight biggest gap (rose)
-    if (value > 50) return "#F59E0B"; // big gap
-    if (value > 20) return "#22C55E"; // medium
-    return "#06B6D4"; // small
-  };
-
-  // 😈 Roast generator
-  const roast = (team: string, vs: string, diff: number) => {
-    if (diff > 80)
-      return `${vs} got absolutely demolished by ${team}. This wasn’t a contest.`;
-    if (diff > 40) return `${vs} tried... but ${team} clearly didn’t notice.`;
-    if (diff > 10) return `${team} stays ahead. ${vs} is... participating.`;
-    return `${vs} is breathing down ${team}'s neck. Finally some competition.`;
+    if (value === maxDiff && maxDiff > 0) return "#22C55E";
+    if (value > 1000) return "#F59E0B";
+    if (value > 500) return "#06B6D4";
+    if (value > 200) return "#06B6D4";
+    return "#F43F5E";
   };
 
   return (
     <div>
-      <div className="relative z-10 p-6">
-        <h2 className="text-2xl font-bold bg-linear-to-r from-rose-300 via-amber-300 to-cyan-300 bg-clip-text text-transparent">
-          📊 Point Differences
-        </h2>
-        <p className="text-slate-400 text-sm">
-          Every gap, chase, and tiny little panic zone
-        </p>
+      <div className="p-6">
+        <h2 className="text-2xl font-bold text-white">📊 Point Differences</h2>
       </div>
 
-      <div className="min-w-0 w-full p-0" style={{ height: chartHeight }}>
-        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-          <BarChart
-            data={differences}
-            layout="vertical"
-            margin={{
-              top: isMobile ? 16 : 0,
-              right: 56,
-              left: isMobile ? 40 : 96,
-              bottom: isMobile ? 16 : 0,
-            }}
-          >
-            <XAxis
-              type="number"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
-            />
+      <div style={{ height: chartHeight }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={differences} layout="vertical" barCategoryGap="20%">
+            <XAxis type="number" />
+            <YAxis type="category" dataKey="team" />
 
-            <YAxis
-              type="category"
-              dataKey="team"
-              axisLine={false}
-              tickLine={false}
-              tick={<TeamAxisTick isMobile={isMobile} />}
-              width={isMobile ? 48 : 100}
-            />
-
-            {/* 😈 Roast Tooltip */}
-            <Tooltip
-              cursor={{ fill: "rgba(255,255,255,0.05)" }}
-              content={({ payload }) => {
-                if (!payload || !payload.length) return null;
-
-                const data = payload[0].payload;
-
-                return (
-                  <div className="bg-slate-900/90 border border-white/10 p-3 rounded-lg text-sm text-white shadow-xl max-w-xs">
-                    <p className="font-semibold mb-1">
-                      {data.team} vs {data.vs}
-                    </p>
-                    <p className="text-slate-300 text-xs">
-                      {roast(data.team, data.vs, data.difference)}
-                    </p>
-                  </div>
-                );
-              }}
-            />
+            <Tooltip />
 
             <Bar
               dataKey="difference"
               radius={[0, 8, 8, 0]}
               barSize={20}
+              isAnimationActive
               animationDuration={800}
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              label={(props: any) => {
-                const { x, y, width, value } = props;
-
-                return (
-                  <text
-                    x={x + width + 6}
-                    y={y + 14}
-                    fill="#e2e8f0"
-                    fontSize={12}
-                    fontWeight={500}
-                  >
-                    {value > 0 ? `+${value.toFixed(1)}` : value.toFixed(1)}
-                  </text>
-                );
-              }}
+              animationEasing="ease-out"
             >
-              {differences.map((entry, index) => (
+              {differences.map((entry) => (
                 <Cell
-                  key={`cell-${index}`}
+                  key={entry.team}
                   fill={getColor(entry.difference)}
                   style={{
+                    transition: "all 0.6s ease",
                     filter:
-                      entry.difference === maxDiff
-                        ? "drop-shadow(0 0 10px rgba(244,63,94,0.6))"
+                      entry.difference === maxDiff && maxDiff > 0
+                        ? "drop-shadow(0 0 12px rgba(244,63,94,0.8))"
                         : "none",
                   }}
                 />
               ))}
+              <LabelList
+                dataKey="difference"
+                content={(props: any) => {
+                  const { x, y, width, height, value } = props;
+                  const num = Number(value ?? 0);
+                  const isNegative = num < 0;
+
+                  return (
+                    <text
+                      x={isNegative ? x - 6 : x + width + 6}
+                      y={y + height / 2}
+                      textAnchor={isNegative ? "end" : "start"}
+                      dominantBaseline="middle"
+                      fill="#fff"
+                      fontSize={12}
+                      fontWeight={600}
+                    >
+                      {num > 0 ? `+${num}` : num}
+                    </text>
+                  );
+                }}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>

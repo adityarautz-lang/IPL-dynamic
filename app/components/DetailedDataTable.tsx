@@ -1,8 +1,26 @@
 "use client";
-
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import type { DashboardData, DailyChartRow } from "../types";
 
+const TEAM_ALIASES: Record<string, string> = {
+  "Vijay Swami": "VATVAGHOOL XI",
+};
+
+const normalizeRow = (row: DailyChartRow): DailyChartRow => {
+  const normalized: DailyChartRow = { day: row.day };
+
+  Object.entries(row).forEach(([key, value]) => {
+    if (key === "day") return;
+
+    const canonical = TEAM_ALIASES[key] || key;
+
+    normalized[canonical] =
+      Number(normalized[canonical] ?? 0) + Number(value ?? 0);
+  });
+
+  return normalized;
+};
 const formatNumber = (value?: number) => {
   if (typeof value !== "number" || !Number.isFinite(value)) return "-";
 
@@ -23,21 +41,52 @@ const formatUpdatedAt = (value?: string) => {
       });
 };
 
-const getDailyTeams = (rows: DailyChartRow[]) => {
-  const teams = new Set<string>();
-
-  rows.forEach((row) => {
-    Object.keys(row).forEach((key) => {
-      if (key !== "day") teams.add(key);
-    });
-  });
-
-  return Array.from(teams);
-};
-
 export default function DetailedDataTable({ data }: { data: DashboardData }) {
+  const prevMatchesRef = useRef<number[]>([]);
+  const [newMatchId, setNewMatchId] = useState<number | null>(null);
+  const getMatchNum = (day: string) => Number(day.replace("Match ", "")) || 0;
+  const historicalRows = (() => {
+    const map = new Map<number, DailyChartRow>();
+
+    data.daily.forEach((row) => {
+      if (!row.day || row.day === "Live Update") return;
+
+      const matchNum = Number(row.day.replace("Match ", ""));
+
+      // ❌ ignore invalid matches
+      if (!Number.isFinite(matchNum) || matchNum <= 0) return;
+
+      // ✅ normalize + dedupe (latest wins)
+      map.set(matchNum, normalizeRow(row));
+    });
+
+    // ✅ convert to sorted array
+    const sorted = Array.from(map.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([, row]) => row);
+
+    // ✅ enforce max 27 matches
+    return sorted.slice(-27);
+  })();
   const sortedOverall = [...data.overall].sort((a, b) => a.rank - b.rank);
-  const teams = getDailyTeams(data.daily);
+  const sortedRows = historicalRows;
+
+  useEffect(() => {
+    const currentMatches = sortedRows.map((r) => getMatchNum(r.day));
+    const prevMatches = prevMatchesRef.current;
+
+    // find new match
+    const newMatch = currentMatches.find((m) => !prevMatches.includes(m));
+
+    if (newMatch) {
+      setNewMatchId(newMatch);
+
+      // clear highlight after animation
+      setTimeout(() => setNewMatchId(null), 2000);
+    }
+
+    prevMatchesRef.current = currentMatches;
+  }, [sortedRows]);
 
   return (
     <motion.section
@@ -70,21 +119,15 @@ export default function DetailedDataTable({ data }: { data: DashboardData }) {
           </div>
 
           <div className="overflow-x-auto border-y border-white/10 lg:rounded-lg lg:border">
-            <table className="min-w-[980px] w-full border-collapse text-xs">
+            <table className="min-w-245 w-full border-collapse text-xs">
               <thead className="bg-white/10 text-slate-300">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium">Rank</th>
                   <th className="px-3 py-2 text-left font-medium">Team</th>
                   <th className="px-3 py-2 text-right font-medium">Points</th>
-                  <th className="px-3 py-2 text-right font-medium">
-                    Previous
-                  </th>
-                  <th className="px-3 py-2 text-right font-medium">
-                    Movement
-                  </th>
-                  <th className="px-3 py-2 text-right font-medium">
-                    Gap Next
-                  </th>
+                  <th className="px-3 py-2 text-right font-medium">Previous</th>
+                  <th className="px-3 py-2 text-right font-medium">Movement</th>
+                  <th className="px-3 py-2 text-right font-medium">Gap Next</th>
                   <th className="px-3 py-2 text-right font-medium">Gap %</th>
                   <th className="px-3 py-2 text-right font-medium">
                     Transfers
@@ -111,7 +154,19 @@ export default function DetailedDataTable({ data }: { data: DashboardData }) {
                       {formatNumber(row.previousPoints)}
                     </td>
                     <td className="px-3 py-2 text-right capitalize">
-                      {row.movement ?? "-"}
+                      {row.movement === "up" && (
+                        <span className="text-green-400">⬆Up</span>
+                      )}
+
+                      {row.movement === "down" && (
+                        <span className="text-red-400">⬇Down</span>
+                      )}
+
+                      {row.movement === "same" && (
+                        <span className="text-slate-400">Same</span>
+                      )}
+
+                      {!row.movement && "-"}
                     </td>
                     <td className="px-3 py-2 text-right">
                       {formatNumber(row.gapToNext)}
@@ -138,54 +193,6 @@ export default function DetailedDataTable({ data }: { data: DashboardData }) {
                         <span className="ml-1">🏆</span>
                       ) : null}
                     </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section>
-          <div className="px-4 pb-3 lg:px-0">
-            <h3 className="text-sm font-semibold text-white">
-              Match-by-Match Matrix
-            </h3>
-            <p className="text-xs text-slate-400">
-              Full daily rows from the API, including the latest live update.
-            </p>
-          </div>
-
-          <div className="overflow-x-auto border-y border-white/10 lg:rounded-lg lg:border">
-            <table className="min-w-[980px] w-full border-collapse text-xs">
-              <thead className="bg-white/10 text-slate-300">
-                <tr>
-                  <th className="sticky left-0 bg-slate-900 px-3 py-2 text-left font-medium">
-                    Match
-                  </th>
-                  {teams.map((team) => (
-                    <th
-                      key={team}
-                      className="px-3 py-2 text-right font-medium whitespace-nowrap"
-                    >
-                      {team}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.daily.map((row) => (
-                  <tr
-                    key={String(row.day)}
-                    className="border-t border-white/10 text-slate-200"
-                  >
-                    <td className="sticky left-0 bg-slate-950 px-3 py-2 font-semibold text-white">
-                      {row.day}
-                    </td>
-                    {teams.map((team) => (
-                      <td key={team} className="px-3 py-2 text-right">
-                        {formatNumber(Number(row[team] ?? 0))}
-                      </td>
-                    ))}
                   </tr>
                 ))}
               </tbody>

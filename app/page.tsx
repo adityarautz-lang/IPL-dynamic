@@ -25,12 +25,19 @@ export default function Home() {
   }
 
   // ✅ Centralized derived data
-  const latestDaily = data.daily[data.daily.length - 1];
+  const liveMatch =
+    data.daily.find((d) => d.day === "Live Update") ||
+    data.daily[data.daily.length - 1];
 
   const highestMatchId = data.daily.reduce((maxId, row) => {
     const parsed = Number(row.day.replace("Match ", ""));
     return Number.isFinite(parsed) ? Math.max(maxId, parsed) : maxId;
   }, 0);
+
+  const liveMatchId =
+    liveMatch?.day === "Live Update"
+      ? highestMatchId + 1
+      : Number(liveMatch?.day?.replace("Match ", ""));
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#020617] text-white">
@@ -65,7 +72,7 @@ export default function Home() {
         {/* Row 1 */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <GlassCard>
-            <DailyChart data={latestDaily} matchId={highestMatchId} />
+            <DailyChart data={liveMatch} matchId={liveMatchId} />
           </GlassCard>
 
           <GlassCard>
@@ -114,7 +121,7 @@ function GlassCard({ children }: { children: React.ReactNode }) {
         scale: 1.02,
         boxShadow: "0px 0px 40px rgba(99,102,241,0.25)",
       }}
-      className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl p-6"
+      className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl lg:p-6"
     >
       <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/5 to-transparent pointer-events-none" />
       {children}
