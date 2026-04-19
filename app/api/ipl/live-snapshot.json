@@ -1,20 +1,11 @@
 {
-<<<<<<< HEAD
-  "updatedAt": "2026-04-19T08:33:26.972Z",
-=======
-  "updatedAt": "2026-04-18T17:44:15.801Z",
->>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
+  "updatedAt": "2026-04-19T08:40:35.124Z",
   "leaders": [
     {
       "rank": 1,
       "name": "Deccan Dominators",
-<<<<<<< HEAD
       "points": 7657,
       "lastMatchPoints": 312.5,
-=======
-      "points": 7632,
-      "lastMatchPoints": 287.5,
->>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       "transfersLeft": 98,
       "boostersUsed": "1"
     },
@@ -28,32 +19,18 @@
     },
     {
       "rank": 3,
-<<<<<<< HEAD
       "name": "Watapi",
       "points": 6470.5,
       "lastMatchPoints": 158.5,
       "transfersLeft": 103,
-=======
-      "name": "Vijay Swami",
-      "points": 6437,
-      "lastMatchPoints": 341.5,
-      "transfersLeft": 105,
->>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       "boostersUsed": "0"
     },
     {
       "rank": 4,
-<<<<<<< HEAD
-      "name": "VATVAGHOOL XI",
+      "name": "Vijay Swami",
       "points": 6453,
       "lastMatchPoints": 357.5,
       "transfersLeft": 105,
-=======
-      "name": "Watapi",
-      "points": 6430.5,
-      "lastMatchPoints": 118.5,
-      "transfersLeft": 103,
->>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       "boostersUsed": "0"
     },
     {
@@ -75,26 +52,16 @@
     {
       "rank": 7,
       "name": "Bat Bowl XI",
-<<<<<<< HEAD
       "points": 4080.5,
       "lastMatchPoints": 58.5,
-=======
-      "points": 4055.5,
-      "lastMatchPoints": 33.5,
->>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       "transfersLeft": 137,
       "boostersUsed": "0"
     },
     {
       "rank": 8,
       "name": "RushS01",
-<<<<<<< HEAD
       "points": 3233,
       "lastMatchPoints": 260,
-=======
-      "points": 3237,
-      "lastMatchPoints": 264,
->>>>>>> b3531e198944cbf94b44348749ba43dd8575e316
       "transfersLeft": 157,
       "boostersUsed": "0"
     }

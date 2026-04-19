@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import type { OverallChartItem } from "../types";
 import { splitTeamName } from "../lib/utils";
+import { getColor } from "../lib/utils/getColor";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomXAxisTick = (props: any) => {
@@ -50,15 +51,6 @@ const CustomXAxisTick = (props: any) => {
   );
 };
 
-const COLORS = [
-  "#6366F1",
-  "#22C55E",
-  "#F59E0B",
-  "#EF4444",
-  "#06B6D4",
-  "#A855F7",
-];
-
 export default function OverallChart({ data }: { data: OverallChartItem[] }) {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -69,7 +61,14 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  const sortedData = [...data].sort((a, b) => a.rank - b.rank);
+  const sortedData = [...data].sort(
+    (a, b) => (a.rank ?? 999) - (b.rank ?? 999),
+  );
+
+  const safeData = sortedData.map((d) => ({
+    ...d,
+    points: Number(d.points ?? 0),
+  }));
 
   return (
     <motion.div
@@ -99,7 +98,7 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
         style={{ height: "320px", width: "95%", margin: "0 auto" }}
       >
         <ResponsiveContainer minWidth={0}>
-          <BarChart data={sortedData} barCategoryGap="80%" maxBarSize={22}>
+          <BarChart data={safeData} barCategoryGap="80%" maxBarSize={22}>
             <XAxis
               dataKey="name"
               stroke="#475569"
@@ -127,16 +126,18 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
             >
               {sortedData.map((entry, index) => {
                 const isLeader = entry.rank === 1;
-
+                const isLastMatchLeader = entry.isLastMatchLeader;
                 return (
                   <Cell
                     key={index}
-                    fill={COLORS[index % COLORS.length]}
+                    fill={getColor(entry.name)}
                     className="transition-all duration-300"
                     style={{
                       filter: isLeader
                         ? "drop-shadow(0px 0px 12px rgba(34,197,94,0.7))"
-                        : "none",
+                        : isLastMatchLeader
+                          ? "drop-shadow(0px 0px 10px rgba(59,130,246,0.6))"
+                          : "none",
                       opacity: isLeader ? 1 : 0.85,
                     }}
                   />
@@ -169,7 +170,6 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
-
     </motion.div>
   );
 }
