@@ -1,6 +1,5 @@
 import getDb from "@/app/lib/useDb";
 import { NextResponse } from "next/server";
-import { broadcast } from "@/app/server/wsServer";
 
 function errorResponse(message: string, status = 500) {
   return NextResponse.json({ success: false, error: message }, { status });
@@ -49,7 +48,6 @@ export async function POST(request: Request) {
       },
       { upsert: true },
     );
-    broadcast(body);
     return NextResponse.json(
       {
         success: true,
