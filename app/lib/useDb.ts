@@ -1,7 +1,20 @@
-import clientPromise from "./mongodb";
-import { Db } from "mongodb";
+// lib/useDb.ts
+import { MongoClient } from "mongodb";
 
-export default async function getDb(dbName = "ipl"): Promise<Db> {
+const uri = process.env.MONGODB_URI!;
+
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
+if (!global._mongoClientPromise) {
+  client = new MongoClient(uri);
+  global._mongoClientPromise = client.connect();
+}
+
+// eslint-disable-next-line prefer-const
+clientPromise = global._mongoClientPromise;
+
+export default async function getMongoDb() {
   const client = await clientPromise;
-  return client.db(dbName);
+  return client.db("ipl");
 }

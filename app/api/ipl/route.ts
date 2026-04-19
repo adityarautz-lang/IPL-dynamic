@@ -10,6 +10,7 @@ import {
   syncRawUsersWithSnapshot,
 } from "./transform";
 import { rawApiUsers } from "./data";
+import getMongoDb from "../../lib/useDb";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,16 +34,10 @@ const corsHeaders = {
 };
 
 const getDb = async () => {
-  if (!process.env.MONGODB_URI) {
-    return null;
-  }
-
   try {
-    const { default: getMongoDb } = await import("../../lib/useDb");
-
     return await getMongoDb();
   } catch (error) {
-    console.error("Failed to initialize MongoDB connection:", error);
+    console.error("MongoDB connection failed:", error);
     return null;
   }
 };
@@ -196,6 +191,8 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
+  console.log("API HIT");
+
   const manualUsers = await readManualUsers();
   const snapshot = (await readMongoSnapshot()) ?? (await readFileSnapshot());
 
@@ -212,6 +209,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // const auth = request.headers.get("authorization");
+  // if (SECRET && auth !== `Bearer ${SECRET}`) {
+  //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // }
+
   const payload = normalizePayload(await request.json().catch(() => null));
 
   if (!payload) {
