@@ -46,6 +46,24 @@ http://localhost:3000
 
 If port `3000` is already busy, Next.js will print another local URL such as `http://localhost:3001`.
 
+Seed MongoDB from the local fallback data:
+
+```bash
+npm run seed:mongodb -- --dry-run
+```
+
+Then run the actual seed after `MONGODB_URI` is configured:
+
+```bash
+npm run seed:mongodb
+```
+
+If MongoDB already contains `raw-users` or `dashboard` documents and you intentionally want to overwrite them from the local seed files, use:
+
+```bash
+npm run seed:mongodb -- --force
+```
+
 ## Data Flow
 
 The dashboard reads data from:
@@ -61,19 +79,30 @@ The API returns:
 - `updatedAt`: latest live snapshot timestamp, when available
 - `source`: either `manual` or `live-snapshot`
 
-When no live scraped data exists, `/api/ipl` falls back to the manual match data in:
+When MongoDB is configured, `/api/ipl` uses MongoDB as the primary store for:
 
-```text
-app/api/ipl/data.ts
-```
+- the latest scraped leaderboard snapshot
+- the synced raw per-match history used to build manual dashboard rows
 
-When live data exists, `/api/ipl` reads:
+When no MongoDB data is available, `/api/ipl` falls back to the local live snapshot file:
 
 ```text
 app/api/ipl/live-snapshot.json
 ```
 
-and merges that live leaderboard snapshot with the existing daily data.
+When no live scraped data exists at all, `/api/ipl` falls back to the manual seed data in:
+
+```text
+app/api/ipl/data.ts
+```
+
+When live data exists, `/api/ipl` merges the snapshot with the manual daily match data.
+
+The same implementation is also exposed at:
+
+```text
+/api/2026
+```
 
 ## Live Update Automation
 
@@ -193,7 +222,11 @@ The API enriches this into:
 - transfer efficiency
 - latest match leader flag
 
-On a successful sync, the API also updates:
+On a successful sync, the API also updates the raw per-match history that powers the manual fallback.
+
+If `MONGODB_URI` is configured, that history is upserted into MongoDB under the `ipl` collection with `type: "raw-users"`.
+
+If MongoDB is not configured, the route still falls back to the seed data in:
 
 ```text
 app/api/ipl/data.ts
@@ -204,7 +237,24 @@ The sync updates `rawApiUsers` by matching scraped teams back to raw fantasy tea
 - appends the next match row when the scraped totals represent a new match, or
 - updates the latest match row when the scrape belongs to the same in-progress/latest match.
 
-This keeps the manual fallback data moving forward after each bookmarklet upload.
+This keeps the manual fallback data moving forward after each bookmarklet upload without rewriting TypeScript source files when MongoDB is available.
+
+The same POST also upserts the live snapshot into MongoDB under the `ipl` collection with `type: "dashboard"`.
+
+## MongoDB Seeding
+
+The project includes a one-time seed script at:
+
+```text
+scripts/seed-mongodb.ts
+```
+
+It seeds MongoDB from:
+
+- `app/api/ipl/data.ts` into the `ipl` collection with `type: "raw-users"`
+- `app/api/ipl/live-snapshot.json` into the `ipl` collection with `type: "dashboard"`, when that file exists
+
+By default, the script does not overwrite existing MongoDB documents. Use `--force` only when you intentionally want the local seed files to replace MongoDB data.
 
 ### `GET /api/ipl/bookmarklet`
 

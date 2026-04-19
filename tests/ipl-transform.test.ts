@@ -1,20 +1,22 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import {
-  addLeaderboardMetrics,
-  buildDashboardFromSnapshot,
-  buildManualDashboard,
-  normalizePayload,
-  serializeRawApiUsersModule,
-  syncRawUsersWithSnapshot,
-  toFiniteNumber,
-} from "../app/api/ipl/transform.ts";
+
 import type {
   DashboardData,
   RawApiUser,
   ScrapedDashboardPayload,
   ScrapedLeaderboardItem,
 } from "../app/types.ts";
+import {
+  addLeaderboardMetrics,
+  buildDashboardFromSnapshot,
+  buildManualDashboard,
+  normalizePayload,
+  normalizeRawApiUsers,
+  serializeRawApiUsersModule,
+  syncRawUsersWithSnapshot,
+  toFiniteNumber,
+} from "@/app/api/ipl/transform.js";
 
 describe("IPL data transformation", () => {
   it("parses finite numbers from numeric and comma-formatted values", () => {
@@ -27,6 +29,7 @@ describe("IPL data transformation", () => {
 
   it("normalizes scraped payloads by trimming names, coercing numbers, and sorting ranks", () => {
     const payload = normalizePayload({
+      updatedAt: "2026-04-18T10:55:57.567Z",
       leaders: [
         {
           rank: "2",
@@ -60,7 +63,7 @@ describe("IPL data transformation", () => {
     assert.equal(payload.leaders[0].transfersLeft, 101);
     assert.equal(payload.leaders[1].name, "Watapi");
     assert.equal(payload.leaders[1].boostersUsed, "0");
-    assert.match(payload.updatedAt ?? "", /^\d{4}-\d{2}-\d{2}T/);
+    assert.equal(payload.updatedAt, "2026-04-18T10:55:57.567Z");
   });
 
   it("rejects invalid scraped payloads", () => {
@@ -73,6 +76,40 @@ describe("IPL data transformation", () => {
       }),
       null,
     );
+  });
+
+  it("normalizes raw users loaded from storage by sorting matches and recalculating totals", () => {
+    const users = normalizeRawApiUsers([
+      {
+        rno: "2",
+        temname: " Team B ",
+        points: 999,
+        matches: [
+          { matchId: "2", points: "15" },
+          { matchId: "1", points: "25" },
+        ],
+      },
+      {
+        rno: 1,
+        temname: "Team A",
+        matches: [{ matchId: 1, points: 10 }],
+      },
+      {
+        rno: 3,
+        temname: "Broken",
+        matches: [],
+      },
+    ]);
+
+    assert.ok(users);
+    assert.equal(users.length, 2);
+    assert.equal(users[0].temname, "Team A");
+    assert.equal(users[1].temname, "Team B");
+    assert.deepEqual(users[1].matches, [
+      { matchId: 1, points: 25 },
+      { matchId: 2, points: 15 },
+    ]);
+    assert.equal(users[1].points, 40);
   });
 
   it("adds rank movement, point gaps, efficiency, and latest-match winner flags", () => {
