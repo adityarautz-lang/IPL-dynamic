@@ -1,67 +1,67 @@
 {
-  "updatedAt": "2026-04-18T12:57:28.288Z",
+  "updatedAt": "2026-04-19T08:33:26.972Z",
   "leaders": [
     {
       "rank": 1,
       "name": "Deccan Dominators",
-      "points": 7316.5,
-      "lastMatchPoints": 245.5,
-      "transfersLeft": 101,
+      "points": 7657,
+      "lastMatchPoints": 312.5,
+      "transfersLeft": 98,
       "boostersUsed": "1"
     },
     {
       "rank": 2,
-      "name": "Watapi",
-      "points": 6296,
-      "lastMatchPoints": 77,
-      "transfersLeft": 106,
+      "name": "SquadSeven9",
+      "points": 6543.5,
+      "lastMatchPoints": 280.5,
+      "transfersLeft": 119,
       "boostersUsed": "0"
     },
     {
       "rank": 3,
-      "name": "SquadSeven9",
-      "points": 6237,
-      "lastMatchPoints": 213,
-      "transfersLeft": 121,
+      "name": "Watapi",
+      "points": 6470.5,
+      "lastMatchPoints": 158.5,
+      "transfersLeft": 103,
       "boostersUsed": "0"
     },
     {
       "rank": 4,
-      "name": "Vijay Swami",
-      "points": 6067.5,
-      "lastMatchPoints": 380,
-      "transfersLeft": 108,
+      "name": "VATVAGHOOL XI",
+      "points": 6453,
+      "lastMatchPoints": 357.5,
+      "transfersLeft": 105,
       "boostersUsed": "0"
     },
     {
       "rank": 5,
       "name": "RSAwesome 11",
-      "points": 5767.5,
-      "lastMatchPoints": 178,
-      "transfersLeft": 113,
+      "points": 5917.5,
+      "lastMatchPoints": 136,
+      "transfersLeft": 111,
       "boostersUsed": "0"
     },
     {
       "rank": 6,
       "name": "PKs11",
-      "points": 5496,
-      "lastMatchPoints": 297,
-      "transfersLeft": 121,
+      "points": 5769.5,
+      "lastMatchPoints": 245.5,
+      "transfersLeft": 119,
       "boostersUsed": "0"
     },
     {
       "rank": 7,
       "name": "Bat Bowl XI",
-      "points": 4024,
-      "lastMatchPoints": 18,
-      "transfersLeft": 139,
+      "points": 4080.5,
+      "lastMatchPoints": 58.5,
+      "transfersLeft": 137,
       "boostersUsed": "0"
     },
     {
       "rank": 8,
       "name": "RushS01",
-      "points": 2952,
-      "lastMatchPoints": 134,
+      "points": 3233,
+      "lastMatchPoints": 260,
       "transfersLeft": 157,
       "boostersUsed": "0"
     }

@@ -115,6 +115,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 245.5
+      },
+      {
+        "matchId": 27,
+        "points": 340.5
       }
     ]
   },
@@ -226,6 +230,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 77
+      },
+      {
+        "matchId": 27,
+        "points": 174.5
       }
     ]
   },
@@ -337,6 +345,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 213
+      },
+      {
+        "matchId": 27,
+        "points": 306.5
       }
     ]
   },
@@ -448,6 +460,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 380
+      },
+      {
+        "matchId": 27,
+        "points": 385.5
       }
     ]
   },
@@ -559,6 +575,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 178
+      },
+      {
+        "matchId": 27,
+        "points": 150
       }
     ]
   },
@@ -670,6 +690,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 297
+      },
+      {
+        "matchId": 27,
+        "points": 273.5
       }
     ]
   },
@@ -781,6 +805,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 18
+      },
+      {
+        "matchId": 27,
+        "points": 56.5
       }
     ]
   },
@@ -892,6 +920,10 @@ export const rawApiUsers: RawApiUser[] = [
       {
         "matchId": 26,
         "points": 134
+      },
+      {
+        "matchId": 27,
+        "points": 281
       }
     ]
   }
