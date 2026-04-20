@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import fs from "fs";
 
 const FILE = "/tmp/data.json";
