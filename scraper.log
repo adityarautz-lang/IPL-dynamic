@@ -1,0 +1,927 @@
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module '/Users/rauta/ipl-dashboard/scripts/scrape-ipl.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.18.0
+🚀 Running IPL scraper...
+❌ POST failed: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parseJSONFromBytes (node:internal/deps/undici/undici:5489:19)
+    at successSteps (node:internal/deps/undici/undici:5470:27)
+    at fullyReadBody (node:internal/deps/undici/undici:4381:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async consumeBody (node:internal/deps/undici/undici:5479:7)
+    at async sendToAPI (file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:38:18)
+    at async run (file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:56:3)
+🚀 Running IPL scraper...
+❌ POST failed: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at parseJSONFromBytes (node:internal/deps/undici/undici:5489:19)
+    at successSteps (node:internal/deps/undici/undici:5470:27)
+    at fullyReadBody (node:internal/deps/undici/undici:4381:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async consumeBody (node:internal/deps/undici/undici:5479:7)
+    at async sendToAPI (file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:38:18)
+    at async run (file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:56:3)
+🚀 Running IPL scraper...
+❌ POST failed: TypeError: fetch failed
+    at node:internal/deps/undici/undici:13185:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async sendToAPI (file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:29:17)
+    at async run (file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:56:3) {
+  [cause]: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1118:18)
+      at afterConnectMultiple (node:net:1685:7) {
+    code: 'ECONNREFUSED',
+    [errors]: [ [Error], [Error] ]
+  }
+}
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+node:internal/modules/esm/resolve:854
+  throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+        ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'playwright' imported from /Users/rauta/ipl-dashboard/scripts/scrape-ipl.js
+    at packageResolve (node:internal/modules/esm/resolve:854:9)
+    at moduleResolve (node:internal/modules/esm/resolve:927:18)
+    at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:542:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:510:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:239:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:96:40)
+    at link (node:internal/modules/esm/module_job:95:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Error reading storage state from state.json:
+ENOENT: no such file or directory, open 'state.json'
+    at async open (node:internal/fs/promises:639:25)
+    at async Object.readFile (node:internal/fs/promises:1242:14)
+    at async prepareStorageState (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:498:23)
+    at async prepareBrowserContextParams (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:515:42)
+    at async Browser._innerNewContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:69:28)
+    at async Browser.newContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:51:12)
+    at async file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:10:19 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'state.json'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Error reading storage state from state.json:
+ENOENT: no such file or directory, open 'state.json'
+    at async open (node:internal/fs/promises:639:25)
+    at async Object.readFile (node:internal/fs/promises:1242:14)
+    at async prepareStorageState (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:498:23)
+    at async prepareBrowserContextParams (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:515:42)
+    at async Browser._innerNewContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:69:28)
+    at async Browser.newContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:51:12)
+    at async file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:10:19 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'state.json'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Error reading storage state from state.json:
+ENOENT: no such file or directory, open 'state.json'
+    at async open (node:internal/fs/promises:639:25)
+    at async Object.readFile (node:internal/fs/promises:1242:14)
+    at async prepareStorageState (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:498:23)
+    at async prepareBrowserContextParams (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:515:42)
+    at async Browser._innerNewContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:69:28)
+    at async Browser.newContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:51:12)
+    at async file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:10:19 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'state.json'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Error reading storage state from state.json:
+ENOENT: no such file or directory, open 'state.json'
+    at async open (node:internal/fs/promises:639:25)
+    at async Object.readFile (node:internal/fs/promises:1242:14)
+    at async prepareStorageState (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:498:23)
+    at async prepareBrowserContextParams (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:515:42)
+    at async Browser._innerNewContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:69:28)
+    at async Browser.newContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:51:12)
+    at async file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:10:19 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'state.json'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Error reading storage state from state.json:
+ENOENT: no such file or directory, open 'state.json'
+    at async open (node:internal/fs/promises:639:25)
+    at async Object.readFile (node:internal/fs/promises:1242:14)
+    at async prepareStorageState (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:498:23)
+    at async prepareBrowserContextParams (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:515:42)
+    at async Browser._innerNewContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:69:28)
+    at async Browser.newContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:51:12)
+    at async file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:10:19 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'state.json'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+node:internal/process/promises:391
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Error reading storage state from state.json:
+ENOENT: no such file or directory, open 'state.json'
+    at async open (node:internal/fs/promises:639:25)
+    at async Object.readFile (node:internal/fs/promises:1242:14)
+    at async prepareStorageState (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:498:23)
+    at async prepareBrowserContextParams (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browserContext.js:515:42)
+    at async Browser._innerNewContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:69:28)
+    at async Browser.newContext (/Users/rauta/ipl-dashboard/node_modules/playwright-core/lib/client/browser.js:51:12)
+    at async file:///Users/rauta/ipl-dashboard/scripts/scrape-ipl.js:10:19 {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'state.json'
+}
+
+Node.js v20.18.0
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+❌ Error: fetch failed
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+❌ Error: fetch failed
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+❌ Error: fetch failed
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+❌ Error: fetch failed
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+❌ API call failed: fetch failed
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
+🚀 Starting IPL scraper...
+📌 SquadSeven9 | Match: 78 | Tx: 112 | Boost: 0
+📌 Deccan Dominators | Match: 506 | Tx: 94 | Boost: 2
+📌 Watapi | Match: 105 | Tx: 95 | Boost: 0
+📌 VATVAGHOOL XI | Match: 73 | Tx: 96 | Boost: 0
+📌 PKs11 | Match: 55.5 | Tx: 113 | Boost: 0
+📌 RSAwesome 11 | Match: 97 | Tx: 105 | Boost: 0
+📌 Bat Bowl XI | Match: 138 | Tx: 134 | Boost: 0
+📌 RushS01 | Match: 75.5 | Tx: 157 | Boost: 0
+✅ Scraped 8
+📡 API status: 200
+📥 API response: {"success":true}
+🎉 Dashboard updated successfully!
