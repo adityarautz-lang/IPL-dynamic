@@ -12,8 +12,13 @@ import {
   Cell,
   LabelList,
 } from "recharts";
-import type { DailyChartRow } from "../types";
 import { splitTeamName } from "../lib/utils";
+
+type Leader = {
+  name: string;
+  lastMatchPoints?: number;
+  points?: number;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomXAxisTick = (props: any) => {
@@ -63,7 +68,7 @@ export default function DailyChart({
   data,
   matchId,
 }: {
-  data?: DailyChartRow;
+  data?: Leader[];   // ✅ now array
   matchId?: number;
 }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -75,20 +80,23 @@ export default function DailyChart({
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  if (!data)
+  // ✅ safe array
+  const list = Array.isArray(data) ? data : [];
+
+  if (!list.length) {
     return (
-      <div className="glass-card p-6">
-        <h2 className="title">📊 Daily Match Performance</h2>
+      <div className="p-6">
+        <h2 className="text-xl font-bold">📊 Daily Match Performance</h2>
         <p className="text-slate-400 text-sm">No match data available.</p>
       </div>
     );
+  }
 
-  const players = Object.keys(data).filter((k) => k !== "day");
-
-  const chartData = players
-    .map((player) => ({
-      name: player,
-      points: Number(data[player]),
+  // ✅ use lastMatchPoints (fallback to points if missing)
+  const chartData = list
+    .map((p) => ({
+      name: p.name,
+      points: Number(p.lastMatchPoints ?? p.points ?? 0),
     }))
     .sort((a, b) => b.points - a.points);
 
@@ -100,7 +108,7 @@ export default function DailyChart({
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
-      {/* glow layer */}
+      {/* glow */}
       <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 via-transparent to-blue-500/10 blur-2xl pointer-events-none" />
 
       {/* shimmer */}
@@ -115,11 +123,9 @@ export default function DailyChart({
         </p>
       </div>
 
-      <div
-        className="min-w-0"
-        style={{ height: "320px", width: "95%", margin: "0 auto" }}
-      >
-        <ResponsiveContainer minWidth={0}>
+      {/* ✅ FIXED chart container */}
+      <div className="w-full h-[320px] px-4">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis
               dataKey="name"
@@ -141,16 +147,11 @@ export default function DailyChart({
               }}
             />
 
-            <Bar
-              dataKey="points"
-              radius={[10, 10, 0, 0]}
-              animationDuration={900}
-            >
+            <Bar dataKey="points" radius={[10, 10, 0, 0]}>
               {chartData.map((entry) => (
                 <Cell
                   key={entry.name}
                   fill={getRandomColor(entry.name)}
-                  className="transition-all duration-300 hover:opacity-80"
                 />
               ))}
 

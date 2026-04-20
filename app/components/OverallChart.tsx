@@ -12,11 +12,16 @@ import {
   LabelList,
   Cell,
 } from "recharts";
-import type { OverallChartItem } from "../types";
 import { splitTeamName } from "../lib/utils";
 import { getColor } from "../lib/utils/getColor";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Leader = {
+  rank?: number;
+  name: string;
+  points: number;
+  matchId?: number;
+};
+
 const CustomXAxisTick = (props: any) => {
   const { x, y, payload, isMobile } = props;
 
@@ -51,7 +56,7 @@ const CustomXAxisTick = (props: any) => {
   );
 };
 
-export default function OverallChart({ data }: { data: OverallChartItem[] }) {
+export default function OverallChart({ data }: { data: Leader[] }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -61,13 +66,19 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  const sortedData = [...data].sort(
-    (a, b) => (a.rank ?? 999) - (b.rank ?? 999),
+  // ✅ Safety: always work with valid array
+  const list = Array.isArray(data) ? data : [];
+
+  // ✅ Sort by rank if available
+  const sortedData = [...list].sort(
+    (a, b) => (a.rank ?? 999) - (b.rank ?? 999)
   );
 
-  const safeData = sortedData.map((d) => ({
+  // ✅ Normalize data
+  const safeData = sortedData.map((d, idx) => ({
     ...d,
     points: Number(d.points ?? 0),
+    rank: d.rank ?? idx + 1, // fallback if rank missing
   }));
 
   return (
@@ -93,12 +104,10 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
         </p>
       </div>
 
-      <div
-        className="min-w-0"
-        style={{ height: "320px", width: "95%", margin: "0 auto" }}
-      >
-        <ResponsiveContainer minWidth={0}>
-          <BarChart data={safeData} barCategoryGap="80%" maxBarSize={22}>
+      {/* ✅ FIX: Proper container size */}
+      <div className="w-full h-[320px] px-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={safeData} barCategoryGap="60%" maxBarSize={22}>
             <XAxis
               dataKey="name"
               stroke="#475569"
@@ -122,29 +131,25 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
             <Bar
               dataKey="points"
               radius={[10, 10, 0, 0]}
-              animationDuration={1000}
+              animationDuration={800}
             >
-              {sortedData.map((entry, index) => {
+              {safeData.map((entry, index) => {
                 const isLeader = entry.rank === 1;
-                const isLastMatchLeader = entry.isLastMatchLeader;
+
                 return (
                   <Cell
                     key={index}
                     fill={getColor(entry.name)}
-                    className="transition-all duration-300"
                     style={{
                       filter: isLeader
                         ? "drop-shadow(0px 0px 12px rgba(34,197,94,0.7))"
-                        : isLastMatchLeader
-                          ? "drop-shadow(0px 0px 10px rgba(59,130,246,0.6))"
-                          : "none",
+                        : "none",
                       opacity: isLeader ? 1 : 0.85,
                     }}
                   />
                 );
               })}
 
-              {/* Points label */}
               <LabelList
                 dataKey="points"
                 position="top"
@@ -155,7 +160,6 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
                 }}
               />
 
-              {/* Rank inside bar */}
               <LabelList
                 dataKey="rank"
                 position="insideTop"
@@ -163,7 +167,6 @@ export default function OverallChart({ data }: { data: OverallChartItem[] }) {
                 style={{
                   fill: "#cbd5e1",
                   fontSize: 10,
-                  fontWeight: 500,
                 }}
               />
             </Bar>

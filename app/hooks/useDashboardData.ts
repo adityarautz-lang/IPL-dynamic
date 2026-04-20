@@ -1,44 +1,68 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { DashboardData } from "../types";
+
+type Leader = {
+  rank?: number;
+  name: string;
+  points: number;
+  matchId?: number;
+  lastMatchPoints?: number;
+  transfersLeft?: number;
+  boostersUsed?: string | null;
+};
+
+type DashboardData = {
+  updatedAt: string | null;
+  leaders: Leader[];
+};
 
 export function useDashboardData() {
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState<DashboardData>({
+    updatedAt: null,
+    leaders: [],
+  });
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let active = true;
+    let interval: NodeJS.Timeout;
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/ipl?t=${Date.now()}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(`/api/ipl?t=${Date.now()}`);
 
-        const json = await res.json();
+        // 🔴 Read as text first (prevents crash on HTML response)
+        const text = await res.text();
 
-        if (active) {
-          setData((prev) => {
-            if (JSON.stringify(prev) === JSON.stringify(json)) {
-              return prev;
-            }
-            return json;
+        try {
+          const json = JSON.parse(text);
+
+          setData({
+            updatedAt: json?.updatedAt || null,
+            leaders: Array.isArray(json?.leaders) ? json.leaders : [],
           });
+
+          setLoading(false);
+        } catch {
+          console.warn("⚠️ Non-JSON response (likely server warming):", text);
         }
       } catch (err) {
-        console.error("Polling error:", err);
+        console.error("❌ Fetch error:", err);
       }
     };
 
+    // initial fetch
     fetchData();
 
-    const interval = setInterval(fetchData, 5000); // 🔥 5 sec
+    // polling every 5 seconds
+    interval = setInterval(fetchData, 5000);
 
-    return () => {
-      active = false;
-      clearInterval(interval);
-    };
+    return () => clearInterval(interval);
   }, []);
 
-  return data;
+  return {
+    data,
+    loading,
+  };
 }

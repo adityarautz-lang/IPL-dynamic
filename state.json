@@ -1,0 +1,97 @@
+{
+  "cookies": [
+    {
+      "name": "my11c-uid",
+      "value": "4021514876",
+      "domain": "fantasy.iplt20.com",
+      "path": "/",
+      "expires": 1776710891.064724,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "my11c-authToken",
+      "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdXRoIiwicHJvZHVjdF90eXBlIjoyLCJzZXNzaW9uSWQiOiJ6cmRXa21ERHI3OVJrVFdDbFRKUFpaTzhSY1k2L0pUUnRLWDR4WVlIWkFhcXpVRnFMcVhqdWMzTTFNSEREMm41IiwidXNlcklkIjoxNzQ4MTUxMDAsIndoYXRzYXBwQ2FsbCI6ZmFsc2UsImlhdCI6MTc3NjcwMzY5MSwiZXhwIjoxNzc2NzEwODkxfQ.iyJ_8cNAPHL37pD4AFyJKUJjwaTaiPgn9QG_Z4kLiNY",
+      "domain": "fantasy.iplt20.com",
+      "path": "/",
+      "expires": 1776710891.064787,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "my11_classic_game",
+      "value": "%7B%0A%20%20%22UserName%22%3A%20%22SquadSeven9%22%2C%0A%20%20%22HasTeam%22%3A%201%2C%0A%20%20%22TeamName%22%3A%20%22SquadSeven9%22%2C%0A%20%20%22FavTeamId%22%3A%20%221108%22%2C%0A%20%20%22SocialId%22%3A%20%224021514876%22%2C%0A%20%20%22GUID%22%3A%20%22f4871800-29b3-11f1-b9d1-064afe43614f%22%2C%0A%20%20%22ActiveTour%22%3A%20null%2C%0A%20%20%22IsTourActive%22%3A%200%2C%0A%20%20%22UserId%22%3A%20%22E92DA67D1566558EB0%22%2C%0A%20%20%22TeamId%22%3A%20%22E92DA67D1566558EB0%22%2C%0A%20%20%22ProfileURL%22%3A%20%22%22%2C%0A%20%20%22TeamName_Allow%22%3A%20%220%22%2C%0A%20%20%22Version%22%3A%20%224%22%2C%0A%20%20%22IsIndian%22%3A%20%221%22%0A%7D",
+      "domain": "fantasy.iplt20.com",
+      "path": "/",
+      "expires": 1808239691.254778,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_H403WMH7VL",
+      "value": "GS2.1.s1776703691$o1$g0$t1776703691$j60$l0$h0",
+      "domain": ".iplt20.com",
+      "path": "/",
+      "expires": 1811263691.336231,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.2.1365053300.1776703692",
+      "domain": ".iplt20.com",
+      "path": "/",
+      "expires": 1776790091,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.1810317824.1776703691",
+      "domain": ".iplt20.com",
+      "path": "/",
+      "expires": 1811263691.859425,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_N6TKWNZRZ6",
+      "value": "GS2.1.s1776703691$o1$g0$t1776703691$j60$l0$h0",
+      "domain": ".iplt20.com",
+      "path": "/",
+      "expires": 1811263691.862506,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://fantasy.iplt20.com",
+      "localStorage": [
+        {
+          "name": "my11c-uid",
+          "value": "4021514876"
+        },
+        {
+          "name": "my11c-authToken",
+          "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdXRoIiwicHJvZHVjdF90eXBlIjoyLCJzZXNzaW9uSWQiOiJ6cmRXa21ERHI3OVJrVFdDbFRKUFpaTzhSY1k2L0pUUnRLWDR4WVlIWkFhcXpVRnFMcVhqdWMzTTFNSEREMm41IiwidXNlcklkIjoxNzQ4MTUxMDAsIndoYXRzYXBwQ2FsbCI6ZmFsc2UsImlhdCI6MTc3NjcwMzY5MSwiZXhwIjoxNzc2NzEwODkxfQ.iyJ_8cNAPHL37pD4AFyJKUJjwaTaiPgn9QG_Z4kLiNY"
+        },
+        {
+          "name": "isOkay",
+          "value": "false"
+        },
+        {
+          "name": "mobile",
+          "value": "7387700580"
+        }
+      ]
+    }
+  ]
+}

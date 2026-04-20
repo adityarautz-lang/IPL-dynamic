@@ -12,9 +12,9 @@ import LiveMatchTicker from "./components/LiveMatchTicker";
 import DetailedDataTable from "./components/DetailedDataTable";
 
 export default function Home() {
-  const data = useDashboardData();
+  const { data, loading } = useDashboardData();
 
-  if (!data) {
+  if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#020617] text-white">
         <div className="animate-pulse text-xl tracking-wide">
@@ -24,20 +24,19 @@ export default function Home() {
     );
   }
 
-  // ✅ Centralized derived data
-  const liveMatch =
-    data.daily.find((d) => d.day === "Live Update") ||
-    data.daily[data.daily.length - 1];
+  // ✅ Correct data source
+  const list = Array.isArray(data?.leaders) ? data.leaders : [];
 
-  const highestMatchId = data.daily.reduce((maxId, row) => {
-    const parsed = Number(row.day.replace("Match ", ""));
-    return Number.isFinite(parsed) ? Math.max(maxId, parsed) : maxId;
-  }, 0);
+  // latest snapshot (optional use)
+  const latest = list[list.length - 1] || null;
 
-  const liveMatchId =
-    liveMatch?.day === "Live Update"
-      ? highestMatchId + 1
-      : Number(liveMatch?.day?.replace("Match ", ""));
+  // max match id (for label only)
+  const highestMatchId = list.reduce(
+    (max, row) => Math.max(max, row.matchId || 0),
+    0
+  );
+
+  const liveMatchId = highestMatchId;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#020617] text-white">
@@ -65,30 +64,31 @@ export default function Home() {
           </div>
 
           <p className="text-slate-400 text-sm mt-2 ml-12">
-            Real-time Performance Analytics (aka stress simulator)
+            Real-time Performance Analytics
           </p>
         </motion.div>
 
         {/* Row 1 */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <GlassCard>
-            <DailyChart data={liveMatch} matchId={liveMatchId} />
+            {/* ✅ FIXED: pass full list */}
+            <DailyChart data={list} matchId={liveMatchId} />
           </GlassCard>
 
           <GlassCard>
-            <OverallChart data={data.overall} />
+            <OverallChart data={list} />
           </GlassCard>
         </div>
 
         {/* Row 2 */}
         <GlassCard>
-          <PerformanceTracker data={data.daily} />
+          <PerformanceTracker data={list} />
         </GlassCard>
 
         {/* Row 3 */}
         <div className="mt-8">
           <GlassCard>
-            <PointDifferences data={data.overall} />
+            <PointDifferences data={list} />
           </GlassCard>
         </div>
 
@@ -102,7 +102,7 @@ export default function Home() {
         {/* Row 5 */}
         <div className="mt-8">
           <GlassCard>
-            <DetailedDataTable data={data} />
+            <DetailedDataTable data={list} />
           </GlassCard>
         </div>
       </div>

@@ -11,10 +11,15 @@ import {
   Tooltip,
   LabelList,
 } from "recharts";
-import type { OverallChartItem } from "../types";
+
+type Leader = {
+  name: string;
+  points: number;
+  rank?: number;
+};
 
 interface PointDifferencesProps {
-  data: OverallChartItem[];
+  data: Leader[];
 }
 
 export default function PointDifferences({ data }: PointDifferencesProps) {
@@ -27,21 +32,23 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  // ✅ ALWAYS run hooks (even if data is empty)
+  // ✅ Always safe array
+  const list = Array.isArray(data) ? data : [];
+
   const { differences, maxDiff } = useMemo(() => {
-    if (!data || data.length < 2) {
+    if (list.length < 2) {
       return { differences: [], maxDiff: 0 };
     }
 
-    const safeSorted = [...data]
+    const sorted = [...list]
       .map((d) => ({
         ...d,
         points: Number(d.points ?? 0),
       }))
       .sort((a, b) => b.points - a.points);
 
-    const diffs = safeSorted.slice(0, -1).map((team, index) => {
-      const nextTeam = safeSorted[index + 1];
+    const diffs = sorted.slice(0, -1).map((team, index) => {
+      const nextTeam = sorted[index + 1];
 
       return {
         team: team.name,
@@ -54,15 +61,16 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
       diffs.length > 0 ? Math.max(...diffs.map((d) => d.difference)) : 0;
 
     return { differences: diffs, maxDiff: max };
-  }, [data]);
+  }, [list]);
 
-  const chartHeight = isMobile ? Math.max(420, differences.length * 76) : 320;
+  const chartHeight = isMobile
+    ? Math.max(420, differences.length * 76)
+    : 320;
 
-  // ✅ Now safe to early return AFTER hooks
-  if (!data || data.length < 2) {
+  if (list.length < 2) {
     return (
-      <div className="glass-card p-6">
-        <h2 className="title">📊 Point Differences</h2>
+      <div className="p-6">
+        <h2 className="text-xl font-bold">📊 Point Differences</h2>
         <p className="text-slate-400 text-sm">
           Not enough data to compare teams.
         </p>
@@ -81,38 +89,50 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
   return (
     <div>
       <div className="p-6">
-        <h2 className="text-2xl font-bold text-white">📊 Point Differences</h2>
+        <h2 className="text-2xl font-bold text-white">
+          📊 Point Differences
+        </h2>
       </div>
 
-      <div style={{ height: chartHeight }}>
+      {/* ✅ FIXED chart container */}
+      <div className="w-full" style={{ height: chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={differences} layout="vertical" barCategoryGap="20%">
-            <XAxis type="number" />
-            <YAxis type="category" dataKey="team" />
+            <XAxis type="number" stroke="#475569" />
+            <YAxis
+              type="category"
+              dataKey="team"
+              stroke="#475569"
+              tick={{ fill: "#94a3b8", fontSize: 11 }}
+            />
 
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                background: "rgba(2,6,23,0.95)",
+                border: "1px solid rgba(148,163,184,0.2)",
+                borderRadius: "12px",
+              }}
+            />
 
             <Bar
               dataKey="difference"
               radius={[0, 8, 8, 0]}
               barSize={20}
-              isAnimationActive
               animationDuration={800}
-              animationEasing="ease-out"
             >
               {differences.map((entry) => (
                 <Cell
                   key={entry.team}
                   fill={getColor(entry.difference)}
                   style={{
-                    transition: "all 0.6s ease",
                     filter:
                       entry.difference === maxDiff && maxDiff > 0
-                        ? "drop-shadow(0 0 12px rgba(244,63,94,0.8))"
+                        ? "drop-shadow(0 0 12px rgba(34,197,94,0.7))"
                         : "none",
                   }}
                 />
               ))}
+
               <LabelList
                 dataKey="difference"
                 content={(props: any) => {

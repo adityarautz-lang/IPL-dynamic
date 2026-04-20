@@ -1,59 +1,76 @@
-// scrape-ipl.js
+import { chromium } from "playwright";
 
-const API_URL = process.env.API_URL || "http://localhost:3000/api/ipl";
-const CRON_SECRET = process.env.CRON_SECRET || "";
+const DASHBOARD_API = "http://localhost:3000/api/ipl";
+const TARGET_URL =
+  "https://fantasy.iplt20.com/classic/league/view/66930102";
 
-async function fetchIPLData() {
-  // 🔴 Replace this with your real scraping logic
-  // Example structure expected by your API:
+export default async function scrapeIPL() {
+  console.log("🚀 Starting IPL scraper...");
 
-  return {
-    updatedAt: new Date().toISOString(),
-    leaders: [
-      {
-        name: "Team A",
-        points: 120,
-        matchId: 10,
-      },
-      {
-        name: "Team B",
-        points: 110,
-        matchId: 10,
-      },
-    ],
-  };
-}
+  const browser = await chromium.launch({ headless: true });
 
-async function sendToAPI(payload) {
+  const context = await browser.newContext({
+    storageState: "state.json",
+  });
+
+  const page = await context.newPage();
+
   try {
-    const res = await fetch(API_URL, {
+    await page.goto(TARGET_URL, { waitUntil: "networkidle" });
+    await page.waitForSelector("#leadersList li", { timeout: 15000 });
+
+    const rows = await page.$$("#leadersList li");
+    const results = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+
+      const name = await row
+        .$eval(".m11c-plyrSel__name span", (el) => el.innerText)
+        .catch(() => "");
+
+      const points = parseFloat(
+        (
+          await row
+            .$eval(".m11c-tbl__cell--pts span", (el) => el.innerText)
+            .catch(() => "0")
+        ).replace(/,/g, "")
+      );
+
+      await row.click();
+      await page.waitForTimeout(1200);
+
+      const matchPoints = parseFloat(
+        await page
+          .$eval(".m11c-pitch__fix-rgt em", (el) => el.innerText)
+          .catch(() => "0")
+      );
+
+      results.push({
+        name: name.trim(),
+        points,
+        lastMatchPoints: matchPoints,
+      });
+    }
+
+    console.log("✅ Scraped", results.length);
+
+    const payload = {
+      updatedAt: new Date().toISOString(),
+      leaders: results,
+    };
+
+    const res = await fetch(DASHBOARD_API, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.CRON_SECRET}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
-    const data = await res.json();
-
-    console.log("✅ POST success:", data);
+    console.log("📡 API status:", res.status);
+    console.log("🎉 Dashboard updated");
   } catch (err) {
-    console.error("❌ POST failed:", err);
+    console.error("❌ Scraping error:", err.message);
+  } finally {
+    await browser.close();
   }
 }
-
-async function run() {
-  console.log("🚀 Running IPL scraper...");
-
-  const payload = await fetchIPLData();
-
-  if (!payload || !payload.leaders?.length) {
-    console.log("⚠️ No valid data scraped. Skipping POST.");
-    return;
-  }
-
-  await sendToAPI(payload);
-}
-
-run();

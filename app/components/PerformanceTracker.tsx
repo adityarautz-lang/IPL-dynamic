@@ -7,60 +7,39 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
-import type { DailyChartRow } from "../types";
+
+type Leader = {
+  name: string;
+  points: number;
+};
 
 interface PerformanceTrackerProps {
-  data: DailyChartRow[];
+  data: Leader[];
 }
 
 export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
-  if (!data || data.length === 0) {
+  const list = Array.isArray(data) ? data : [];
+
+  if (!list.length) {
     return (
-      <div className="glass-card p-6">
-        <h2 className="title">📈 Performance Tracker</h2>
-        <p className="text-slate-400 text-sm">No performance data available.</p>
+      <div className="p-6">
+        <h2 className="text-xl font-bold">📈 Performance Tracker</h2>
+        <p className="text-slate-400 text-sm">
+          No performance data available.
+        </p>
       </div>
     );
   }
-  // ✅ 1. Remove live update row (prevents graph distortion)
-  const filteredData = data.filter((row) => row.day !== "Live Update");
 
-  // ✅ 2. Get all players dynamically from all rows
-  const players = Array.from(
-    new Set(filteredData.flatMap((row) => Object.keys(row))),
-  ).filter((key) => key !== "day");
-
-  // ✅ 3. Build cumulative data safely
-  const cumulativeData = filteredData.reduce<DailyChartRow[]>(
-    (acc, row, index) => {
-      const previous = acc[index - 1] ?? { day: "" };
-      const cumulativeRow: DailyChartRow = { day: row.day };
-
-      players.forEach((player) => {
-        const current = Number(row[player] ?? 0);
-        const previousTotal = Number(previous[player] ?? 0);
-        cumulativeRow[player] = previousTotal + current;
-      });
-
-      acc.push(cumulativeRow);
-      return acc;
-    },
-    [],
-  );
-
-  const COLORS = [
-    "#6366F1",
-    "#22C55E",
-    "#F59E0B",
-    "#EF4444",
-    "#06B6D4",
-    "#A855F7",
-    "#EC4899",
-    "#14B8A6",
-  ];
+  // ✅ Convert to chart-friendly format
+  const chartData = list
+    .map((p) => ({
+      name: p.name,
+      points: Number(p.points ?? 0),
+    }))
+    .sort((a, b) => b.points - a.points);
 
   return (
     <motion.div
@@ -81,63 +60,39 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
           📈 Performance Tracker
         </h2>
         <p className="text-slate-400 text-sm">
-          25-match chaos visualized beautifully
+          Current leaderboard performance
         </p>
       </div>
 
-      <div className="min-w-0" style={{ height: "380px" }}>
-        <ResponsiveContainer minWidth={0}>
-          <LineChart data={cumulativeData}>
+      {/* ✅ FIXED height issue */}
+      <div className="w-full h-[380px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData}>
             <XAxis
-              dataKey="day"
+              dataKey="name"
               stroke="#475569"
               tick={{ fill: "#94a3b8", fontSize: 11 }}
+              interval={0}
             />
 
             <YAxis stroke="#475569" tick={{ fill: "#94a3b8", fontSize: 11 }} />
 
             <Tooltip
-              cursor={{ stroke: "rgba(255,255,255,0.2)", strokeWidth: 1 }}
               contentStyle={{
                 background: "rgba(2,6,23,0.95)",
                 border: "1px solid rgba(148,163,184,0.2)",
                 borderRadius: "12px",
-                backdropFilter: "blur(10px)",
               }}
             />
 
-            <Legend
-              wrapperStyle={{
-                paddingTop: "16px",
-                color: "#94a3b8",
-                fontSize: "12px",
-              }}
+            <Line
+              type="monotone"
+              dataKey="points"
+              stroke="#6366F1"
+              strokeWidth={3}
+              dot={false}
+              activeDot={{ r: 6 }}
             />
-
-            {players.map((player, index) => {
-              const color = COLORS[index % COLORS.length];
-
-              return (
-                <Line
-                  key={player}
-                  type="monotone"
-                  dataKey={player}
-                  stroke={color}
-                  strokeWidth={2.5}
-                  dot={false}
-                  activeDot={{
-                    r: 6,
-                    style: {
-                      filter: `drop-shadow(0px 0px 8px ${color})`,
-                    },
-                  }}
-                  animationDuration={1200}
-                  style={{
-                    filter: `drop-shadow(0px 0px 6px ${color}55)`,
-                  }}
-                />
-              );
-            })}
           </LineChart>
         </ResponsiveContainer>
       </div>
