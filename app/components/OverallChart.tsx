@@ -123,8 +123,8 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
         </p>
       </div>
 
-      <div className="w-full h-full min-h-[340px] px-6 pb-4">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full h-[340px] px-6 pb-4">
+                <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={enrichedData}
             barCategoryGap="30%"
