@@ -25,7 +25,8 @@ export default async function scrapeIPL() {
     const results = [];
 
     for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
+      const rowsFresh = await page.$$("#leadersList li");
+      const row = rowsFresh[i];
 
       const rank = parseInt(
         (await row
@@ -121,8 +122,13 @@ export default async function scrapeIPL() {
       });
 
       // 👉 IMPORTANT: go back to leaderboard
-      await page.goBack();
-      await page.waitForSelector("#leadersList li");
+     // click outside / close modal instead of going back
+await page.click("body"); // simple reset
+
+await page.waitForTimeout(800);
+
+// re-select rows fresh (IMPORTANT)
+await page.waitForSelector("#leadersList li");
     }
 
     console.log("✅ Scraped", results.length);
