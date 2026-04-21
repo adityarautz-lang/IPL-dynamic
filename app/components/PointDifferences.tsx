@@ -84,7 +84,7 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
     <div>
       <div className="p-6">
         <h2 className="text-2xl font-bold text-white">
-          📊 Point Differences
+          📊 Gap to Next Rival
         </h2>
       </div>
 
