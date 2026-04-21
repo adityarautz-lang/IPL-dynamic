@@ -116,6 +116,8 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
         <h2 className="text-2xl font-bold bg-linear-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
           📊 Current Match Performance
         </h2>
+        <p className="text-slate-400 text-sm">
+        Runs, regrets, and questionable decisions        </p>
       </div>
 
       {/* ✅ FIXED HEIGHT */}
