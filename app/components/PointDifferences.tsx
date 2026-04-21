@@ -64,7 +64,7 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
   if (list.length < 2) {
     return (
       <div className="p-6">
-        <h2 className="text-xl font-bold">📊 Point Differences</h2>
+        <h2 className="text-xl font-bold">📊 Gap to Next Rival</h2>
         <p className="text-slate-400 text-sm">
           Not enough data to compare teams.
         </p>
