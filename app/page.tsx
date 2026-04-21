@@ -121,10 +121,10 @@ export default function Home() {
 
         {/* Performance Tracker */}
         <div className="mt-8">
-          <GlassCard>
+          {/* <GlassCard>
             <HeaderWithStatus isLive={!!isLive} />
             <PerformanceTracker data={list} />
-          </GlassCard>
+          </GlassCard> */}
         </div>
       </div>
     </main>
