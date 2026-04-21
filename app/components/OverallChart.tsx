@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
   LabelList,
   Cell,
+  CartesianGrid,
 } from "recharts";
 import { splitTeamName } from "../lib/utils";
 import { getColor } from "../lib/utils/getColor";
@@ -68,14 +69,24 @@ export default function OverallChart({ data }: { data: Leader[] }) {
 
   const list = Array.isArray(data) ? data : [];
 
+  // 🔥 Sort by points DESC
   const sortedData = [...list].sort(
-    (a, b) => (a.rank ?? 999) - (b.rank ?? 999)
+    (a, b) => (b.points ?? 0) - (a.points ?? 0)
   );
 
+  // Normalize + add rank
   const safeData = sortedData.map((d, idx) => ({
     ...d,
     points: Number(d.points ?? 0),
-    rank: d.rank ?? idx + 1,
+    rank: idx + 1,
+  }));
+
+  // 🔥 Leader gap calculation
+  const maxPoints = safeData[0]?.points ?? 0;
+
+  const enrichedData = safeData.map((d) => ({
+    ...d,
+    gap: maxPoints - d.points,
   }));
 
   return (
@@ -86,9 +97,14 @@ export default function OverallChart({ data }: { data: Leader[] }) {
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
+      {/* background glow */}
       <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
 
+      {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
+
+      {/* subtle top gradient */}
+      <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
       <div className="relative z-10 p-6 mb-4">
         <h2 className="text-2xl font-bold bg-linear-to-r from-emerald-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
@@ -97,29 +113,38 @@ export default function OverallChart({ data }: { data: Leader[] }) {
         <p className="text-slate-400 text-sm">
           Who’s winning and who’s pretending
         </p>
+
+        {/* Leader info */}
+        <p className="text-xs text-green-400 mt-1">
+          Leader: {safeData[0]?.name}
+        </p>
       </div>
 
-      {/* ✅ Improved layout container */}
       <div className="w-full h-[340px] px-6 pb-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={safeData}
-            barCategoryGap="35%"   // 🔥 better spacing
-            barGap={4}             // small gap between bars
-            margin={{ top: 20, right: 20, left: 10, bottom: 10 }} // 🔥 breathing room
+            data={enrichedData}
+            barCategoryGap="28%"
+            barGap={6}
+            margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
           >
+            <CartesianGrid
+              stroke="rgba(255,255,255,0.08)"
+              vertical={false}
+            />
+
             <XAxis
               dataKey="name"
               stroke="#475569"
               tick={<CustomXAxisTick isMobile={isMobile} />}
-              height={110}        // 🔥 more room for names
+              height={110}
               interval={0}
             />
 
             <YAxis
               stroke="#475569"
               tick={{ fill: "#94a3b8", fontSize: 11 }}
-              width={40}          // 🔥 prevents clipping
+              width={40}
             />
 
             <Tooltip
@@ -135,43 +160,61 @@ export default function OverallChart({ data }: { data: Leader[] }) {
             <Bar
               dataKey="points"
               radius={[10, 10, 0, 0]}
-              maxBarSize={28}     // 🔥 slightly wider bars
+              barSize={36}
               animationDuration={800}
             >
-              {safeData.map((entry, index) => {
+              {enrichedData.map((entry, index) => {
                 const isLeader = entry.rank === 1;
 
                 return (
                   <Cell
                     key={index}
                     fill={getColor(entry.name)}
+                    className="transition-all duration-300 hover:opacity-100"
                     style={{
                       filter: isLeader
-                        ? "drop-shadow(0px 0px 12px rgba(34,197,94,0.7))"
+                        ? "drop-shadow(0px 0px 20px rgba(34,197,94,0.9))"
                         : "none",
                       opacity: isLeader ? 1 : 0.85,
+                      transform: isLeader ? "scale(1.03)" : "scale(1)",
+                      transformOrigin: "bottom",
                     }}
                   />
                 );
               })}
 
+              {/* Points label */}
               <LabelList
                 dataKey="points"
                 position="top"
-                offset={6}       // 🔥 prevents overlap
+                offset={6}
                 style={{
                   fill: "#fff",
-                  fontSize: 12,
-                  fontWeight: 600,
+                  fontSize: 13,
+                  fontWeight: 700,
                 }}
               />
 
+              {/* Rank inside bar */}
               <LabelList
                 dataKey="rank"
                 position="insideTop"
-                offset={14}      // 🔥 cleaner placement
+                offset={16}
                 style={{
                   fill: "#cbd5e1",
+                  fontSize: 10,
+                }}
+              />
+
+              {/* Gap label */}
+              <LabelList
+                dataKey="gap"
+                position="top"
+                formatter={(value: number) =>
+                  value > 0 ? `-${value.toFixed(0)}` : ""
+                }
+                style={{
+                  fill: "#fbbf24",
                   fontSize: 10,
                 }}
               />
