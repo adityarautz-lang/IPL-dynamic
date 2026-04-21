@@ -122,8 +122,7 @@ export default function DailyChart({
       </div>
 
       {/* ✅ FIXED chart container */}
-      <div className="w-full h-[320px] px-4">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full h-full min-h-[340px] px-4">        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis
               dataKey="name"
