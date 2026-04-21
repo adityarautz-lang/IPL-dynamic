@@ -93,12 +93,18 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
           <BarChart data={differences} layout="vertical" barCategoryGap="20%">
             <XAxis type="number" stroke="#475569" />
 
-            <YAxis
-              type="category"
-              dataKey="team"
-              stroke="#475569"
-              tick={{ fill: "#94a3b8", fontSize: 11 }}
-            />
+           <YAxis
+  type="category"
+  dataKey="team"
+  stroke="#475569"
+  width={120} // 🔥 give space
+  tick={{
+    fill: "#94a3b8",
+    fontSize: 14,
+    angle: -45,      // 🔥 rotate
+    textAnchor: "end"
+  }}
+/>
 
             <Tooltip
               contentStyle={{
