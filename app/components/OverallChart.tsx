@@ -194,19 +194,19 @@ export default function OverallChart({ data }: { data: Leader[] }) {
 
               {/* Gap */}
               <LabelList
-              dataKey="gap"
-              position="insideBottom"
-              offset={8}
-              formatter={(value: any) => {
-                const num = Number(value ?? 0);
-                return num > 0 && num > 100 ? `-${num.toFixed(0)}` : "";
-              }}
-              style={{
-                fill: "black",
-                fontSize: 10,
-                opacity: 0.85,
-              }}
-            />
+  dataKey="gap"
+  position="insideBottom"
+  offset={8}
+  formatter={(value: any) => {
+    const num = Number(value ?? 0);
+    return num > 0 && num > 100 ? `↔️ ${num.toFixed(0)}` : "";
+  }}
+  style={{
+    fill: "black",
+    fontSize: 11,
+    fontWeight: 700,
+  }}
+/>
             </Bar>
           </BarChart>
         </ResponsiveContainer>
