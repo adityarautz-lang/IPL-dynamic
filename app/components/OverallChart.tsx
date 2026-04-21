@@ -15,30 +15,10 @@ import {
 } from "recharts";
 import { splitTeamName } from "../lib/utils";
 import { getColor } from "../lib/utils/getColor";
-
-type Leader = {
-  rank?: number;
-  name: string;
-  points?: number;
-};
+import type { Leader } from "../types"; // ✅ FIX: shared type
 
 const CustomXAxisTick = (props: any) => {
-  const { x, y, payload, isMobile } = props;
-
-  // if (isMobile) {
-  //   return (
-  //     <g transform={`translate(${x},${y})`}>
-  //       <text
-  //         transform="rotate(-90)"
-  //         textAnchor="end"
-  //         fill="#94a3b8"
-  //         fontSize={10}
-  //       >
-  //         {payload.value}
-  //       </text>
-  //     </g>
-  //   );
-  // }
+  const { x, y, payload } = props;
 
   const lines = splitTeamName(payload.value);
 
@@ -68,17 +48,18 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
 
   const list = Array.isArray(data) ? data : [];
 
-  // 🧠 Guard: no data
   if (!list.length) {
     return (
       <div className="p-6">
         <h2 className="text-xl font-bold">🏆 Overall Leaderboard</h2>
-        <p className="text-slate-400 text-sm">No leaderboard data available.</p>
+        <p className="text-slate-400 text-sm">
+          No leaderboard data available.
+        </p>
       </div>
     );
   }
 
-  // 🔥 Safe sort DESC
+  // 🔥 Sort descending
   const sortedData = [...list]
     .map((d) => ({
       ...d,
@@ -86,13 +67,13 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
     }))
     .sort((a, b) => b.points - a.points);
 
-  // 🔥 Normalize + rank
+  // 🔥 Normalize rank
   const safeData = sortedData.map((d, idx) => ({
     ...d,
     rank: idx + 1,
   }));
 
-  // 🔥 Gap logic (safe)
+  // 🔥 Gap logic
   const maxPoints = safeData[0]?.points ?? 0;
 
   const enrichedData = safeData.map((d) => ({
@@ -108,12 +89,12 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
-      {/* glow */}
+      {/* Background */}
       <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
 
-      {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
+      {/* Header */}
       <div className="relative z-10 p-6 mb-4">
         <h2 className="text-2xl font-bold bg-linear-to-r from-emerald-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
           🏆 Overall Leaderboard
@@ -123,8 +104,9 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
         </p>
       </div>
 
+      {/* Chart */}
       <div className="w-full h-[340px] px-6 pb-4">
-                <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={enrichedData}
             barCategoryGap="30%"
@@ -139,7 +121,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
             <XAxis
               dataKey="name"
               stroke="#475569"
-              tick={<CustomXAxisTick isMobile={isMobile} />}
+              tick={<CustomXAxisTick />}
               height={110}
               interval={0}
             />

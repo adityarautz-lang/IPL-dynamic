@@ -11,15 +11,10 @@ import {
   Tooltip,
   LabelList,
 } from "recharts";
-
-type Leader = {
-  name: string;
-  points: number;
-  rank?: number;
-};
+import type { Leader } from "../types"; // ✅ FIX: shared type
 
 interface PointDifferencesProps {
-  data: Leader[];
+  data?: Leader[];
 }
 
 export default function PointDifferences({ data }: PointDifferencesProps) {
@@ -32,7 +27,6 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  // ✅ Always safe array
   const list = Array.isArray(data) ? data : [];
 
   const { differences, maxDiff } = useMemo(() => {
@@ -94,11 +88,11 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
         </h2>
       </div>
 
-      {/* ✅ FIXED chart container */}
       <div className="w-full" style={{ height: chartHeight }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={differences} layout="vertical" barCategoryGap="20%">
             <XAxis type="number" stroke="#475569" />
+
             <YAxis
               type="category"
               dataKey="team"

@@ -1,24 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import type { DashboardData } from "../types"; // ✅ FIX: shared type
 
-type Leader = {
-  rank?: number;
-  name: string;
-  points: number;
-  matchId?: number;
-  lastMatchPoints?: number;
-  transfersLeft?: number;
-  boostersUsed?: string | null;
-};
-
-type DashboardData = {
-  updatedAt: string | null;
-  leaders: Leader[];
-};
-
-export default function Summary({ data }: { data: DashboardData }) {
-  // ✅ Safe data extraction
+export default function Summary({ data }: { data?: DashboardData }) {
+  // ✅ Safe extraction
   const list = Array.isArray(data?.leaders) ? data.leaders : [];
 
   const matchCount = list.length;
@@ -37,10 +23,11 @@ export default function Summary({ data }: { data: DashboardData }) {
 
     const totalPlayers = list.length;
 
-    const topScore = Math.max(...list.map((p) => p.points || 0));
+    const topScore = Math.max(...list.map((p) => Number(p.points ?? 0)));
 
     const avgPoints =
-      list.reduce((sum, p) => sum + (p.points || 0), 0) / totalPlayers;
+      list.reduce((sum, p) => sum + Number(p.points ?? 0), 0) /
+      totalPlayers;
 
     return {
       cards: [

@@ -1,13 +1,6 @@
 "use client";
 
-type Leader = {
-  rank?: number;
-  name: string;
-  points?: number;
-  lastMatchPoints?: number;
-  transfersLeft?: number;
-  boostersUsed?: number | string;
-};
+import type { Leader } from "../types"; // ✅ FIX
 
 export default function DetailedDataTable({
   data,
@@ -25,7 +18,6 @@ export default function DetailedDataTable({
     );
   }
 
-  // 🔥 Sort by rank or fallback
   const sorted = [...list]
     .map((d) => ({
       ...d,
@@ -58,7 +50,6 @@ export default function DetailedDataTable({
               const transfersLeft = Number(row.transfersLeft ?? 0);
               const usedTransfers = 160 - transfersLeft;
 
-              // 🔥 Efficiency calculation
               const efficiency =
                 usedTransfers > 0
                   ? (row.points! / usedTransfers).toFixed(2)
@@ -91,7 +82,6 @@ export default function DetailedDataTable({
                     {row.boostersUsed ?? "-"}
                   </td>
 
-                  {/* 🔥 EFF Column */}
                   <td
                     className={`px-4 py-3 text-center font-semibold ${
                       Number(efficiency) > 70

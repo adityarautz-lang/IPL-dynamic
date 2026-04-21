@@ -9,14 +9,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-type Leader = {
-  name: string;
-  points: number;
-};
+import type { Leader } from "../types"; // ✅ FIX
 
 interface PerformanceTrackerProps {
-  data: Leader[];
+  data?: Leader[];
 }
 
 export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
@@ -33,12 +29,13 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
     );
   }
 
-  // ✅ Convert to chart-friendly format
+  // 🔥 Safe numeric conversion + sorting
   const chartData = list
     .map((p) => ({
       name: p.name,
       points: Number(p.points ?? 0),
     }))
+    .filter((p) => p.points > 0) // prevent flat chart
     .sort((a, b) => b.points - a.points);
 
   return (
@@ -64,18 +61,27 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
         </p>
       </div>
 
-      {/* ✅ FIXED height issue */}
+      {/* ✅ Fixed height */}
       <div className="w-full h-[380px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={chartData}>
             <XAxis
               dataKey="name"
               stroke="#475569"
-              tick={{ fill: "#94a3b8", fontSize: 11 }}
+              tick={{
+                fill: "#94a3b8",
+                fontSize: 10,
+              }}
               interval={0}
+              angle={-90}          // 🔥 vertical labels
+              textAnchor="end"
+              height={120}
             />
 
-            <YAxis stroke="#475569" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+            <YAxis
+              stroke="#475569"
+              tick={{ fill: "#94a3b8", fontSize: 11 }}
+            />
 
             <Tooltip
               contentStyle={{
@@ -90,7 +96,7 @@ export default function PerformanceTracker({ data }: PerformanceTrackerProps) {
               dataKey="points"
               stroke="#6366F1"
               strokeWidth={3}
-              dot={false}
+              dot={{ r: 3 }}
               activeDot={{ r: 6 }}
             />
           </LineChart>

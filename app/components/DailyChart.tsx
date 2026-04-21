@@ -13,12 +13,7 @@ import {
   LabelList,
 } from "recharts";
 import { splitTeamName } from "../lib/utils";
-
-type Leader = {
-  name: string;
-  lastMatchPoints?: number;
-  points?: number;
-};
+import type { Leader } from "../types"; // ✅ IMPORTANT FIX
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomXAxisTick = (props: any) => {
@@ -85,9 +80,11 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
     );
   }
 
-  // ✅ smart fallback logic
+  // ✅ SAFE fallback logic (never blank)
   const matchData = list.filter(
-    (p) => p.lastMatchPoints !== undefined && p.lastMatchPoints > 0
+    (p) =>
+      typeof p.lastMatchPoints === "number" &&
+      p.lastMatchPoints > 0
   );
 
   const source = matchData.length > 0 ? matchData : list;
@@ -95,8 +92,12 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
   const chartData = source
     .map((p) => ({
       name: p.name,
-      points: Number(p.lastMatchPoints ?? p.points ?? 0),
+      points:
+        typeof p.lastMatchPoints === "number" && p.lastMatchPoints > 0
+          ? p.lastMatchPoints
+          : Number(p.points ?? 0),
     }))
+    .filter((p) => p.points > 0) // ✅ prevent empty bars
     .sort((a, b) => b.points - a.points);
 
   return (
@@ -117,8 +118,9 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
         </h2>
       </div>
 
-      <div className="w-full h-[340px] px-4">        
-          <ResponsiveContainer width="100%" height="100%">
+      {/* ✅ FIXED HEIGHT */}
+      <div className="w-full h-[340px] px-4">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis
               dataKey="name"
@@ -128,7 +130,10 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
               interval={0}
             />
 
-            <YAxis stroke="#475569" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+            <YAxis
+              stroke="#475569"
+              tick={{ fill: "#94a3b8", fontSize: 11 }}
+            />
 
             <Tooltip
               cursor={{ fill: "rgba(255,255,255,0.05)" }}
@@ -142,7 +147,10 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
 
             <Bar dataKey="points" radius={[10, 10, 0, 0]}>
               {chartData.map((entry) => (
-                <Cell key={entry.name} fill={getRandomColor(entry.name)} />
+                <Cell
+                  key={entry.name}
+                  fill={getRandomColor(entry.name)}
+                />
               ))}
 
               <LabelList

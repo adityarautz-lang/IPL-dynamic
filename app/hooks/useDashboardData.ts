@@ -1,25 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Leader = {
-  rank?: number;
-  name: string;
-  points: number;
-  matchId?: number;
-  lastMatchPoints?: number;
-  transfersLeft?: number;
-  boostersUsed?: string | null;
-};
-
-type DashboardData = {
-  updatedAt: string | null;
-  leaders: Leader[];
-};
+import type { DashboardData, Leader } from "../types";
 
 export function useDashboardData() {
   const [data, setData] = useState<DashboardData>({
-    updatedAt: null,
+    updatedAt: undefined, // ✅ FIX
     leaders: [],
   });
 
@@ -32,30 +18,51 @@ export function useDashboardData() {
       try {
         const res = await fetch(`/api/ipl?t=${Date.now()}`);
 
-        // 🔴 Read as text first (prevents crash on HTML response)
+        // Read as text first (avoids crash on HTML response)
         const text = await res.text();
 
         try {
           const json = JSON.parse(text);
 
+          const leaders: Leader[] = Array.isArray(json?.leaders)
+            ? json.leaders.map((l: any) => ({
+                rank: l.rank,
+                name: l.name,
+                points: Number(l.points ?? 0),
+                lastMatchPoints: Number(l.lastMatchPoints ?? 0),
+                transfersLeft:
+                  typeof l.transfersLeft === "number"
+                    ? l.transfersLeft
+                    : Number(l.transfersLeft ?? 0),
+                boostersUsed:
+                  typeof l.boostersUsed === "string"
+                    ? l.boostersUsed
+                    : typeof l.boostersUsed === "number"
+                    ? l.boostersUsed
+                    : undefined, // ✅ no null
+                matchId: l.matchId,
+              }))
+            : [];
+
           setData({
-            updatedAt: json?.updatedAt || null,
-            leaders: Array.isArray(json?.leaders) ? json.leaders : [],
+            updatedAt: json?.updatedAt ?? undefined, // ✅ FIX
+            leaders,
           });
 
           setLoading(false);
         } catch {
-          console.warn("⚠️ Non-JSON response (likely server warming):", text);
+          console.warn(
+            "⚠️ Non-JSON response (likely server warming):",
+            text
+          );
         }
       } catch (err) {
         console.error("❌ Fetch error:", err);
       }
     };
 
-    // initial fetch
     fetchData();
 
-    // polling every 5 seconds
     interval = setInterval(fetchData, 5000);
 
     return () => clearInterval(interval);
