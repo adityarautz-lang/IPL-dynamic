@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
 import OverallChart from "./components/OverallChart";
@@ -67,9 +67,9 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-4xl">🏏</span>
-              <h1 className="text-3xl md:text-4xl font-extrabold bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Autodesk IPL Fun Fantasy 2026
-              </h1>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-white">
+  ADSK IPL Fun Fantasy 2026
+</h1>
             </div>
 
             <StatusBadge isLive={!!isLive} />
