@@ -69,19 +69,18 @@ export default function OverallChart({ data }: { data: Leader[] }) {
 
   const list = Array.isArray(data) ? data : [];
 
-  // 🔥 Sort by points DESC
+  // 🔥 Sort DESCENDING by points
   const sortedData = [...list].sort(
     (a, b) => (b.points ?? 0) - (a.points ?? 0)
   );
 
-  // Normalize + add rank
   const safeData = sortedData.map((d, idx) => ({
     ...d,
     points: Number(d.points ?? 0),
     rank: idx + 1,
   }));
 
-  // 🔥 Leader gap calculation
+  // 🔥 Leader gap logic
   const maxPoints = safeData[0]?.points ?? 0;
 
   const enrichedData = safeData.map((d) => ({
@@ -97,14 +96,9 @@ export default function OverallChart({ data }: { data: Leader[] }) {
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
-      {/* background glow */}
       <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
 
-      {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
-
-      {/* subtle top gradient */}
-      <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
       <div className="relative z-10 p-6 mb-4">
         <h2 className="text-2xl font-bold bg-linear-to-r from-emerald-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
@@ -113,19 +107,14 @@ export default function OverallChart({ data }: { data: Leader[] }) {
         <p className="text-slate-400 text-sm">
           Who’s winning and who’s pretending
         </p>
-
-        {/* Leader info */}
-        <p className="text-xs text-green-400 mt-1">
-          Leader: {safeData[0]?.name}
-        </p>
       </div>
 
       <div className="w-full h-[340px] px-6 pb-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={enrichedData}
-            barCategoryGap="28%"
-            barGap={6}
+            barCategoryGap="30%"
+            barGap={4}
             margin={{ top: 20, right: 20, left: 10, bottom: 10 }}
           >
             <CartesianGrid
@@ -160,7 +149,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
             <Bar
               dataKey="points"
               radius={[10, 10, 0, 0]}
-              barSize={36}
+              barSize={36} // 🔥 thicker bars
               animationDuration={800}
             >
               {enrichedData.map((entry, index) => {
@@ -170,49 +159,47 @@ export default function OverallChart({ data }: { data: Leader[] }) {
                   <Cell
                     key={index}
                     fill={getColor(entry.name)}
-                    className="transition-all duration-300 hover:opacity-100"
                     style={{
                       filter: isLeader
                         ? "drop-shadow(0px 0px 20px rgba(34,197,94,0.9))"
                         : "none",
                       opacity: isLeader ? 1 : 0.85,
-                      transform: isLeader ? "scale(1.03)" : "scale(1)",
-                      transformOrigin: "bottom",
                     }}
                   />
                 );
               })}
 
-              {/* Points label */}
+              {/* Points */}
               <LabelList
                 dataKey="points"
                 position="top"
                 offset={6}
                 style={{
                   fill: "#fff",
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fontSize: 12,
+                  fontWeight: 600,
                 }}
               />
 
-              {/* Rank inside bar */}
+              {/* Rank */}
               <LabelList
                 dataKey="rank"
                 position="insideTop"
-                offset={16}
+                offset={14}
                 style={{
                   fill: "#cbd5e1",
                   fontSize: 10,
                 }}
               />
 
-              {/* Gap label */}
+              {/* Gap */}
               <LabelList
                 dataKey="gap"
                 position="top"
-                formatter={(value: number) =>
-                  value > 0 ? `-${value.toFixed(0)}` : ""
-                }
+                formatter={(value: any) => {
+                  const num = Number(value ?? 0);
+                  return num > 0 ? `-${num.toFixed(0)}` : "";
+                }}
                 style={{
                   fill: "#fbbf24",
                   fontSize: 10,
