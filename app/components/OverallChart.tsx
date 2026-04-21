@@ -17,24 +17,24 @@ import { splitTeamName } from "../lib/utils";
 import { getColor } from "../lib/utils/getColor";
 import type { Leader } from "../types"; // ✅ FIX: shared type
 
-const CustomXAxisTick = (props: any) => {
-  const { x, y, payload } = props;
+// const CustomXAxisTick = (props: any) => {
+//   const { x, y, payload } = props;
 
-  const lines = splitTeamName(payload.value);
+//   const lines = splitTeamName(payload.value);
 
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text textAnchor="middle" fill="#94a3b8" fontSize={10}>
-        {lines[0]}
-      </text>
-      {lines[1] && (
-        <text y={14} textAnchor="middle" fill="#94a3b8" fontSize={10}>
-          {lines[1]}
-        </text>
-      )}
-    </g>
-  );
-};
+//   return (
+//     <g transform={`translate(${x},${y})`}>
+//       <text textAnchor="middle" fill="#94a3b8" fontSize={10}>
+//         {lines[0]}
+//       </text>
+//       {lines[1] && (
+//         <text y={14} textAnchor="middle" fill="#94a3b8" fontSize={10}>
+//           {lines[1]}
+//         </text>
+//       )}
+//     </g>
+//   );
+// };
 
 export default function OverallChart({ data }: { data?: Leader[] }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -118,13 +118,15 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
               vertical={false}
             />
 
-            <XAxis
-              dataKey="name"
-              stroke="#475569"
-              tick={<CustomXAxisTick />}
-              height={110}
-              interval={0}
-            />
+<XAxis
+  dataKey="name"
+  stroke="#475569"
+  angle={-90}
+  textAnchor="end"
+  interval={0}
+  height={140}
+  tick={{ fill: "#94a3b8", fontSize: 11 }}
+/>
 
             <YAxis
               stroke="#475569"

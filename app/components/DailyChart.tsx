@@ -122,13 +122,15 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
       <div className="w-full h-[340px] px-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-            <XAxis
-              dataKey="name"
-              stroke="#475569"
-              tick={<CustomXAxisTick isMobile={isMobile} />}
-              height={100}
-              interval={0}
-            />
+                    <XAxis
+            dataKey="name"
+            stroke="#475569"
+            angle={-90}
+            textAnchor="end"
+            interval={0}
+            height={140}
+            tick={{ fill: "#94a3b8", fontSize: 11 }}
+          />
 
             <YAxis
               stroke="#475569"
