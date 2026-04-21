@@ -1,8 +1,11 @@
 import { chromium } from "playwright";
+import fs from "fs";
 
 const DASHBOARD_API = "https://ipl-dynamic.vercel.app/api/ipl";
 const TARGET_URL =
   "https://fantasy.iplt20.com/classic/league/view/66930102";
+
+const SNAPSHOT_PATH = "./app/api/ipl/live-snapshot.json";
 
 export default async function scrapeIPL() {
   console.log("🚀 Starting IPL scraper...");
@@ -20,13 +23,14 @@ export default async function scrapeIPL() {
 
     await page.waitForSelector("#leadersList li", { timeout: 15000 });
 
-    const rows = await page.$$("#leadersList li");
-
     const results = [];
 
-    for (let i = 0; i < rows.length; i++) {
-      const rowsFresh = await page.$$("#leadersList li");
-      const row = rowsFresh[i];
+    const totalRows = await page.$$eval("#leadersList li", (els) => els.length);
+
+    for (let i = 0; i < totalRows; i++) {
+      // 🔁 Always re-fetch rows (SPA-safe)
+      const rows = await page.$$("#leadersList li");
+      const row = rows[i];
 
       const rank = parseInt(
         (await row
@@ -65,7 +69,6 @@ export default async function scrapeIPL() {
 
       for (const tab of tabs) {
         const text = await tab.innerText();
-
         if (text.trim().toUpperCase() === "OVERALL") {
           await tab.click();
           break;
@@ -121,14 +124,11 @@ export default async function scrapeIPL() {
         boostersUsed,
       });
 
-      // 👉 IMPORTANT: go back to leaderboard
-     // click outside / close modal instead of going back
-await page.click("body"); // simple reset
+      // 👉 CLOSE PANEL (instead of goBack)
+      await page.click("body");
+      await page.waitForTimeout(800);
 
-await page.waitForTimeout(800);
-
-// re-select rows fresh (IMPORTANT)
-await page.waitForSelector("#leadersList li");
+      await page.waitForSelector("#leadersList li");
     }
 
     console.log("✅ Scraped", results.length);
@@ -138,14 +138,20 @@ await page.waitForSelector("#leadersList li");
       leaders: results,
     };
 
+    // 💾 Save snapshot LOCALLY (this fixes your fallback issue)
+    fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(payload, null, 2));
+    console.log("💾 Snapshot updated locally");
+
+    // 📡 Send to Vercel API
     const res = await fetch(DASHBOARD_API, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(payload),
     });
 
     console.log("📡 API status:", res.status);
-
   } catch (err) {
     console.error("❌ Error:", err.message);
   } finally {
