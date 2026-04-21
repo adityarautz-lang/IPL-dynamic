@@ -1,6 +1,6 @@
 "use client";
 
-import type { Leader } from "../types"; // ✅ FIX
+import type { Leader } from "../types";
 
 export default function DetailedDataTable({
   data,
@@ -47,12 +47,13 @@ export default function DetailedDataTable({
 
           <tbody>
             {sorted.map((row, idx) => {
+              const rank = row.rank ?? idx + 1;
               const transfersLeft = Number(row.transfersLeft ?? 0);
               const usedTransfers = 160 - transfersLeft;
 
               const efficiency =
                 usedTransfers > 0
-                  ? (row.points! / usedTransfers).toFixed(2)
+                  ? (Number(row.points ?? 0) / usedTransfers).toFixed(2)
                   : "–";
 
               return (
@@ -60,28 +61,52 @@ export default function DetailedDataTable({
                   key={idx}
                   className="border-b border-white/10 hover:bg-white/5 transition"
                 >
-                  <td className="px-4 py-3">{row.rank ?? idx + 1}</td>
+                  {/* 🔥 Rank + LEFT BORDER */}
+                  <td
+                    className={`px-4 py-3 border-l-4
+                      ${
+                        rank <= 3
+                          ? "border-green-400"
+                          : rank >= 6
+                          ? "border-red-400"
+                          : "border-transparent"
+                      }
+                    `}
+                  >
+                    <div className="flex items-center gap-1">
+                      {rank === 1 && "🏆"}
+                      {rank === 2 && "🥈"}
+                      {rank === 3 && "🥉"}
+                      <span>{rank}</span>
+                    </div>
+                  </td>
 
+                  {/* Name */}
                   <td className="px-4 py-3 font-medium text-white">
                     {row.name}
                   </td>
 
+                  {/* Points */}
                   <td className="px-4 py-3 text-center">
-                    {row.points?.toLocaleString("en-IN")}
+                    {Number(row.points ?? 0).toLocaleString("en-IN")}
                   </td>
 
+                  {/* Last Match */}
                   <td className="px-4 py-3 text-center">
                     {row.lastMatchPoints ?? "-"}
                   </td>
 
+                  {/* Transfers */}
                   <td className="px-4 py-3 text-center">
                     {transfersLeft}
                   </td>
 
+                  {/* Boosters */}
                   <td className="px-4 py-3 text-center">
                     {row.boostersUsed ?? "-"}
                   </td>
 
+                  {/* Efficiency */}
                   <td
                     className={`px-4 py-3 text-center font-semibold ${
                       Number(efficiency) > 70
