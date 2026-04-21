@@ -44,8 +44,7 @@ export default function Home() {
   const updatedAt = data?.updatedAt ? new Date(data.updatedAt) : null;
 
   const isLive =
-    updatedAt && Date.now() - updatedAt.getTime() < 60 * 1000;
-
+  updatedAt && Date.now() - updatedAt.getTime() < 120 * 1000;
   const highestMatchId = list.reduce(
     (max, row) => Math.max(max, row.matchId || 0),
     0
