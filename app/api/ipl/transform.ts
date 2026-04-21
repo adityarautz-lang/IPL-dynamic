@@ -7,7 +7,7 @@ import type {
   ScrapedLeaderboardItem,
 } from "../../types";
 
-const TOTAL_TRANSFERS = 160; // ✅ FIXED
+const TOTAL_TRANSFERS = 160;
 const FLOAT_TOLERANCE = 0.01;
 
 const RAW_TEAM_ALIASES: Record<string, string> = {
@@ -36,9 +36,7 @@ export const addLeaderboardMetrics = (
   leaders: ScrapedLeaderboardItem[],
 ): OverallChartItem[] => {
   const sorted = [...leaders]
-    .filter(
-      (l) => Number.isFinite(l.rank) && Number.isFinite(l.points),
-    )
+    .filter((l) => Number.isFinite(l.rank) && Number.isFinite(l.points))
     .sort((a, b) => a.rank - b.rank);
 
   const previousRankMap = new Map(
@@ -67,7 +65,7 @@ export const addLeaderboardMetrics = (
 
     const usedTransfers =
       typeof leader.transfersLeft === "number"
-        ? Math.max(0, TOTAL_TRANSFERS - leader.transfersLeft) // ✅ SAFE
+        ? Math.max(0, TOTAL_TRANSFERS - leader.transfersLeft)
         : 0;
 
     return {
@@ -91,15 +89,14 @@ export const addLeaderboardMetrics = (
           : "same",
       transfersLeft: leader.transfersLeft,
 
-      // ✅ FIXED TYPE HANDLING
+      // ✅ FIX: NO null, only undefined
       boostersUsed:
         typeof leader.boostersUsed === "string"
           ? leader.boostersUsed.trim()
           : typeof leader.boostersUsed === "number"
           ? leader.boostersUsed
-          : null,
+          : undefined,
 
-      // ✅ CLEAN EFFICIENCY
       efficiency:
         usedTransfers > 0
           ? Math.round((leader.points / usedTransfers) * 100) / 100
@@ -120,7 +117,6 @@ export const normalizePayload = (
   }
 
   const leaders = (payload as any).leaders;
-
   if (!Array.isArray(leaders)) return null;
 
   const normalized = leaders
@@ -147,17 +143,15 @@ export const normalizePayload = (
             ? item.boostersUsed.trim()
             : typeof item.boostersUsed === "number"
             ? item.boostersUsed
-            : null,
+            : undefined,
       };
     })
     .filter((x): x is ScrapedLeaderboardItem => Boolean(x))
     .sort((a, b) => a.rank - b.rank);
 
-  const updatedAt = new Date().toISOString();
-
   return normalized.length
     ? {
-        updatedAt,
+        updatedAt: new Date().toISOString(),
         leaders: normalized,
       }
     : null;
@@ -182,7 +176,7 @@ export const buildDashboardFromSnapshot = (
   return {
     overall: addLeaderboardMetrics(snapshot.leaders),
 
-    // ✅ FIXED SPREAD
+    // ✅ SAFE ARRAY SPREAD
     daily: liveDaily
       ? [...(manualDashboard.daily ?? []), liveDaily]
       : manualDashboard.daily ?? [],
