@@ -193,7 +193,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
               />
 
               {/* Gap */}
-              <LabelList
+              {/* <LabelList
   dataKey="gap"
   position="insideBottom"
   offset={8}
@@ -206,7 +206,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
     fontSize: 11,
     fontWeight: 700,
   }}
-/>
+/> */}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
