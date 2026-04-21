@@ -11,7 +11,6 @@ import {
   ResponsiveContainer,
   Cell,
   LabelList,
-  CartesianGrid,
 } from "recharts";
 import { splitTeamName } from "../lib/utils";
 
@@ -20,18 +19,6 @@ type Leader = {
   lastMatchPoints?: number;
   points?: number;
 };
-
-// IPL-style color palette (consistent, not random)
-const TEAM_COLORS = [
-  "#facc15", // yellow
-  "#60a5fa", // blue
-  "#34d399", // green
-  "#fb7185", // red
-  "#a78bfa", // purple
-  "#f97316", // orange
-  "#22c55e",
-  "#ef4444",
-];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomXAxisTick = (props: any) => {
@@ -43,7 +30,7 @@ const CustomXAxisTick = (props: any) => {
         <text
           transform="rotate(-90)"
           textAnchor="end"
-          fill="#cbd5f5"
+          fill="#94a3b8"
           fontSize={10}
         >
           {payload.value}
@@ -56,11 +43,11 @@ const CustomXAxisTick = (props: any) => {
 
   return (
     <g transform={`translate(${x},${y})`}>
-      <text textAnchor="middle" fill="#cbd5f5" fontSize={11}>
+      <text textAnchor="middle" fill="#94a3b8" fontSize={10}>
         {lines[0]}
       </text>
       {lines[1] && (
-        <text y={14} textAnchor="middle" fill="#cbd5f5" fontSize={11}>
+        <text y={14} textAnchor="middle" fill="#94a3b8" fontSize={10}>
           {lines[1]}
         </text>
       )}
@@ -68,11 +55,20 @@ const CustomXAxisTick = (props: any) => {
   );
 };
 
+const getRandomColor = (seed: string) => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 75%, 60%)`;
+};
+
 export default function DailyChart({
   data,
   matchId,
 }: {
-  data?: Leader[];
+  data?: Leader[];   // ✅ now array
   matchId?: number;
 }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -84,19 +80,19 @@ export default function DailyChart({
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
+  // ✅ safe array
   const list = Array.isArray(data) ? data : [];
 
   if (!list.length) {
     return (
-      <div className="p-6 bg-[#1e2a5a] rounded-xl">
-        <h2 className="text-lg font-bold text-white">
-          📊 Current Match Performance
-        </h2>
-        <p className="text-slate-300 text-sm">No match data available.</p>
+      <div className="p-6">
+        <h2 className="text-xl font-bold">📊 Daily Match Performance</h2>
+        <p className="text-slate-400 text-sm">No match data available.</p>
       </div>
     );
   }
 
+  // ✅ use lastMatchPoints (fallback to points if missing)
   const chartData = list
     .map((p) => ({
       name: p.name,
@@ -106,73 +102,54 @@ export default function DailyChart({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="rounded-2xl bg-[#1e2a5a] border border-[#2f3f85] shadow-lg overflow-hidden"
+      initial={{ opacity: 0, y: 40, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ scale: 1.01 }}
+      className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
-      {/* IPL top accent */}
-      <div className="h-1 w-full bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500" />
+      {/* glow */}
+      <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 via-transparent to-blue-500/10 blur-2xl pointer-events-none" />
 
-      {/* Header */}
-      <div className="p-5">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-cyan-400 rounded-sm" />
-          <h2 className="text-xl font-bold text-white tracking-wide">
-            Match {matchId ?? "Latest"} Performance
-          </h2>
-        </div>
+      {/* shimmer */}
+      <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
-        <p className="text-slate-300 text-sm mt-1">
-          Individual performance breakdown
-        </p>
+      <div className="relative z-10 p-6 mb-4">
+        <h2 className="text-2xl font-bold bg-linear-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+          📊 Current Match Performance
+        </h2>
+     
       </div>
 
-      {/* Chart */}
-      <div className="w-full h-[320px] px-4 pb-6">
+      {/* ✅ FIXED chart container */}
+      <div className="w-full h-[320px] px-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-            <CartesianGrid
-              stroke="rgba(255,255,255,0.08)"
-              vertical={false}
-            />
-
             <XAxis
               dataKey="name"
-              stroke="#94a3b8"
+              stroke="#475569"
               tick={<CustomXAxisTick isMobile={isMobile} />}
               height={100}
               interval={0}
             />
 
-            <YAxis
-              stroke="#94a3b8"
-              tick={{ fill: "#cbd5f5", fontSize: 11 }}
-            />
+            <YAxis stroke="#475569" tick={{ fill: "#94a3b8", fontSize: 11 }} />
 
             <Tooltip
               cursor={{ fill: "rgba(255,255,255,0.05)" }}
               contentStyle={{
-                background: "#0f172a",
-                border: "none",
-                borderRadius: "8px",
-                color: "#fff",
+                background: "rgba(2,6,23,0.95)",
+                border: "1px solid rgba(148,163,184,0.2)",
+                borderRadius: "12px",
+                backdropFilter: "blur(10px)",
               }}
             />
 
-            <Bar
-              dataKey="points"
-              radius={[4, 4, 0, 0]}
-              barSize={28}
-              animationDuration={1000}
-            >
-              {chartData.map((entry, index) => (
+            <Bar dataKey="points" radius={[10, 10, 0, 0]}>
+              {chartData.map((entry) => (
                 <Cell
                   key={entry.name}
-                  fill={TEAM_COLORS[index % TEAM_COLORS.length]}
-                  style={{
-                    opacity: index === 0 ? 1 : 0.9,
-                  }}
+                  fill={getRandomColor(entry.name)}
                 />
               ))}
 
@@ -180,9 +157,9 @@ export default function DailyChart({
                 dataKey="points"
                 position="top"
                 style={{
-                  fill: "#ffffff",
+                  fill: "#fff",
                   fontSize: 12,
-                  fontWeight: 700,
+                  fontWeight: 600,
                 }}
               />
             </Bar>
