@@ -22,21 +22,22 @@ type Leader = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CustomXAxisTick = (props: any) => {
-  const { x, y, payload } = props;
+  const { x, y, payload, isMobile } = props;
 
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text
-        transform="rotate(-90)"
-        textAnchor="end"
-        fill="#94a3b8"
-        fontSize={11}
-      >
-        {payload.value}
-      </text>
-    </g>
-  );
-};
+  if (isMobile) {
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text
+          transform="rotate(-90)"
+          textAnchor="end"
+          fill="#94a3b8"
+          fontSize={10}
+        >
+          {payload.value}
+        </text>
+      </g>
+    );
+  }
 
   const lines = splitTeamName(payload.value);
 
@@ -116,16 +117,16 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
         </h2>
       </div>
 
-      <div className="w-full h-[340px] px-4">
+      <div className="w-full h-full min-h-[340px] px-4">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-          <XAxis
-  dataKey="name"
-  stroke="#475569"
-  tick={<CustomXAxisTick />}
-  height={140}   // 🔥 increase from 100 → 140
-  interval={0}
-/>
+            <XAxis
+              dataKey="name"
+              stroke="#475569"
+              tick={<CustomXAxisTick isMobile={isMobile} />}
+              height={100}
+              interval={0}
+            />
 
             <YAxis stroke="#475569" tick={{ fill: "#94a3b8", fontSize: 11 }} />
 
