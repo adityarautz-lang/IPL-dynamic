@@ -1,3 +1,19 @@
+// Shared base type (🔥 important)
+export type Leader = {
+  rank?: number;
+  name: string;
+  points?: number;
+  lastMatchPoints?: number;
+  transfersLeft?: number;
+  boostersUsed?: string | number | null; // ✅ FIXED
+  matchId?: number;
+};
+
+
+// =====================
+// Charts
+// =====================
+
 export type OverallChartItem = {
   name: string;
   points: number;
@@ -9,7 +25,7 @@ export type OverallChartItem = {
   gapPercent?: number;
   movement?: "up" | "down" | "same" | "new";
   transfersLeft?: number;
-  boostersUsed?: string;
+  boostersUsed?: string | number | null; // ✅ FIXED
   efficiency?: number;
   isLastMatchLeader?: boolean;
 };
@@ -19,12 +35,23 @@ export type DailyChartRow = {
   [teamName: string]: string | number;
 };
 
+
+// =====================
+// Dashboard API
+// =====================
+
 export type DashboardData = {
-  overall: OverallChartItem[];
-  daily: DailyChartRow[];
+  overall?: OverallChartItem[];
+  daily?: DailyChartRow[];
+  leaders?: Leader[]; // ✅ IMPORTANT (your actual API uses this)
   updatedAt?: string;
   source?: "manual" | "live-snapshot";
 };
+
+
+// =====================
+// Raw / Scraped
+// =====================
 
 export type RawApiUser = {
   rno: number;
@@ -42,7 +69,7 @@ export type ScrapedLeaderboardItem = {
   points: number;
   lastMatchPoints?: number;
   transfersLeft?: number;
-  boostersUsed?: string;
+  boostersUsed?: string | number | null; // ✅ FIXED
 };
 
 export type ScrapedDashboardPayload = {
