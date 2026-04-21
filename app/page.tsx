@@ -35,8 +35,7 @@ export default function Home() {
         {/* 🔥 FIXED GRID (equal height cards) */}
         <div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">
           <GlassCard>
-            <DailyChart data={list} matchId={data?.matchId} />
-          </GlassCard>
+          <DailyChart data={list} />          </GlassCard>
 
           <GlassCard>
             <OverallChart data={list} />
