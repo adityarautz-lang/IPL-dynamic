@@ -66,19 +66,16 @@ export default function OverallChart({ data }: { data: Leader[] }) {
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  // ✅ Safety: always work with valid array
   const list = Array.isArray(data) ? data : [];
 
-  // ✅ Sort by rank if available
   const sortedData = [...list].sort(
     (a, b) => (a.rank ?? 999) - (b.rank ?? 999)
   );
 
-  // ✅ Normalize data
   const safeData = sortedData.map((d, idx) => ({
     ...d,
     points: Number(d.points ?? 0),
-    rank: d.rank ?? idx + 1, // fallback if rank missing
+    rank: d.rank ?? idx + 1,
   }));
 
   return (
@@ -89,10 +86,8 @@ export default function OverallChart({ data }: { data: Leader[] }) {
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
-      {/* glow background */}
       <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
 
-      {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
       <div className="relative z-10 p-6 mb-4">
@@ -104,19 +99,28 @@ export default function OverallChart({ data }: { data: Leader[] }) {
         </p>
       </div>
 
-      {/* ✅ FIX: Proper container size */}
-      <div className="w-full h-[320px] px-4">
+      {/* ✅ Improved layout container */}
+      <div className="w-full h-[340px] px-6 pb-4">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={safeData} barCategoryGap="60%" maxBarSize={22}>
+          <BarChart
+            data={safeData}
+            barCategoryGap="35%"   // 🔥 better spacing
+            barGap={4}             // small gap between bars
+            margin={{ top: 20, right: 20, left: 10, bottom: 10 }} // 🔥 breathing room
+          >
             <XAxis
               dataKey="name"
               stroke="#475569"
               tick={<CustomXAxisTick isMobile={isMobile} />}
-              height={100}
+              height={110}        // 🔥 more room for names
               interval={0}
             />
 
-            <YAxis stroke="#475569" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+            <YAxis
+              stroke="#475569"
+              tick={{ fill: "#94a3b8", fontSize: 11 }}
+              width={40}          // 🔥 prevents clipping
+            />
 
             <Tooltip
               cursor={{ fill: "rgba(255,255,255,0.05)" }}
@@ -131,6 +135,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
             <Bar
               dataKey="points"
               radius={[10, 10, 0, 0]}
+              maxBarSize={28}     // 🔥 slightly wider bars
               animationDuration={800}
             >
               {safeData.map((entry, index) => {
@@ -153,6 +158,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
               <LabelList
                 dataKey="points"
                 position="top"
+                offset={6}       // 🔥 prevents overlap
                 style={{
                   fill: "#fff",
                   fontSize: 12,
@@ -163,7 +169,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
               <LabelList
                 dataKey="rank"
                 position="insideTop"
-                offset={12}
+                offset={14}      // 🔥 cleaner placement
                 style={{
                   fill: "#cbd5e1",
                   fontSize: 10,
