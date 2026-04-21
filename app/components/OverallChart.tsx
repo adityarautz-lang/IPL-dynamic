@@ -202,7 +202,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
                 return num > 0 && num > 100 ? `-${num.toFixed(0)}` : "";
               }}
               style={{
-                fill: "#fbbf24",
+                fill: "black",
                 fontSize: 10,
                 opacity: 0.85,
               }}
