@@ -26,16 +26,23 @@ export default function Home() {
 
   const list = Array.isArray(data?.leaders) ? data.leaders : [];
 
+  // ✅ FIX: derive latest matchId from data
+  const latestMatchId =
+    list.length > 0
+      ? Math.max(...list.map((l) => l.matchId ?? 0))
+      : 0;
+
   return (
     <main className="min-h-screen bg-[#020617] text-white">
       <LiveMatchTicker />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
 
-        {/* 🔥 FIXED GRID (equal height cards) */}
+        {/* ✅ Equal height charts */}
         <div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">
           <GlassCard>
-          <DailyChart data={list} />          </GlassCard>
+            <DailyChart data={list} matchId={latestMatchId} />
+          </GlassCard>
 
           <GlassCard>
             <OverallChart data={list} />
@@ -70,7 +77,7 @@ export default function Home() {
   );
 }
 
-/* ✅ UPDATED GlassCard */
+/* ✅ Updated GlassCard */
 function GlassCard({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
