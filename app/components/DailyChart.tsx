@@ -24,20 +24,20 @@ type Leader = {
 const CustomXAxisTick = (props: any) => {
   const { x, y, payload, isMobile } = props;
 
-  if (isMobile) {
-    return (
-      <g transform={`translate(${x},${y})`}>
-        <text
-          transform="rotate(-90)"
-          textAnchor="end"
-          fill="#94a3b8"
-          fontSize={10}
-        >
-          {payload.value}
-        </text>
-      </g>
-    );
-  }
+  // if (isMobile) {
+  //   return (
+  //     <g transform={`translate(${x},${y})`}>
+  //       <text
+  //         transform="rotate(-90)"
+  //         textAnchor="end"
+  //         fill="#94a3b8"
+  //         fontSize={10}
+  //       >
+  //         {payload.value}
+  //       </text>
+  //     </g>
+  //   );
+  // }
 
   const lines = splitTeamName(payload.value);
 
