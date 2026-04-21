@@ -1,45 +1,69 @@
 {
-  "updatedAt": "2026-04-21T05:01:44.354Z",
+  "updatedAt": "2026-04-21T06:32:29.298Z",
   "leaders": [
     {
+      "rank": 2,
       "name": "SquadSeven9",
       "points": 7172,
-      "lastMatchPoints": 78
+      "lastMatchPoints": 78,
+      "transfersLeft": 112,
+      "boostersUsed": "0"
     },
     {
+      "rank": 1,
       "name": "Deccan Dominators",
       "points": 9089.5,
-      "lastMatchPoints": 540
+      "lastMatchPoints": 540,
+      "transfersLeft": 94,
+      "boostersUsed": "2"
     },
     {
+      "rank": 3,
       "name": "Watapi",
       "points": 6997,
-      "lastMatchPoints": 135
+      "lastMatchPoints": 135,
+      "transfersLeft": 95,
+      "boostersUsed": "0"
     },
     {
+      "rank": 4,
       "name": "VATVAGHOOL XI",
       "points": 6947,
-      "lastMatchPoints": 73
+      "lastMatchPoints": 73,
+      "transfersLeft": 96,
+      "boostersUsed": "0"
     },
     {
+      "rank": 5,
       "name": "PKs11",
       "points": 6528,
-      "lastMatchPoints": 75.5
+      "lastMatchPoints": 75.5,
+      "transfersLeft": 113,
+      "boostersUsed": "0"
     },
     {
+      "rank": 6,
       "name": "RSAwesome 11",
       "points": 6442,
-      "lastMatchPoints": 127
+      "lastMatchPoints": 127,
+      "transfersLeft": 105,
+      "boostersUsed": "0"
     },
     {
+      "rank": 7,
       "name": "Bat Bowl XI",
       "points": 4472.5,
-      "lastMatchPoints": 184
+      "lastMatchPoints": 184,
+      "transfersLeft": 134,
+      "boostersUsed": "0"
     },
     {
+      "rank": 8,
       "name": "RushS01",
       "points": 3308.5,
-      "lastMatchPoints": 75.5
+      "lastMatchPoints": 75.5,
+      "transfersLeft": 157,
+      "boostersUsed": "0"
     }
   ]
 }
