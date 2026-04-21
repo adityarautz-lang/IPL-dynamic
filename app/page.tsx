@@ -113,11 +113,11 @@ export default function Home() {
         </div>
 
         {/* Summary */}
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <GlassCard>
             <Summary data={data} />
           </GlassCard>
-        </div>
+        </div> */}
 
         {/* Performance Tracker */}
         <div className="mt-8">
