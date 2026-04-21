@@ -116,11 +116,9 @@ export default function DailyChart({
 
       <div className="relative z-10 p-6 mb-4">
         <h2 className="text-2xl font-bold bg-linear-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-          📊 Match {matchId ?? "Latest"} Performance
+          📊 Current Match Performance
         </h2>
-        <p className="text-slate-400 text-sm">
-          Individual chaos from match {matchId ?? "latest"}
-        </p>
+     
       </div>
 
       {/* ✅ FIXED chart container */}
