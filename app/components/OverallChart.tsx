@@ -19,8 +19,7 @@ import { getColor } from "../lib/utils/getColor";
 type Leader = {
   rank?: number;
   name: string;
-  points: number;
-  matchId?: number;
+  points?: number;
 };
 
 const CustomXAxisTick = (props: any) => {
@@ -57,7 +56,7 @@ const CustomXAxisTick = (props: any) => {
   );
 };
 
-export default function OverallChart({ data }: { data: Leader[] }) {
+export default function OverallChart({ data }: { data?: Leader[] }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -69,23 +68,36 @@ export default function OverallChart({ data }: { data: Leader[] }) {
 
   const list = Array.isArray(data) ? data : [];
 
-  // 🔥 Sort DESCENDING by points
-  const sortedData = [...list].sort(
-    (a, b) => (b.points ?? 0) - (a.points ?? 0)
-  );
+  // 🧠 Guard: no data
+  if (!list.length) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-bold">🏆 Overall Leaderboard</h2>
+        <p className="text-slate-400 text-sm">No leaderboard data available.</p>
+      </div>
+    );
+  }
 
+  // 🔥 Safe sort DESC
+  const sortedData = [...list]
+    .map((d) => ({
+      ...d,
+      points: Number(d.points ?? 0),
+    }))
+    .sort((a, b) => b.points - a.points);
+
+  // 🔥 Normalize + rank
   const safeData = sortedData.map((d, idx) => ({
     ...d,
-    points: Number(d.points ?? 0),
     rank: idx + 1,
   }));
 
-  // 🔥 Leader gap logic
+  // 🔥 Gap logic (safe)
   const maxPoints = safeData[0]?.points ?? 0;
 
   const enrichedData = safeData.map((d) => ({
     ...d,
-    gap: maxPoints - d.points,
+    gap: Math.max(0, maxPoints - (d.points ?? 0)),
   }));
 
   return (
@@ -96,8 +108,10 @@ export default function OverallChart({ data }: { data: Leader[] }) {
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
+      {/* glow */}
       <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 via-transparent to-cyan-500/10 blur-2xl pointer-events-none" />
 
+      {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
       <div className="relative z-10 p-6 mb-4">
@@ -109,7 +123,8 @@ export default function OverallChart({ data }: { data: Leader[] }) {
         </p>
       </div>
 
-      <div className="w-full h-full min-h-[340px] px-6 pb-4">        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full h-full min-h-[340px] px-6 pb-4">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={enrichedData}
             barCategoryGap="30%"
@@ -148,7 +163,7 @@ export default function OverallChart({ data }: { data: Leader[] }) {
             <Bar
               dataKey="points"
               radius={[10, 10, 0, 0]}
-              barSize={36} // 🔥 thicker bars
+              barSize={36}
               animationDuration={800}
             >
               {enrichedData.map((entry, index) => {
@@ -190,22 +205,6 @@ export default function OverallChart({ data }: { data: Leader[] }) {
                   fontSize: 10,
                 }}
               />
-
-              {/* Gap */}
-              {/* <LabelList
-  dataKey="gap"
-  position="insideBottom"
-  offset={8}
-  formatter={(value: any) => {
-    const num = Number(value ?? 0);
-    return num > 0 && num > 100 ? `↔️ ${num.toFixed(0)}` : "";
-  }}
-  style={{
-    fill: "black",
-    fontSize: 11,
-    fontWeight: 700,
-  }}
-/> */}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

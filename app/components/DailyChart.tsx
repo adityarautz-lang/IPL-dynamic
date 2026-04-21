@@ -64,13 +64,7 @@ const getRandomColor = (seed: string) => {
   return `hsl(${hue}, 75%, 60%)`;
 };
 
-export default function DailyChart({
-  data,
-  matchId,
-}: {
-  data?: Leader[];   // ✅ now array
-  matchId?: number;
-}) {
+export default function DailyChart({ data }: { data?: Leader[] }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -80,20 +74,25 @@ export default function DailyChart({
     return () => window.removeEventListener("resize", updateMobile);
   }, []);
 
-  // ✅ safe array
   const list = Array.isArray(data) ? data : [];
 
   if (!list.length) {
     return (
       <div className="p-6">
-        <h2 className="text-xl font-bold">📊 Daily Match Performance</h2>
+        <h2 className="text-xl font-bold">📊 Current Match Performance</h2>
         <p className="text-slate-400 text-sm">No match data available.</p>
       </div>
     );
   }
 
-  // ✅ use lastMatchPoints (fallback to points if missing)
-  const chartData = list
+  // ✅ smart fallback logic
+  const matchData = list.filter(
+    (p) => p.lastMatchPoints !== undefined && p.lastMatchPoints > 0
+  );
+
+  const source = matchData.length > 0 ? matchData : list;
+
+  const chartData = source
     .map((p) => ({
       name: p.name,
       points: Number(p.lastMatchPoints ?? p.points ?? 0),
@@ -108,21 +107,18 @@ export default function DailyChart({
       whileHover={{ scale: 1.01 }}
       className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
     >
-      {/* glow */}
       <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 via-transparent to-blue-500/10 blur-2xl pointer-events-none" />
 
-      {/* shimmer */}
       <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
 
       <div className="relative z-10 p-6 mb-4">
         <h2 className="text-2xl font-bold bg-linear-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
           📊 Current Match Performance
         </h2>
-     
       </div>
 
-      {/* ✅ FIXED chart container */}
-      <div className="w-full h-full min-h-[340px] px-4">        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full h-full min-h-[340px] px-4">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <XAxis
               dataKey="name"
@@ -146,10 +142,7 @@ export default function DailyChart({
 
             <Bar dataKey="points" radius={[10, 10, 0, 0]}>
               {chartData.map((entry) => (
-                <Cell
-                  key={entry.name}
-                  fill={getRandomColor(entry.name)}
-                />
+                <Cell key={entry.name} fill={getRandomColor(entry.name)} />
               ))}
 
               <LabelList

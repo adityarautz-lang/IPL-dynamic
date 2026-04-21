@@ -44,13 +44,7 @@ export default function Home() {
   const updatedAt = data?.updatedAt ? new Date(data.updatedAt) : null;
 
   const isLive =
-  updatedAt && Date.now() - updatedAt.getTime() < 120 * 1000;
-  const highestMatchId = list.reduce(
-    (max, row) => Math.max(max, row.matchId || 0),
-    0
-  );
-
-  const liveMatchId = highestMatchId;
+    updatedAt && Date.now() - updatedAt.getTime() < 120 * 1000;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#020617] text-white">
@@ -90,10 +84,11 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* Row 1 */}
-<div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">          <GlassCard>
+        {/* Charts */}
+        <div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">
+          <GlassCard>
             <HeaderWithStatus isLive={!!isLive} />
-            <DailyChart data={list} matchId={liveMatchId} />
+            <DailyChart data={list} />
           </GlassCard>
 
           <GlassCard>
@@ -102,15 +97,14 @@ export default function Home() {
           </GlassCard>
         </div>
 
-{/* Row 5 */}
-<div className="mt-8">
+        {/* Table */}
+        <div className="mt-8">
           <GlassCard>
             <DetailedDataTable data={list} />
           </GlassCard>
         </div>
-      
 
-        {/* Row 3 */}
+        {/* Point Differences */}
         <div className="mt-8">
           <GlassCard>
             <HeaderWithStatus isLive={!!isLive} />
@@ -118,27 +112,26 @@ export default function Home() {
           </GlassCard>
         </div>
 
-        {/* Row 4 */}
+        {/* Summary */}
         <div className="mt-8">
           <GlassCard>
             <Summary data={data} />
           </GlassCard>
         </div>
 
-        
-
-          {/* Row 2 */}
+        {/* Performance Tracker */}
+        <div className="mt-8">
           <GlassCard>
-          <HeaderWithStatus isLive={!!isLive} />
-          <PerformanceTracker data={list} />
-        </GlassCard>
-
+            <HeaderWithStatus isLive={!!isLive} />
+            <PerformanceTracker data={list} />
+          </GlassCard>
+        </div>
       </div>
     </main>
   );
 }
 
-/* Small header for each chart */
+/* Small header */
 function HeaderWithStatus({ isLive }: { isLive: boolean }) {
   return (
     <div className="flex justify-end mb-2">
@@ -158,7 +151,7 @@ function GlassCard({ children }: { children: React.ReactNode }) {
         scale: 1.02,
         boxShadow: "0px 0px 40px rgba(99,102,241,0.25)",
       }}
-      className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl lg:p-6"
+      className="h-full relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl lg:p-6"
     >
       <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/5 to-transparent pointer-events-none" />
       {children}
