@@ -7,7 +7,7 @@ import type {
   ScrapedLeaderboardItem,
 } from "../../types";
 
-const TOTAL_TRANSFERS = 210;
+const TOTAL_TRANSFERS = 160; // ✅ FIXED
 const FLOAT_TOLERANCE = 0.01;
 
 const RAW_TEAM_ALIASES: Record<string, string> = {
@@ -26,8 +26,8 @@ export const toFiniteNumber = (value: unknown) => {
     typeof value === "string"
       ? Number(value.replace(/,/g, ""))
       : typeof value === "number"
-        ? value
-        : Number.NaN;
+      ? value
+      : Number.NaN;
 
   return Number.isFinite(numeric) ? numeric : undefined;
 };
@@ -37,33 +37,37 @@ export const addLeaderboardMetrics = (
 ): OverallChartItem[] => {
   const sorted = [...leaders]
     .filter(
-      (leader) =>
-        Number.isFinite(leader.rank) && Number.isFinite(leader.points),
+      (l) => Number.isFinite(l.rank) && Number.isFinite(l.points),
     )
     .sort((a, b) => a.rank - b.rank);
+
   const previousRankMap = new Map(
     sorted
-      .map((leader) => ({
-        name: leader.name,
-        previousPoints: leader.points - (leader.lastMatchPoints ?? 0),
+      .map((l) => ({
+        name: l.name,
+        previousPoints: l.points - (l.lastMatchPoints ?? 0),
       }))
       .sort((a, b) => b.previousPoints - a.previousPoints)
-      .map((leader, index) => [leader.name, index + 1]),
+      .map((l, i) => [l.name, i + 1]),
   );
+
   const maxLastMatchPoints = Math.max(
-    ...sorted.map((leader) => leader.lastMatchPoints ?? 0),
+    ...sorted.map((l) => l.lastMatchPoints ?? 0),
   );
+
   const leaderboardRange = sorted.length
     ? sorted[0].points - sorted[sorted.length - 1].points
     : 0;
 
   return sorted.map((leader, index) => {
     const previousRank = previousRankMap.get(leader.name);
-    const nextLeader = sorted[index + 1];
-    const gapToNext = nextLeader ? leader.points - nextLeader.points : 0;
+    const next = sorted[index + 1];
+
+    const gapToNext = next ? leader.points - next.points : 0;
+
     const usedTransfers =
       typeof leader.transfersLeft === "number"
-        ? TOTAL_TRANSFERS - leader.transfersLeft
+        ? Math.max(0, TOTAL_TRANSFERS - leader.transfersLeft) // ✅ SAFE
         : 0;
 
     return {
@@ -74,74 +78,38 @@ export const addLeaderboardMetrics = (
       previousPoints: leader.points - (leader.lastMatchPoints ?? 0),
       lastMatchPoints: leader.lastMatchPoints,
       gapToNext,
-      gapPercent: leaderboardRange ? (gapToNext / leaderboardRange) * 100 : 0,
+      gapPercent: leaderboardRange
+        ? (gapToNext / leaderboardRange) * 100
+        : 0,
       movement:
         previousRank === undefined
           ? "new"
           : leader.rank < previousRank
-            ? "up"
-            : leader.rank > previousRank
-              ? "down"
-              : "same",
+          ? "up"
+          : leader.rank > previousRank
+          ? "down"
+          : "same",
       transfersLeft: leader.transfersLeft,
-      boostersUsed: leader.boostersUsed,
+
+      // ✅ FIXED TYPE HANDLING
+      boostersUsed:
+        typeof leader.boostersUsed === "string"
+          ? leader.boostersUsed.trim()
+          : typeof leader.boostersUsed === "number"
+          ? leader.boostersUsed
+          : null,
+
+      // ✅ CLEAN EFFICIENCY
       efficiency:
         usedTransfers > 0
-          ? Number((leader.points / usedTransfers).toFixed(2))
+          ? Math.round((leader.points / usedTransfers) * 100) / 100
           : undefined,
+
       isLastMatchLeader:
         (leader.lastMatchPoints ?? 0) > 0 &&
         leader.lastMatchPoints === maxLastMatchPoints,
     };
   });
-};
-
-export const buildManualDashboard = (users: RawApiUser[]): DashboardData => {
-  const latestMatchId = users.reduce((latest, user) => {
-    const userLatest = user.matches.reduce(
-      (max, match) => Math.max(max, match.matchId),
-      0,
-    );
-
-    return Math.max(latest, userLatest);
-  }, 0);
-  const sortedByPoints = [...users].sort((a, b) => b.points - a.points);
-  const leaders = sortedByPoints.map((user, index) => ({
-    rank: index + 1,
-    name: user.temname,
-    points: user.points,
-    lastMatchPoints:
-      user.matches.find((match) => match.matchId === latestMatchId)?.points ??
-      0,
-  }));
-
-  const daily: DailyChartRow[] = Array.from(
-    { length: latestMatchId },
-    (_, i) => {
-      const matchId = i + 1;
-      const matchScores = users
-        .map((user) => ({
-          team: user.temname,
-          points:
-            user.matches.find((match) => match.matchId === matchId)?.points ??
-            0,
-        }))
-        .sort((a, b) => b.points - a.points);
-      const row: DailyChartRow = { day: `Match ${matchId}` };
-
-      matchScores.forEach(({ team, points }) => {
-        row[team] = points;
-      });
-
-      return row;
-    },
-  );
-
-  return {
-    overall: addLeaderboardMetrics(leaders),
-    daily,
-    source: "manual",
-  };
 };
 
 export const normalizePayload = (
@@ -151,18 +119,18 @@ export const normalizePayload = (
     return null;
   }
 
-  const leaders = (payload as { leaders: unknown }).leaders;
+  const leaders = (payload as any).leaders;
+
   if (!Array.isArray(leaders)) return null;
 
   const normalized = leaders
-    .map((leader): ScrapedLeaderboardItem | null => {
-      if (!leader || typeof leader !== "object") return null;
-      const item = leader as Record<string, unknown>;
+    .map((item: any): ScrapedLeaderboardItem | null => {
       const rank = toFiniteNumber(item.rank);
       const points = toFiniteNumber(item.points);
-      const name = typeof item.name === "string" ? item.name.trim() : "";
       const lastMatchPoints = toFiniteNumber(item.lastMatchPoints);
       const transfersLeft = toFiniteNumber(item.transfersLeft);
+
+      const name = typeof item.name === "string" ? item.name.trim() : "";
 
       if (!name || rank === undefined || points === undefined) return null;
 
@@ -172,24 +140,20 @@ export const normalizePayload = (
         points,
         lastMatchPoints,
         transfersLeft,
+
+        // ✅ FIXED HERE TOO
         boostersUsed:
           typeof item.boostersUsed === "string"
             ? item.boostersUsed.trim()
-            : undefined,
+            : typeof item.boostersUsed === "number"
+            ? item.boostersUsed
+            : null,
       };
     })
-    .filter((leader): leader is ScrapedLeaderboardItem => Boolean(leader))
+    .filter((x): x is ScrapedLeaderboardItem => Boolean(x))
     .sort((a, b) => a.rank - b.rank);
 
-  const updatedAtValue = (payload as { updatedAt?: unknown }).updatedAt;
-  const updatedAt =
-    typeof updatedAtValue === "string" &&
-    !Number.isNaN(Date.parse(updatedAtValue))
-      ? new Date(updatedAtValue).toISOString()
-      : updatedAtValue instanceof Date &&
-          !Number.isNaN(updatedAtValue.getTime())
-        ? updatedAtValue.toISOString()
-        : new Date().toISOString();
+  const updatedAt = new Date().toISOString();
 
   return normalized.length
     ? {
@@ -199,72 +163,12 @@ export const normalizePayload = (
     : null;
 };
 
-export const normalizeRawApiUsers = (payload: unknown): RawApiUser[] | null => {
-  if (!Array.isArray(payload)) {
-    return null;
-  }
-
-  const normalized = payload
-    .map((user): RawApiUser | null => {
-      if (!user || typeof user !== "object") {
-        return null;
-      }
-
-      const item = user as Record<string, unknown>;
-      const rno = toFiniteNumber(item.rno);
-      const temname =
-        typeof item.temname === "string" ? item.temname.trim() : "";
-      const matches = Array.isArray(item.matches)
-        ? item.matches
-            .map((match) => {
-              if (!match || typeof match !== "object") {
-                return null;
-              }
-
-              const matchItem = match as Record<string, unknown>;
-              const matchId = toFiniteNumber(matchItem.matchId);
-              const points = toFiniteNumber(matchItem.points);
-
-              if (matchId === undefined || points === undefined) {
-                return null;
-              }
-
-              return { matchId, points };
-            })
-            .filter(
-              (
-                match,
-              ): match is {
-                matchId: number;
-                points: number;
-              } => Boolean(match),
-            )
-            .sort((a, b) => a.matchId - b.matchId)
-        : [];
-
-      if (rno === undefined || !temname || !matches.length) {
-        return null;
-      }
-
-      return {
-        rno,
-        temname,
-        matches,
-        points: matches.reduce((sum, match) => sum + match.points, 0),
-      };
-    })
-    .filter((user): user is RawApiUser => Boolean(user))
-    .sort((a, b) => a.rno - b.rno);
-
-  return normalized.length ? normalized : null;
-};
-
 export const buildDashboardFromSnapshot = (
   snapshot: ScrapedDashboardPayload,
   manualDashboard: DashboardData,
 ): DashboardData => {
   const liveDaily: DailyChartRow | null = snapshot.leaders.some(
-    (leader) => typeof leader.lastMatchPoints === "number",
+    (l) => typeof l.lastMatchPoints === "number",
   )
     ? snapshot.leaders.reduce<DailyChartRow>(
         (row, leader) => {
@@ -277,157 +181,13 @@ export const buildDashboardFromSnapshot = (
 
   return {
     overall: addLeaderboardMetrics(snapshot.leaders),
+
+    // ✅ FIXED SPREAD
     daily: liveDaily
-      ? [...manualDashboard.daily, liveDaily]
-      : manualDashboard.daily,
+      ? [...(manualDashboard.daily ?? []), liveDaily]
+      : manualDashboard.daily ?? [],
+
     updatedAt: snapshot.updatedAt,
     source: "live-snapshot",
   };
-};
-
-const normalizeTeamName = (name: string) =>
-  name.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-const calculateTotalPoints = (user: RawApiUser) =>
-  user.matches.reduce((sum, match) => sum + match.points, 0);
-
-const roundPoint = (value: number) => Math.round(value * 10) / 10;
-
-const findRawUserIndex = (users: RawApiUser[], scrapedName: string) => {
-  const alias = RAW_TEAM_ALIASES[scrapedName];
-  const target = normalizeTeamName(alias ?? scrapedName);
-
-  return users.findIndex((user) => normalizeTeamName(user.temname) === target);
-};
-
-export type RawUsersSyncResult = {
-  status: "updated" | "unchanged" | "skipped";
-  users: RawApiUser[];
-  matchId?: number;
-  mode?: "append" | "update-latest";
-  unmatchedNames: string[];
-};
-
-export const syncRawUsersWithSnapshot = (
-  users: RawApiUser[],
-  snapshot: ScrapedDashboardPayload,
-): RawUsersSyncResult => {
-  const clonedUsers = users.map((user) => ({
-    ...user,
-    matches: user.matches.map((match) => ({ ...match })),
-  }));
-  const maxMatchId = clonedUsers.reduce(
-    (max, user) => Math.max(max, ...user.matches.map((match) => match.matchId)),
-    0,
-  );
-  const unmatchedNames: string[] = [];
-  const updates = snapshot.leaders.flatMap((leader) => {
-    const userIndex = findRawUserIndex(clonedUsers, leader.name);
-
-    if (userIndex < 0) {
-      unmatchedNames.push(leader.name);
-      return [];
-    }
-
-    const user = clonedUsers[userIndex];
-    const currentTotal = calculateTotalPoints(user);
-    const delta = roundPoint(leader.points - currentTotal);
-    const latestMatch = user.matches.find(
-      (match) => match.matchId === maxMatchId,
-    );
-
-    return [
-      {
-        userIndex,
-        delta,
-        latestMatchPoints: leader.lastMatchPoints,
-        currentLatestPoints: latestMatch?.points ?? 0,
-      },
-    ];
-  });
-
-  if (!updates.length) {
-    return {
-      status: "skipped",
-      users: clonedUsers,
-      unmatchedNames,
-    };
-  }
-
-  const changedUpdates = updates.filter(
-    (update) => Math.abs(update.delta) > FLOAT_TOLERANCE,
-  );
-
-  if (!changedUpdates.length) {
-    return {
-      status: "unchanged",
-      users: clonedUsers,
-      matchId: maxMatchId,
-      unmatchedNames,
-    };
-  }
-
-  const updatesFitLatestMatch = changedUpdates.every((update) => {
-    if (typeof update.latestMatchPoints !== "number") return false;
-
-    return (
-      Math.abs(
-        update.currentLatestPoints + update.delta - update.latestMatchPoints,
-      ) <= FLOAT_TOLERANCE
-    );
-  });
-  const mode = updatesFitLatestMatch ? "update-latest" : "append";
-  const matchId = mode === "append" ? maxMatchId + 1 : maxMatchId;
-
-  changedUpdates.forEach((update) => {
-    const user = clonedUsers[update.userIndex];
-
-    if (mode === "update-latest") {
-      const latestMatch = user.matches.find(
-        (match) => match.matchId === matchId,
-      );
-
-      if (latestMatch) {
-        latestMatch.points = roundPoint(latestMatch.points + update.delta);
-      } else {
-        user.matches.push({ matchId, points: update.delta });
-      }
-    } else {
-      user.matches.push({ matchId, points: update.delta });
-    }
-
-    user.points = calculateTotalPoints(user);
-  });
-
-  return {
-    status: "updated",
-    users: clonedUsers,
-    matchId,
-    mode,
-    unmatchedNames,
-  };
-};
-
-export const serializeRawApiUsersModule = (users: RawApiUser[]) => {
-  const usersForSource = users.map((user) => ({
-    rno: user.rno,
-    temname: user.temname,
-    points: 0,
-    matches: [...user.matches].sort((a, b) => a.matchId - b.matchId),
-  }));
-
-  return `import type { RawApiUser } from "../../types";
-
-const calculateTotalPoints = (
-  matches: Array<{ matchId: number; points: number }>,
-): number => {
-  return matches.reduce((sum, match) => sum + match.points, 0);
-};
-
-export const rawApiUsers: RawApiUser[] = ${JSON.stringify(usersForSource, null, 2)}
-  .map((user) => ({
-    ...user,
-    points: calculateTotalPoints(user.matches),
-  }));
-`;
 };
