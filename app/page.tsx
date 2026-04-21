@@ -103,11 +103,13 @@ export default function Home() {
           </GlassCard>
         </div>
 
-        {/* Row 2 */}
-        <GlassCard>
-          <HeaderWithStatus isLive={!!isLive} />
-          <PerformanceTracker data={list} />
-        </GlassCard>
+{/* Row 5 */}
+<div className="mt-8">
+          <GlassCard>
+            <DetailedDataTable data={list} />
+          </GlassCard>
+        </div>
+      
 
         {/* Row 3 */}
         <div className="mt-8">
@@ -124,12 +126,14 @@ export default function Home() {
           </GlassCard>
         </div>
 
-        {/* Row 5 */}
-        <div className="mt-8">
+        
+
+          {/* Row 2 */}
           <GlassCard>
-            <DetailedDataTable data={list} />
-          </GlassCard>
-        </div>
+          <HeaderWithStatus isLive={!!isLive} />
+          <PerformanceTracker data={list} />
+        </GlassCard>
+
       </div>
     </main>
   );
