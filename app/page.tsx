@@ -11,6 +11,21 @@ import PointDifferences from "./components/PointDifferences";
 import LiveMatchTicker from "./components/LiveMatchTicker";
 import DetailedDataTable from "./components/DetailedDataTable";
 
+/* 🟢 Status Badge */
+function StatusBadge({ isLive }: { isLive: boolean }) {
+  return (
+    <div
+      className={`text-xs px-2 py-1 rounded-full font-semibold ${
+        isLive
+          ? "bg-green-500/20 text-green-400 animate-pulse"
+          : "bg-yellow-500/20 text-yellow-400"
+      }`}
+    >
+      {isLive ? "LIVE" : "SNAPSHOT"}
+    </div>
+  );
+}
+
 export default function Home() {
   const { data, loading } = useDashboardData();
 
@@ -24,13 +39,13 @@ export default function Home() {
     );
   }
 
-  // ✅ Correct data source
   const list = Array.isArray(data?.leaders) ? data.leaders : [];
 
-  // latest snapshot (optional use)
-  const latest = list[list.length - 1] || null;
+  const updatedAt = data?.updatedAt ? new Date(data.updatedAt) : null;
 
-  // max match id (for label only)
+  const isLive =
+    updatedAt && Date.now() - updatedAt.getTime() < 60 * 1000;
+
   const highestMatchId = list.reduce(
     (max, row) => Math.max(max, row.matchId || 0),
     0
@@ -56,38 +71,49 @@ export default function Home() {
           transition={{ duration: 0.6 }}
           className="mb-14"
         >
-          <div className="flex items-center gap-3">
-            <span className="text-4xl">🏏</span>
-            <h1 className="text-3xl md:text-4xl font-extrabold bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Autodesk IPL Fun Fantasy 2026
-            </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">🏏</span>
+              <h1 className="text-3xl md:text-4xl font-extrabold bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Autodesk IPL Fun Fantasy 2026
+              </h1>
+            </div>
+
+            <StatusBadge isLive={!!isLive} />
           </div>
 
-          <p className="text-slate-400 text-sm mt-2 ml-12">
+          <p className="text-slate-400 text-sm mt-2">
             Real-time Performance Analytics
+          </p>
+
+          <p className="text-xs text-slate-500 mt-1">
+            Last updated: {updatedAt?.toLocaleTimeString() || "—"}
           </p>
         </motion.div>
 
         {/* Row 1 */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
           <GlassCard>
-            {/* ✅ FIXED: pass full list */}
+            <HeaderWithStatus isLive={!!isLive} />
             <DailyChart data={list} matchId={liveMatchId} />
           </GlassCard>
 
           <GlassCard>
+            <HeaderWithStatus isLive={!!isLive} />
             <OverallChart data={list} />
           </GlassCard>
         </div>
 
         {/* Row 2 */}
         <GlassCard>
+          <HeaderWithStatus isLive={!!isLive} />
           <PerformanceTracker data={list} />
         </GlassCard>
 
         {/* Row 3 */}
         <div className="mt-8">
           <GlassCard>
+            <HeaderWithStatus isLive={!!isLive} />
             <PointDifferences data={list} />
           </GlassCard>
         </div>
@@ -107,6 +133,15 @@ export default function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+/* Small header for each chart */
+function HeaderWithStatus({ isLive }: { isLive: boolean }) {
+  return (
+    <div className="flex justify-end mb-2">
+      <StatusBadge isLive={isLive} />
+    </div>
   );
 }
 
