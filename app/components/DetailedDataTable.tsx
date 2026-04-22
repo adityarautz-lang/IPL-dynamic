@@ -18,6 +18,7 @@ export default function DetailedDataTable({
     );
   }
 
+  // Normalize + sort
   const sorted = [...list]
     .map((d) => ({
       ...d,
@@ -29,10 +30,14 @@ export default function DetailedDataTable({
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">📋 Detailed Leaderboard</h2>
+      <h2 className="text-2xl font-bold mb-6">
+        📋 Detailed Leaderboard
+      </h2>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left border-collapse">
+          
+          {/* Header */}
           <thead className="bg-white/10 text-slate-300">
             <tr>
               <th className="px-4 py-3">Rank</th>
@@ -45,64 +50,40 @@ export default function DetailedDataTable({
             </tr>
           </thead>
 
+          {/* Body */}
           <tbody>
             {sorted.map((row, idx) => {
               const rank = row.rank ?? idx + 1;
-              const previousRank = row.previousRank;
-              const movement = row.movement;
-
-              const transfersLeft = Number(row.transfersLeft ?? 0);
-              const usedTransfers = 160 - transfersLeft;
+              const transfersLeft = row.transfersLeft ?? 0;
+              const usedTransfers = Math.max(0, 160 - transfersLeft);
 
               const efficiency =
                 usedTransfers > 0
-                  ? (Number(row.points ?? 0) / usedTransfers).toFixed(2)
+                  ? (row.points / usedTransfers).toFixed(2)
                   : "–";
+
+              const efficiencyNum = Number(efficiency);
 
               return (
                 <tr
-                  key={idx}
+                  key={row.name + idx}
                   className="border-b border-white/10 hover:bg-white/5 transition"
                 >
-                  {/* Rank + Border + Movement */}
+                  {/* Rank */}
                   <td
-                    className={`px-4 py-3 border-l-4
-                      ${
-                        rank <= 3
-                          ? "border-green-400"
-                          : rank >= 6
-                          ? "border-red-400"
-                          : "border-transparent"
-                      }
-                    `}
+                    className={`px-4 py-3 border-l-4 ${
+                      rank <= 3
+                        ? "border-green-400"
+                        : rank >= 6
+                        ? "border-red-400"
+                        : "border-transparent"
+                    }`}
                   >
                     <div className="flex items-center gap-2">
-                      {/* Trophy */}
                       {rank === 1 && "🏆"}
                       {rank === 2 && "🥈"}
                       {rank === 3 && "🥉"}
-
-                      {/* Rank number */}
                       <span>{rank}</span>
-
-                      {/* Movement arrow */}
-                      {movement === "up" && (
-                        <span className="text-green-400 text-xs">⬆️</span>
-                      )}
-                      {movement === "down" && (
-                        <span className="text-red-400 text-xs">⬇️</span>
-                      )}
-                      {movement === "same" && (
-                        <span className="text-slate-400 text-xs">➡️</span>
-                      )}
-
-                      {/* Optional delta */}
-                      {previousRank && (
-                        <span className="text-xs text-slate-400">
-                          ({previousRank - rank > 0 ? "+" : ""}
-                          {previousRank - rank})
-                        </span>
-                      )}
                     </div>
                   </td>
 
@@ -111,14 +92,14 @@ export default function DetailedDataTable({
                     {row.name}
                   </td>
 
-                  {/* Points */}
+                  {/* Total Points */}
                   <td className="px-4 py-3 text-center">
-                    {Number(row.points ?? 0).toLocaleString("en-IN")}
+                    {row.points.toLocaleString("en-IN")}
                   </td>
 
                   {/* Last Match */}
                   <td className="px-4 py-3 text-center">
-                    {row.lastMatchPoints ?? "-"}
+                    {row.lastMatchPoints || "-"}
                   </td>
 
                   {/* Transfers */}
@@ -134,9 +115,11 @@ export default function DetailedDataTable({
                   {/* Efficiency */}
                   <td
                     className={`px-4 py-3 text-center font-semibold ${
-                      Number(efficiency) > 70
+                      efficiency === "–"
+                        ? "text-slate-400"
+                        : efficiencyNum > 70
                         ? "text-green-400"
-                        : Number(efficiency) > 50
+                        : efficiencyNum > 50
                         ? "text-yellow-400"
                         : "text-slate-400"
                     }`}
@@ -147,6 +130,7 @@ export default function DetailedDataTable({
               );
             })}
           </tbody>
+
         </table>
       </div>
     </div>
