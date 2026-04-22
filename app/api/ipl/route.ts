@@ -1,15 +1,11 @@
 export const runtime = "nodejs";
 
 import fs from "fs";
-import path from "path";
 
 const TMP_FILE = "/tmp/data.json";
-const SNAPSHOT_FILE = path.join(
-  process.cwd(),
-  "app/api/ipl/live-snapshot.json"
-);
+const SNAPSHOT_FILE = "/tmp/snapshot.json";
 
-// freshness check (3 mins)
+// freshness check (3 minutes)
 function isFresh(updatedAt: string | undefined) {
   if (!updatedAt) return false;
   const diff = Date.now() - new Date(updatedAt).getTime();
@@ -20,33 +16,29 @@ function jsonResponse(data: any) {
   return new Response(JSON.stringify(data), {
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "no-store", // 🔥 critical fix
+      "Cache-Control": "no-store",
     },
   });
 }
 
 export async function GET() {
   try {
-    let tmpData = null;
+    let liveData = null;
 
+    // 🔥 Try live data
     if (fs.existsSync(TMP_FILE)) {
       const raw = fs.readFileSync(TMP_FILE, "utf-8");
-      tmpData = JSON.parse(raw);
+      liveData = JSON.parse(raw);
 
-      if (!isFresh(tmpData.updatedAt)) {
-        console.warn("⚠️ TMP stale → deleting");
-        try {
-          fs.unlinkSync(TMP_FILE);
-        } catch {}
-        tmpData = null;
+      if (isFresh(liveData.updatedAt)) {
+        console.log("📡 Serving LIVE data");
+        return jsonResponse(liveData);
       }
+
+      console.warn("⚠️ Live data stale → ignoring");
     }
 
-    if (tmpData) {
-      console.log("📡 Serving LIVE (/tmp)");
-      return jsonResponse(tmpData);
-    }
-
+    // 🔥 Fallback to runtime snapshot
     if (fs.existsSync(SNAPSHOT_FILE)) {
       const raw = fs.readFileSync(SNAPSHOT_FILE, "utf-8");
       const snapshot = JSON.parse(raw);
@@ -54,11 +46,18 @@ export async function GET() {
       return jsonResponse(snapshot);
     }
 
-    return jsonResponse({ updatedAt: null, leaders: [] });
+    // ❌ No data
+    return jsonResponse({
+      updatedAt: null,
+      leaders: [],
+    });
 
   } catch (err) {
     console.error("❌ GET error:", err);
-    return jsonResponse({ updatedAt: null, leaders: [] });
+    return jsonResponse({
+      updatedAt: null,
+      leaders: [],
+    });
   }
 }
 
@@ -71,15 +70,11 @@ export async function POST(req: Request) {
       leaders: body.leaders,
     };
 
-    // live store
+    // 🔥 Save BOTH live + snapshot in /tmp
     fs.writeFileSync(TMP_FILE, JSON.stringify(payload));
+    fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(payload));
 
-    // snapshot
-    try {
-      fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(payload, null, 2));
-    } catch {}
-
-    console.log("✅ Data stored (live + snapshot)");
+    console.log("✅ Data stored (/tmp live + snapshot)");
 
     return jsonResponse({ success: true });
 

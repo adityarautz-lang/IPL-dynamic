@@ -17,8 +17,8 @@ export function useDashboardData() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/ipl`, {
-          cache: "no-store", // 🔥 important
+        const res = await fetch("/api/ipl", {
+          cache: "no-store", // 🔥 critical: disable caching
         });
 
         if (!res.ok) throw new Error("Bad response");
@@ -29,35 +29,57 @@ export function useDashboardData() {
           updatedAt: json?.updatedAt ?? undefined,
           leaders: Array.isArray(json?.leaders)
             ? json.leaders.map((l: any) => ({
-                ...l,
+                rank: l.rank,
+                name: l.name,
                 points: Number(l.points ?? 0),
                 lastMatchPoints: Number(l.lastMatchPoints ?? 0),
                 transfersLeft: Number(l.transfersLeft ?? 0),
-                captain: l.captain,
-                viceCaptain: l.viceCaptain,
+                boostersUsed: l.boostersUsed ?? undefined,
+
+                // keep captain data intact
+                captain: l.captain
+                  ? {
+                      name: l.captain.name,
+                      points: Number(l.captain.points ?? 0),
+                      image: l.captain.image ?? null,
+                    }
+                  : undefined,
+
+                viceCaptain: l.viceCaptain
+                  ? {
+                      name: l.viceCaptain.name,
+                      points: Number(l.viceCaptain.points ?? 0),
+                      image: l.viceCaptain.image ?? null,
+                    }
+                  : undefined,
               }))
             : [],
         };
 
         if (!isMounted) return;
 
-        // 🔥 prevent stale overwrite
+        // 🔥 Prevent stale data overwrite (VERY IMPORTANT)
         setData((prev) => {
           if (!prev.updatedAt) return newData;
 
-          return new Date(newData.updatedAt!) > new Date(prev.updatedAt!)
-            ? newData
-            : prev;
+          const prevTime = new Date(prev.updatedAt).getTime();
+          const newTime = new Date(newData.updatedAt || 0).getTime();
+
+          return newTime > prevTime ? newData : prev;
         });
 
       } catch (err) {
         console.warn("⚠️ transient fetch issue");
+
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
+    // initial load
     fetchData();
+
+    // polling every 5 seconds
     interval = setInterval(fetchData, 5000);
 
     return () => {
@@ -66,5 +88,8 @@ export function useDashboardData() {
     };
   }, []);
 
-  return { data, loading };
+  return {
+    data,
+    loading,
+  };
 }
