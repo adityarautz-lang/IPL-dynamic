@@ -11,33 +11,50 @@ function isWithinSchedule() {
   const current = hours * 60 + minutes;
 
   const start = 19 * 60 + 20; // 7:20 PM
-  const end = 24 * 60;        // 12:00 AM (midnight)
+  const end = 24 * 60;        // 12:00 AM
 
   return current >= start && current < end;
 }
 
-async function runOnce() {
-  const now = new Date().toLocaleTimeString();
+// 🔥 NEW: allow one final run after match ends
+function isPostMatchWindow() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
 
-  if (!isWithinSchedule()) {
-    console.log(`⏸ [${now}] Outside schedule — skipping`);
+  // Allow between 12:00–12:10 AM
+  return hours === 0 && minutes <= 10;
+}
+
+async function runOnce() {
+  const nowStr = new Date().toLocaleTimeString();
+
+  const inSchedule = isWithinSchedule();
+  const postMatch = isPostMatchWindow();
+
+  if (!inSchedule && !postMatch) {
+    console.log(`⏸ [${nowStr}] Outside schedule — skipping`);
     return;
   }
 
-  console.log(`▶ [${now}] Running scraper...`);
+  if (postMatch) {
+    console.log(`🟡 [${nowStr}] Final post-match scrape...`);
+  } else {
+    console.log(`▶ [${nowStr}] Running scraper...`);
+  }
 
   try {
     await scrapeIPL();
-    console.log(`✅ [${now}] Scrape complete`);
+    console.log(`✅ [${nowStr}] Scrape complete`);
   } catch (err) {
-    console.error(`❌ [${now}] Scraper error:`, err);
+    console.error(`❌ [${nowStr}] Scraper error:`, err);
   }
 }
 
 async function runScheduler() {
   console.log("⏰ Scheduler started...");
 
-  // 🔥 Run immediately once (no delay)
+  // 🔥 Run immediately once
   await runOnce();
 
   // 🔁 Then run every 2 minutes
