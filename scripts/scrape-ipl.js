@@ -228,4 +228,4 @@ async function scrapeIPL() {
   }
 }
 
-scrapeIPL();
+export default scrapeIPL;
