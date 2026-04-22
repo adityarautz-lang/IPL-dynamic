@@ -9,19 +9,19 @@ const SNAPSHOT_FILE = path.join(process.cwd(), "app/api/ipl/live-snapshot.json")
 // GET → frontend reads data
 export async function GET() {
   try {
-    // 1️⃣ Try live scraped data
+    // 1️⃣ LIVE (from /tmp)
     if (fs.existsSync(TMP_FILE)) {
       const data = fs.readFileSync(TMP_FILE, "utf-8");
       return Response.json(JSON.parse(data));
     }
 
-    // 2️⃣ Fallback to snapshot
+    // 2️⃣ SNAPSHOT fallback
     if (fs.existsSync(SNAPSHOT_FILE)) {
       const fallback = fs.readFileSync(SNAPSHOT_FILE, "utf-8");
       return Response.json(JSON.parse(fallback));
     }
 
-    // 3️⃣ Final fallback
+    // 3️⃣ Empty fallback
     return Response.json({ leaders: [], updatedAt: null });
 
   } catch (err) {
@@ -39,17 +39,17 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid payload" }, { status: 400 });
     }
 
-    // Save live data (fast, runtime)
+    // ✅ 1. Save LIVE data (fast, used immediately)
     fs.writeFileSync(TMP_FILE, JSON.stringify(body));
 
-    // Try updating snapshot (won’t persist on Vercel, but OK locally)
+    // ✅ 2. Save SNAPSHOT (fallback)
     try {
       fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(body, null, 2));
     } catch (err) {
-      console.warn("⚠️ Snapshot update skipped (expected on Vercel)");
+      console.warn("⚠️ Snapshot write skipped (expected on Vercel)");
     }
 
-    console.log("✅ Data stored");
+    console.log("✅ Data stored (live + snapshot)");
 
     return Response.json({ success: true });
 
