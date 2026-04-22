@@ -16,18 +16,17 @@ function isWithinSchedule() {
   return current >= start && current < end;
 }
 
-// 🔥 NEW: allow one final run after match ends
+// ✅ UPDATED: safer post-match window (12 AM → 2 AM)
 function isPostMatchWindow() {
   const now = new Date();
   const hours = now.getHours();
-  const minutes = now.getMinutes();
 
-  // Allow between 12:00–12:10 AM
-  return hours === 0 && minutes <= 10;
+  return hours >= 0 && hours <= 1; // 12:00–1:59 AM
 }
 
 async function runOnce() {
-  const nowStr = new Date().toLocaleTimeString();
+  const now = new Date();
+  const nowStr = now.toLocaleTimeString();
 
   const inSchedule = isWithinSchedule();
   const postMatch = isPostMatchWindow();
@@ -38,9 +37,9 @@ async function runOnce() {
   }
 
   if (postMatch) {
-    console.log(`🟡 [${nowStr}] Final post-match scrape...`);
+    console.log(`🟡 [${nowStr}] Post-match window → ensuring final snapshot`);
   } else {
-    console.log(`▶ [${nowStr}] Running scraper...`);
+    console.log(`▶ [${nowStr}] Live window → running scraper`);
   }
 
   try {
