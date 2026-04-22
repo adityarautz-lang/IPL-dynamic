@@ -9,100 +9,82 @@ const SNAPSHOT_FILE = path.join(
   "app/api/ipl/live-snapshot.json"
 );
 
-// 🔥 freshness check (3 minutes)
+// freshness check (3 mins)
 function isFresh(updatedAt: string | undefined) {
   if (!updatedAt) return false;
-
   const diff = Date.now() - new Date(updatedAt).getTime();
-  return diff < 3 * 60 * 1000; // 3 minutes
+  return diff < 3 * 60 * 1000;
 }
 
-// GET → frontend reads data
+function jsonResponse(data: any) {
+  return new Response(JSON.stringify(data), {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store", // 🔥 critical fix
+    },
+  });
+}
+
 export async function GET() {
   try {
     let tmpData = null;
 
-    // 🔁 Try reading live data
     if (fs.existsSync(TMP_FILE)) {
       const raw = fs.readFileSync(TMP_FILE, "utf-8");
       tmpData = JSON.parse(raw);
 
-      // ❌ If stale → ignore + delete
       if (!isFresh(tmpData.updatedAt)) {
-        console.warn("⚠️ TMP stale → deleting and falling back");
+        console.warn("⚠️ TMP stale → deleting");
         try {
-          fs.unlinkSync(TMP_FILE); // 🔥 remove stale tmp
+          fs.unlinkSync(TMP_FILE);
         } catch {}
         tmpData = null;
       }
     }
 
-    // ✅ Use fresh tmp data
     if (tmpData) {
-      return Response.json(tmpData);
+      console.log("📡 Serving LIVE (/tmp)");
+      return jsonResponse(tmpData);
     }
 
-    // 🧾 Fallback to snapshot
     if (fs.existsSync(SNAPSHOT_FILE)) {
       const raw = fs.readFileSync(SNAPSHOT_FILE, "utf-8");
       const snapshot = JSON.parse(raw);
-      return Response.json(snapshot);
+      console.log("📦 Serving SNAPSHOT");
+      return jsonResponse(snapshot);
     }
 
-    // 🚫 No data available
-    return Response.json({
-      updatedAt: null,
-      leaders: [],
-    });
+    return jsonResponse({ updatedAt: null, leaders: [] });
 
   } catch (err) {
     console.error("❌ GET error:", err);
-    return Response.json({
-      updatedAt: null,
-      leaders: [],
-    });
+    return jsonResponse({ updatedAt: null, leaders: [] });
   }
 }
 
-// POST → scraper sends data
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
-    if (!body?.leaders || !Array.isArray(body.leaders)) {
-      return Response.json(
-        { error: "Invalid payload" },
-        { status: 400 }
-      );
-    }
 
     const payload = {
       updatedAt: body.updatedAt || new Date().toISOString(),
       leaders: body.leaders,
     };
 
-    // 🔥 1. Save LIVE data (/tmp)
+    // live store
     fs.writeFileSync(TMP_FILE, JSON.stringify(payload));
 
-    // 🔥 2. Save SNAPSHOT (fallback)
+    // snapshot
     try {
-      fs.writeFileSync(
-        SNAPSHOT_FILE,
-        JSON.stringify(payload, null, 2)
-      );
-    } catch (err) {
-      console.warn("⚠️ Snapshot write skipped (expected on Vercel)");
-    }
+      fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(payload, null, 2));
+    } catch {}
 
     console.log("✅ Data stored (live + snapshot)");
 
-    return Response.json({ success: true });
+    return jsonResponse({ success: true });
 
   } catch (err) {
     console.error("❌ POST error:", err);
-    return Response.json(
-      { error: "Server error" },
-      { status: 500 }
-    );
+    return jsonResponse({ error: "Server error" });
   }
 }

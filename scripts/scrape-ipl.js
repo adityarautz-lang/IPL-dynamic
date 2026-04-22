@@ -11,16 +11,11 @@ const TARGET_URL =
 
 const SNAPSHOT_PATH = "./app/api/ipl/live-snapshot.json";
 
-// 🧠 Define match live window (adjust as needed)
-function isMatchLive() {
-  const hour = new Date().getHours();
-  return hour >= 19 && hour <= 24;
-}
-
 async function scrapeIPL() {
   console.log("🚀 Starting IPL scraper...");
 
   const browser = await chromium.launch({ headless: true });
+
   const context = await browser.newContext({
     storageState: "state.json",
   });
@@ -29,6 +24,7 @@ async function scrapeIPL() {
 
   try {
     await page.goto(TARGET_URL, { waitUntil: "networkidle" });
+
     await page.waitForSelector("#leadersList li", { timeout: 15000 });
 
     const results = [];
@@ -60,6 +56,7 @@ async function scrapeIPL() {
       // 👉 OPEN TEAM
       await row.scrollIntoViewIfNeeded();
       await row.click();
+
       await page.waitForTimeout(1200);
 
       // 👉 MATCH POINTS
@@ -69,47 +66,54 @@ async function scrapeIPL() {
           .catch(() => "0")
       );
 
-      // 👉 CAPTAIN / VC
       await page.waitForSelector(".m11c-pitch__plyr", { timeout: 5000 });
 
       let captain = null;
       let viceCaptain = null;
 
-      const players = await page.$$(".m11c-pitch__plyr");
+      try {
+        const players = await page.$$(".m11c-pitch__plyr");
 
-      for (const player of players) {
-        const className = (await player.getAttribute("class")) || "";
+        for (const player of players) {
+          const className = (await player.getAttribute("class")) || "";
 
-        const playerName = await player
-          .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
-          .catch(() => "");
+          const playerName = await player
+            .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
+            .catch(() => "");
 
-        const pointsText = await player
-          .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
-          .catch(() => "");
+          const pointsText = await player
+            .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
+            .catch(() => "");
 
-        const playerPoints = parseInt(pointsText) || 0;
+          const playerPoints = parseInt(pointsText) || 0;
 
-        const style = await player
-          .$eval(".m11c-pitch__plyr-thumb", (el) =>
-            el.getAttribute("style")
-          )
-          .catch(() => "");
+          const style = await player
+            .$eval(".m11c-pitch__plyr-thumb", (el) =>
+              el.getAttribute("style")
+            )
+            .catch(() => "");
 
-        const match = style.match(/url\(["']?(.+?)["']?\)/);
-        const image = match ? match[1] : null;
+          const match = style.match(/url\(["']?(.+?)["']?\)/);
+          const image = match ? match[1] : null;
 
-        if (className.includes("m11c-cap")) {
-          captain = { name: playerName.trim(), points: playerPoints, image };
+          if (className.includes("m11c-cap")) {
+            captain = {
+              name: playerName.trim(),
+              points: playerPoints,
+              image,
+            };
+          }
+
+          if (className.includes("m11c-vcap")) {
+            viceCaptain = {
+              name: playerName.trim(),
+              points: playerPoints,
+              image,
+            };
+          }
         }
-
-        if (className.includes("m11c-vcap")) {
-          viceCaptain = {
-            name: playerName.trim(),
-            points: playerPoints,
-            image,
-          };
-        }
+      } catch (err) {
+        console.log("⚠️ C/VC parse failed for:", name);
       }
 
       // 👉 SWITCH TO OVERALL TAB
@@ -190,7 +194,7 @@ async function scrapeIPL() {
 
     console.log("✅ Scraped", results.length);
 
-    // sort
+    // 👉 Sort by rank
     results.sort((a, b) => a.rank - b.rank);
 
     const payload = {
@@ -198,15 +202,11 @@ async function scrapeIPL() {
       leaders: results,
     };
 
-    // 💾 SNAPSHOT only when NOT live
-    if (!isMatchLive()) {
-      fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(payload, null, 2));
-      console.log("💾 Snapshot updated (stable state)");
-    } else {
-      console.log("⏳ Live match → skipping snapshot overwrite");
-    }
+    // 🔥 ALWAYS update snapshot (fixes stale issue permanently)
+    fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(payload, null, 2));
+    console.log("💾 Snapshot updated");
 
-    // 📡 PUSH to API
+    // 📡 Push to API
     try {
       const res = await fetch(DASHBOARD_API, {
         method: "POST",
@@ -229,3 +229,8 @@ async function scrapeIPL() {
 }
 
 export default scrapeIPL;
+
+// 👉 Allow manual run
+if (process.argv[1].includes("scrape-ipl.js")) {
+  scrapeIPL();
+}

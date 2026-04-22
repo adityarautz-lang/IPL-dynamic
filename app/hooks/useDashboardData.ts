@@ -17,74 +17,47 @@ export function useDashboardData() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/ipl?t=${Date.now()}`, {
-          cache: "no-store",
+        const res = await fetch(`/api/ipl`, {
+          cache: "no-store", // 🔥 important
         });
 
         if (!res.ok) throw new Error("Bad response");
 
         const json = await res.json();
 
+        const newData: DashboardData = {
+          updatedAt: json?.updatedAt ?? undefined,
+          leaders: Array.isArray(json?.leaders)
+            ? json.leaders.map((l: any) => ({
+                ...l,
+                points: Number(l.points ?? 0),
+                lastMatchPoints: Number(l.lastMatchPoints ?? 0),
+                transfersLeft: Number(l.transfersLeft ?? 0),
+                captain: l.captain,
+                viceCaptain: l.viceCaptain,
+              }))
+            : [],
+        };
+
         if (!isMounted) return;
 
-        const leaders: Leader[] = Array.isArray(json?.leaders)
-          ? json.leaders.map((l: any) => ({
-              rank: l.rank,
-              name: l.name,
-              points: Number(l.points ?? 0),
-              lastMatchPoints: Number(l.lastMatchPoints ?? 0),
+        // 🔥 prevent stale overwrite
+        setData((prev) => {
+          if (!prev.updatedAt) return newData;
 
-              transfersLeft:
-                typeof l.transfersLeft === "number"
-                  ? l.transfersLeft
-                  : Number(l.transfersLeft ?? 0),
-
-              boostersUsed:
-                typeof l.boostersUsed === "string"
-                  ? l.boostersUsed
-                  : typeof l.boostersUsed === "number"
-                  ? l.boostersUsed
-                  : undefined,
-
-              matchId: l.matchId,
-
-              // ✅ CRITICAL: preserve captain data
-              captain: l.captain
-                ? {
-                    name: l.captain.name,
-                    points: Number(l.captain.points ?? 0),
-                    image: l.captain.image ?? null,
-                  }
-                : undefined,
-
-              viceCaptain: l.viceCaptain
-                ? {
-                    name: l.viceCaptain.name,
-                    points: Number(l.viceCaptain.points ?? 0),
-                    image: l.viceCaptain.image ?? null,
-                  }
-                : undefined,
-            }))
-          : [];
-
-        setData({
-          updatedAt: json?.updatedAt ?? undefined,
-          leaders,
+          return new Date(newData.updatedAt!) > new Date(prev.updatedAt!)
+            ? newData
+            : prev;
         });
 
       } catch (err) {
-        // 🔥 do NOT break UI on transient failures
         console.warn("⚠️ transient fetch issue");
-
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
-    // 👉 initial load
     fetchData();
-
-    // 👉 polling every 5 sec
     interval = setInterval(fetchData, 5000);
 
     return () => {
@@ -93,8 +66,5 @@ export function useDashboardData() {
     };
   }, []);
 
-  return {
-    data,
-    loading,
-  };
+  return { data, loading };
 }
