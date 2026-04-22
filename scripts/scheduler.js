@@ -1,6 +1,6 @@
 import scrapeIPL from "./scrape-ipl.js";
 
-const INTERVAL = 2 * 60 * 1000; // 2 mins
+const INTERVAL = 2 * 60 * 1000; // 2 minutes
 
 function isWithinSchedule() {
   const now = new Date();
@@ -13,30 +13,35 @@ function isWithinSchedule() {
   const start = 19 * 60 + 20; // 7:20 PM
   const end = 24 * 60;        // 12:00 AM (midnight)
 
-  // since end is midnight same day, simple check works
   return current >= start && current < end;
+}
+
+async function runOnce() {
+  const now = new Date().toLocaleTimeString();
+
+  if (!isWithinSchedule()) {
+    console.log(`⏸ [${now}] Outside schedule — skipping`);
+    return;
+  }
+
+  console.log(`▶ [${now}] Running scraper...`);
+
+  try {
+    await scrapeIPL();
+    console.log(`✅ [${now}] Scrape complete`);
+  } catch (err) {
+    console.error(`❌ [${now}] Scraper error:`, err);
+  }
 }
 
 async function runScheduler() {
   console.log("⏰ Scheduler started...");
 
-  setInterval(async () => {
-    const now = new Date().toLocaleTimeString();
+  // 🔥 Run immediately once (no delay)
+  await runOnce();
 
-    if (!isWithinSchedule()) {
-      console.log(`⏸ [${now}] Outside schedule — skipping`);
-      return;
-    }
-
-    console.log(`▶ [${now}] Running scraper...`);
-
-    try {
-      await scrapeIPL();
-    } catch (err) {
-      console.error("❌ Scraper error:", err);
-    }
-
-  }, INTERVAL);
+  // 🔁 Then run every 2 minutes
+  setInterval(runOnce, INTERVAL);
 }
 
 runScheduler();
