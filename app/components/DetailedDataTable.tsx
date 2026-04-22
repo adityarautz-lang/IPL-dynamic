@@ -48,6 +48,9 @@ export default function DetailedDataTable({
           <tbody>
             {sorted.map((row, idx) => {
               const rank = row.rank ?? idx + 1;
+              const previousRank = row.previousRank;
+              const movement = row.movement;
+
               const transfersLeft = Number(row.transfersLeft ?? 0);
               const usedTransfers = 160 - transfersLeft;
 
@@ -61,7 +64,7 @@ export default function DetailedDataTable({
                   key={idx}
                   className="border-b border-white/10 hover:bg-white/5 transition"
                 >
-                  {/* 🔥 Rank + LEFT BORDER */}
+                  {/* Rank + Border + Movement */}
                   <td
                     className={`px-4 py-3 border-l-4
                       ${
@@ -73,11 +76,33 @@ export default function DetailedDataTable({
                       }
                     `}
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
+                      {/* Trophy */}
                       {rank === 1 && "🏆"}
                       {rank === 2 && "🥈"}
                       {rank === 3 && "🥉"}
+
+                      {/* Rank number */}
                       <span>{rank}</span>
+
+                      {/* Movement arrow */}
+                      {movement === "up" && (
+                        <span className="text-green-400 text-xs">⬆️</span>
+                      )}
+                      {movement === "down" && (
+                        <span className="text-red-400 text-xs">⬇️</span>
+                      )}
+                      {movement === "same" && (
+                        <span className="text-slate-400 text-xs">➡️</span>
+                      )}
+
+                      {/* Optional delta */}
+                      {previousRank && (
+                        <span className="text-xs text-slate-400">
+                          ({previousRank - rank > 0 ? "+" : ""}
+                          {previousRank - rank})
+                        </span>
+                      )}
                     </div>
                   </td>
 

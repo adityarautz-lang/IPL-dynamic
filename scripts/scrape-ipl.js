@@ -1,13 +1,13 @@
 import { chromium } from "playwright";
 import fs from "fs";
 
-const DASHBOARD_API = "https://ipl-dynamic.vercel.app/api/ipl";
+const DASHBOARD_API = "http://localhost:3000/api/ipl"; // 🔥 use local during dev
 const TARGET_URL =
   "https://fantasy.iplt20.com/classic/league/view/66930102";
 
 const SNAPSHOT_PATH = "./app/api/ipl/live-snapshot.json";
 
-export default async function scrapeIPL() {
+async function scrapeIPL() {
   console.log("🚀 Starting IPL scraper...");
 
   const browser = await chromium.launch({ headless: true });
@@ -28,7 +28,6 @@ export default async function scrapeIPL() {
     const totalRows = await page.$$eval("#leadersList li", (els) => els.length);
 
     for (let i = 0; i < totalRows; i++) {
-      // 🔁 Always re-fetch rows (SPA-safe)
       const rows = await page.$$("#leadersList li");
       const row = rows[i];
 
@@ -51,68 +50,70 @@ export default async function scrapeIPL() {
           .replace(/,/g, "")
       );
 
-      // 👉 CLICK TEAM
+      // 👉 OPEN TEAM
       await row.scrollIntoViewIfNeeded();
       await row.click();
 
       await page.waitForTimeout(1200);
 
-      // 👉 MATCH POINTS
       const matchPoints = parseFloat(
         await page
           .$eval(".m11c-pitch__fix-rgt em", (el) => el.innerText)
           .catch(() => "0")
       );
 
-      // 👉 SWITCH TO OVERALL TAB
-      const tabs = await page.$$("li.swiper-slide");
+      await page.waitForSelector(".m11c-pitch__plyr", { timeout: 5000 });
 
-      for (const tab of tabs) {
-        const text = await tab.innerText();
-        if (text.trim().toUpperCase() === "OVERALL") {
-          await tab.click();
-          break;
-        }
-      }
-
-      await page.waitForTimeout(1200);
-
-      // 👉 TRANSFERS + BOOSTERS
-      let transfersLeft = null;
-      let boostersUsed = null;
+      let captain = null;
+      let viceCaptain = null;
 
       try {
-        const transferBlock = await page.$(".m11c-transfer__head");
+        const players = await page.$$(".m11c-pitch__plyr");
 
-        if (transferBlock) {
-          const spans = await transferBlock.$$("span");
+        for (const player of players) {
+          const className = (await player.getAttribute("class")) || "";
 
-          for (const span of spans) {
-            const text = await span.innerText();
+          const playerName = await player
+            .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
+            .catch(() => "");
 
-            if (text.includes("Transfers Left")) {
-              const val = await span
-                .$eval("em", (el) => el.innerText)
-                .catch(() => null);
+          const pointsText = await player
+            .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
+            .catch(() => "");
 
-              if (val) {
-                transfersLeft = parseInt(val.split("/")[0]);
-              }
-            }
+          const playerPoints = parseInt(pointsText) || 0;
 
-            if (text.includes("Boosters used")) {
-              boostersUsed = await span
-                .$eval("em", (el) => el.innerText)
-                .catch(() => null);
-            }
+          const style = await player
+            .$eval(".m11c-pitch__plyr-thumb", (el) =>
+              el.getAttribute("style")
+            )
+            .catch(() => "");
+
+          const match = style.match(/url\(["']?(.+?)["']?\)/);
+          const image = match ? match[1] : null;
+
+          if (className.includes("m11c-cap")) {
+            captain = {
+              name: playerName.trim(),
+              points: playerPoints,
+              image,
+            };
+          }
+
+          if (className.includes("m11c-vcap")) {
+            viceCaptain = {
+              name: playerName.trim(),
+              points: playerPoints,
+              image,
+            };
           }
         }
       } catch (err) {
-        console.log("⚠️ Transfer parse failed for:", name);
+        console.log("⚠️ C/VC parse failed for:", name);
       }
 
       console.log(
-        `📌 ${name} | Match: ${matchPoints} | Tx: ${transfersLeft} | Boost: ${boostersUsed}`
+        `📌 ${name} | Match: ${matchPoints} | C: ${captain?.name} | VC: ${viceCaptain?.name}`
       );
 
       results.push({
@@ -120,29 +121,40 @@ export default async function scrapeIPL() {
         name: name.trim(),
         points,
         lastMatchPoints: matchPoints,
-        transfersLeft,
-        boostersUsed,
+        captain,
+        viceCaptain,
       });
 
-      // 👉 CLOSE PANEL (instead of goBack)
-      await page.click("body");
-      await page.waitForTimeout(800);
+      // 👉 CLOSE OVERLAY
+      try {
+        await page.keyboard.press("Escape");
+        await page.waitForSelector(".m11c-overlay__wrap", {
+          state: "hidden",
+          timeout: 3000,
+        });
+      } catch {
+        await page.mouse.click(10, 10);
+      }
 
       await page.waitForSelector("#leadersList li");
     }
 
     console.log("✅ Scraped", results.length);
 
+    // ✅ SORT (important for UI consistency)
+    results.sort((a, b) => a.rank - b.rank);
+
+    // ✅ FINAL PAYLOAD SHAPE (CRITICAL)
     const payload = {
       updatedAt: new Date().toISOString(),
       leaders: results,
     };
 
-    // 💾 Save snapshot LOCALLY (this fixes your fallback issue)
+    // 💾 Save snapshot (for fallback + debugging)
     fs.writeFileSync(SNAPSHOT_PATH, JSON.stringify(payload, null, 2));
     console.log("💾 Snapshot updated locally");
 
-    // 📡 Send to Vercel API
+    // 📡 Send to API (live)
     const res = await fetch(DASHBOARD_API, {
       method: "POST",
       headers: {
@@ -158,3 +170,5 @@ export default async function scrapeIPL() {
     await browser.close();
   }
 }
+
+scrapeIPL();

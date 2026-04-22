@@ -1,6 +1,6 @@
 "use client";
 
-import { color, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
 import OverallChart from "./components/OverallChart";
@@ -10,6 +10,7 @@ import Summary from "./components/Summary";
 import PointDifferences from "./components/PointDifferences";
 import LiveMatchTicker from "./components/LiveMatchTicker";
 import DetailedDataTable from "./components/DetailedDataTable";
+import TeamCards from "./components/TeamCards"; // ✅ NEW
 
 /* 🟢 Status Badge */
 function StatusBadge({ isLive }: { isLive: boolean }) {
@@ -68,8 +69,8 @@ export default function Home() {
             <div className="flex items-center gap-3">
               <span className="text-4xl">🏏</span>
               <h1 className="text-3xl md:text-4xl font-extrabold text-white">
-  ADSK IPL Fun Fantasy 2026
-</h1>
+                ADSK IPL Fun Fantasy 2026
+              </h1>
             </div>
 
             <StatusBadge isLive={!!isLive} />
@@ -84,23 +85,40 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* Charts */}
-        <div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">
-          <GlassCard>
-            <HeaderWithStatus isLive={!!isLive} />
-            <DailyChart data={list} />
-          </GlassCard>
+       {/* Charts */}
+<div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">
+  <GlassCard>
+    <HeaderWithStatus isLive={!!isLive} />
+    <div className="min-h-[300px] w-full">
+      <DailyChart data={list} />
+    </div>
+  </GlassCard>
 
-          <GlassCard>
-            <HeaderWithStatus isLive={!!isLive} />
-            <OverallChart data={list} />
-          </GlassCard>
-        </div>
+  <GlassCard>
+    <HeaderWithStatus isLive={!!isLive} />
+    <div className="min-h-[300px] w-full">
+      <OverallChart data={list} />
+    </div>
+  </GlassCard>
+</div>
 
         {/* Table */}
         <div className="mt-8">
           <GlassCard>
             <DetailedDataTable data={list} />
+          </GlassCard>
+        </div>
+
+        {/* ✅ NEW SECTION: Captain Insights */}
+        <div className="mt-8">
+          <GlassCard>
+            <HeaderWithStatus isLive={!!isLive} />
+
+            {/* <h2 className="text-2xl font-bold mb-6">
+              Who is your captain today?
+            </h2> */}
+
+            <TeamCards teams={list} />
           </GlassCard>
         </div>
 
@@ -112,14 +130,7 @@ export default function Home() {
           </GlassCard>
         </div>
 
-        {/* Summary */}
-        {/* <div className="mt-8">
-          <GlassCard>
-            <Summary data={data} />
-          </GlassCard>
-        </div> */}
-
-        {/* Performance Tracker */}
+        {/* Performance Tracker (optional) */}
         <div className="mt-8">
           {/* <GlassCard>
             <HeaderWithStatus isLive={!!isLive} />
