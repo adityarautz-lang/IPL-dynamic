@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 import fs from "fs";
 
-const DASHBOARD_API = "http://localhost:3000/api/ipl"; // 🔥 use local during dev
+const DASHBOARD_API = "https://ipl-dynamic.vercel.app/api/ipl"; // 🔥 use local during dev
 const TARGET_URL =
   "https://fantasy.iplt20.com/classic/league/view/66930102";
 
