@@ -1,7 +1,7 @@
 import { chromium } from "playwright";
 
 const DASHBOARD_API =
-  process.env.NODE_ENV === "development"
+  process.env.LOCAL === "true"
     ? "http://localhost:3000/api/ipl"
     : "https://ipl-dynamic.vercel.app/api/ipl";
 

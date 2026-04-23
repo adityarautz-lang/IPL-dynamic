@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: #0a0a0a;
+  color: #ededed;
+  font-family: 'Mukta', sans-serif;
+}
+
+/* Title */
+.title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 30px 0;
+  background: linear-gradient(to right, #67e8f9, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Section */
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section h2 {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #9ca3af;
+}
+
+/* Captain row */
+.captains {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+}
+
+/* Grid */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Glass Card */
+.card {
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(16px);
+  padding: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* Header */
+.header {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 10px 0;
+}
+
+/* Player */
+.player {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background-size: cover;
+}
+
+/* Colors */
+.c { color: #facc15; }
+.vc { color: #38bdf8; }
+
+</style>
+</head>
+
+<body>
+
+<div class="title">🏏 IPL Snapshot</div>
+
+<div class="section">
+  <h2>Popular Captain Choice</h2>
+  <div class="captains">
+<div class="pill">V. Sooryavanshi 50.0%</div><div class="pill">Y. Jaiswal 37.5%</div><div class="pill">R. Sharma 12.5%</div>
+  </div>
+</div>
+
+<div class="container">
+
+      <div class="card">
+        <div class="header">#1 Deccan Dominators</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69238.png')"></div>
+            <span>Y. Jaiswal</span>
+          </div>
+          <span>72</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>21</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#2 VATVAGHOOL XI</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>42</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69238.png')"></div>
+            <span>Y. Jaiswal</span>
+          </div>
+          <span>54</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#3 SquadSeven9</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>28</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69238.png')"></div>
+            <span>Y. Jaiswal</span>
+          </div>
+          <span>54</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#4 Watapi</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>28</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/100570.png')"></div>
+            <span>P. Yadav</span>
+          </div>
+          <span>93</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#5 RSAwesome 11</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69238.png')"></div>
+            <span>Y. Jaiswal</span>
+          </div>
+          <span>72</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>21</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#6 PKs11</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69238.png')"></div>
+            <span>Y. Jaiswal</span>
+          </div>
+          <span>72</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>21</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#7 Bat Bowl XI</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png')"></div>
+            <span>V. Sooryavanshi</span>
+          </div>
+          <span>28</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69656.png')"></div>
+            <span>A. Badoni</span>
+          </div>
+          <span>3</span>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">#8 RushS01</div>
+
+        <div class="divider"></div>
+
+        <div class="player c">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/3852.png')"></div>
+            <span>R. Sharma</span>
+          </div>
+          <span>0</span>
+        </div>
+
+        <div class="player vc">
+          <div class="left">
+            <div class="avatar" style="background-image:url('https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/63755.png')"></div>
+            <span>J. Bumrah</span>
+          </div>
+          <span>0</span>
+        </div>
+      </div>
+      </div></body></html>
