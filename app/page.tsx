@@ -175,12 +175,11 @@ export default function Home() {
 
         {/* Point Differences */}
         <div className="mt-6 sm:mt-8">
-          <GlassCard>
-            <HeaderWithStatus isLive={!!isLive} />
-            <div className="mt-4">
-              <PointDifferences data={list} />
-            </div>
-          </GlassCard>
+        <GlassCard>
+  <div className="mt-4">
+    <PointDifferences data={list} />
+  </div>
+</GlassCard>
         </div>
       </div>
     </main>
