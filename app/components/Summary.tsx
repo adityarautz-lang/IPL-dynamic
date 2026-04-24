@@ -1,55 +1,39 @@
 "use client";
 
 import { useMemo } from "react";
-import type { DashboardData } from "../types"; // ✅ FIX: shared type
+import type { DashboardData } from "../types";
+import { RoastDisplay } from "./RoastDisplay";
 
 export default function Summary({ data }: { data?: DashboardData }) {
-  // ✅ Safe extraction
   const list = Array.isArray(data?.leaders) ? data.leaders : [];
 
-  const matchCount = list.length;
-
-  const { cards } = useMemo(() => {
-    if (!list.length) {
-      return {
-        cards: [
-          { label: "Total Players", value: 0 },
-          { label: "Top Score", value: 0 },
-          { label: "Avg Points", value: 0 },
-          { label: "Matches Tracked", value: 0 },
-        ],
-      };
-    }
-
-    const totalPlayers = list.length;
+  const stats = useMemo(() => {
+    if (list.length === 0) return null;
 
     const topScore = Math.max(...list.map((p) => Number(p.points ?? 0)));
+    const avgPoints = list.reduce((sum, p) => sum + Number(p.points ?? 0), 0) / list.length;
 
-    const avgPoints =
-      list.reduce((sum, p) => sum + Number(p.points ?? 0), 0) /
-      totalPlayers;
-
-    return {
-      cards: [
-        { label: "Total Players", value: totalPlayers },
-        { label: "Top Score", value: topScore.toFixed(0) },
-        { label: "Avg Points", value: avgPoints.toFixed(1) },
-        { label: "Matches Tracked", value: matchCount },
-      ],
-    };
-  }, [list, matchCount]);
+    return { total: list.length, topScore: topScore.toFixed(0), avg: avgPoints.toFixed(1) };
+  }, [list]);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {cards.map((card, idx) => (
-        <div
-          key={idx}
-          className="p-4 rounded-xl bg-white/5 border border-white/10 text-center"
-        >
-          <p className="text-sm text-slate-400">{card.label}</p>
-          <p className="text-xl font-bold mt-1">{card.value}</p>
+    <div className="space-y-4">
+      {/* Compact stats */}
+      {stats && (
+        <div className="flex gap-4 text-sm text-slate-400">
+          <span>{stats.total} Teams</span>
+          <span>•</span>
+          <span>Top: {stats.topScore}pts</span>
+          <span>•</span>
+          <span>Avg: {stats.avg}pts</span>
         </div>
-      ))}
+      )}
+
+      {/* All Team Verdicts */}
+      <RoastDisplay
+        dashboardData={data}
+        autoRefresh={true}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
+import Summary from "./components/Summary";
 import OverallChart from "./components/OverallChart";
 import DailyChart from "./components/DailyChart";
 import PointDifferences from "./components/PointDifferences";
@@ -44,36 +45,6 @@ export default function Home() {
   const isLive =
     updatedAt && Date.now() - updatedAt.getTime() < 120 * 1000;
 
-  /* 🔥 Top performer (same logic as DailyChart) */
-  const topPerformer = (() => {
-    if (!list.length) return null;
-
-    const matchData = list.filter(
-      (p) =>
-        typeof p.lastMatchPoints === "number" &&
-        p.lastMatchPoints > 0
-    );
-
-    const source = matchData.length > 0 ? matchData : list;
-
-    const processed = source
-      .map((p) => ({
-        name: p.name,
-        points:
-          typeof p.lastMatchPoints === "number" &&
-          p.lastMatchPoints > 0
-            ? p.lastMatchPoints
-            : Number(p.points ?? 0),
-      }))
-      .filter((p) => p.points > 0);
-
-    if (!processed.length) return null;
-
-    return processed.reduce((max, team) =>
-      team.points > max.points ? team : max
-    );
-  })();
-
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#020617] text-white">
       {/* Background Glow */}
@@ -113,22 +84,6 @@ export default function Home() {
           </p>
         </motion.div>
 
-        {/* 🔥 Top Performer (correct position) */}
-        {topPerformer && (
-          <div className="mb-4 sm:mb-6 text-sm sm:text-base">
-            <span className="text-red-400 mr-1">🔥</span>
-            <span className="text-slate-400">
-              Today’s top performer:
-            </span>{" "}
-            <span className="text-yellow-400 font-semibold">
-              {topPerformer.name}
-            </span>{" "}
-            <span className="text-white">
-              ({topPerformer.points} pts)
-            </span>
-          </div>
-        )}
-
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8 mb-6 sm:mb-8">
           {/* Daily */}
@@ -136,7 +91,7 @@ export default function Home() {
             <GlassCard>
               <HeaderWithStatus isLive={!!isLive} />
               <div className="mt-4">
-                <div className="h-[240px] sm:h-[300px] w-full">
+                <div className="h-60 sm:h-75 w-full">
                   <DailyChart data={list} />
                 </div>
               </div>
@@ -148,15 +103,13 @@ export default function Home() {
             <GlassCard>
               <HeaderWithStatus isLive={!!isLive} />
               <div className="mt-4">
-                <div className="h-[240px] sm:h-[300px] w-full">
+                <div className="h-60 sm:h-75 w-full">
                   <OverallChart data={list} />
                 </div>
               </div>
             </GlassCard>
           </div>
         </div>
-
-       
 
         {/* Captain Insights */}
         <div className="mt-6 sm:mt-8">
@@ -168,24 +121,27 @@ export default function Home() {
           </GlassCard>
         </div>
 
+        {/* Point Differences */}
+        <div className="mt-6 sm:mt-8">
+          <GlassCard>
+            <div className="mt-4">
+              <PointDifferences data={list} />
+            </div>
+          </GlassCard>
+        </div>
 
- {/* Point Differences */}
- <div className="mt-6 sm:mt-8">
-        <GlassCard>
-  <div className="mt-4">
-    <PointDifferences data={list} />
-  </div>
-  
-         {/* Table */}
-         <div className="mt-6 sm:mt-8">
+        {/* Table */}
+        <div className="mt-6 sm:mt-8">
           <GlassCard>
             <DetailedDataTable data={list} />
           </GlassCard>
         </div>
 
-       
-</GlassCard>
+        {/* AI Roast Zone - Now at the bottom! */}
+        <div className="mt-6 sm:mt-8">
+          <Summary data={data} />
         </div>
+        
       </div>
     </main>
   );
@@ -213,7 +169,7 @@ function GlassCard({ children }: { children: React.ReactNode }) {
       }}
       className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl p-4 sm:p-6 overflow-hidden"
     >
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/5 to-transparent pointer-events-none" />
       {children}
     </motion.div>
   );
