@@ -65,7 +65,7 @@ export default function PointDifferences({ data }: PointDifferencesProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg sm:text-xl font-bold text-white">
-          📊 Gap to Next Rival
+          Gap to Next Rival
         </h2>
         <span className="text-xs text-green-400 bg-green-500/10 px-2 py-1 rounded-full">
           LIVE
