@@ -156,12 +156,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="mt-6 sm:mt-8">
-          <GlassCard>
-            <DetailedDataTable data={list} />
-          </GlassCard>
-        </div>
+       
 
         {/* Captain Insights */}
         <div className="mt-6 sm:mt-8">
@@ -173,12 +168,22 @@ export default function Home() {
           </GlassCard>
         </div>
 
-        {/* Point Differences */}
-        <div className="mt-6 sm:mt-8">
+
+ {/* Point Differences */}
+ <div className="mt-6 sm:mt-8">
         <GlassCard>
   <div className="mt-4">
     <PointDifferences data={list} />
   </div>
+  
+         {/* Table */}
+         <div className="mt-6 sm:mt-8">
+          <GlassCard>
+            <DetailedDataTable data={list} />
+          </GlassCard>
+        </div>
+
+       
 </GlassCard>
         </div>
       </div>
