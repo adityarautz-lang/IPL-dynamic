@@ -5,12 +5,10 @@ import { useDashboardData } from "./hooks/useDashboardData";
 
 import OverallChart from "./components/OverallChart";
 import DailyChart from "./components/DailyChart";
-import PerformanceTracker from "./components/PerformanceTracker";
-import Summary from "./components/Summary";
 import PointDifferences from "./components/PointDifferences";
 import LiveMatchTicker from "./components/LiveMatchTicker";
 import DetailedDataTable from "./components/DetailedDataTable";
-import TeamCards from "./components/TeamCards"; // ✅ NEW
+import TeamCards from "./components/TeamCards";
 
 /* 🟢 Status Badge */
 function StatusBadge({ isLive }: { isLive: boolean }) {
@@ -41,7 +39,6 @@ export default function Home() {
   }
 
   const list = Array.isArray(data?.leaders) ? data.leaders : [];
-
   const updatedAt = data?.updatedAt ? new Date(data.updatedAt) : null;
 
   const isLive =
@@ -57,18 +54,18 @@ export default function Home() {
 
       <LiveMatchTicker />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-10 sm:py-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-14"
+          className="mb-10 sm:mb-14"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-4xl">🏏</span>
-              <h1 className="text-3xl md:text-4xl font-extrabold text-white">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">
                 ADSK IPL Fun Fantasy 2026
               </h1>
             </div>
@@ -85,57 +82,58 @@ export default function Home() {
           </p>
         </motion.div>
 
-       {/* Charts */}
-<div className="grid md:grid-cols-2 gap-8 mb-8 items-stretch">
-  <GlassCard>
-    <HeaderWithStatus isLive={!!isLive} />
-    <div className="min-h-[300px] w-full">
-      <DailyChart data={list} />
-    </div>
-  </GlassCard>
+        {/* Charts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8 mb-6 sm:mb-8">
+          {/* Daily */}
+          <div>
+            <GlassCard>
+              <HeaderWithStatus isLive={!!isLive} />
+              <div className="mt-4">
+                <div className="h-[240px] sm:h-[300px] w-full">
+                  <DailyChart data={list} />
+                </div>
+              </div>
+            </GlassCard>
+          </div>
 
-  <GlassCard>
-    <HeaderWithStatus isLive={!!isLive} />
-    <div className="min-h-[300px] w-full">
-      <OverallChart data={list} />
-    </div>
-  </GlassCard>
-</div>
+          {/* Overall */}
+          <div>
+            <GlassCard>
+              <HeaderWithStatus isLive={!!isLive} />
+              <div className="mt-4">
+                <div className="h-[240px] sm:h-[300px] w-full">
+                  <OverallChart data={list} />
+                </div>
+              </div>
+            </GlassCard>
+          </div>
+        </div>
 
         {/* Table */}
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <GlassCard>
             <DetailedDataTable data={list} />
           </GlassCard>
         </div>
 
-        {/* ✅ NEW SECTION: Captain Insights */}
-        <div className="mt-8">
+        {/* Captain Insights */}
+        <div className="mt-6 sm:mt-8">
           <GlassCard>
             <HeaderWithStatus isLive={!!isLive} />
-
-            {/* <h2 className="text-2xl font-bold mb-6">
-              Who is your captain today?
-            </h2> */}
-
-            <TeamCards teams={list} />
+            <div className="mt-4">
+              <TeamCards teams={list} />
+            </div>
           </GlassCard>
         </div>
 
         {/* Point Differences */}
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <GlassCard>
             <HeaderWithStatus isLive={!!isLive} />
-            <PointDifferences data={list} />
+            <div className="mt-4">
+              <PointDifferences data={list} />
+            </div>
           </GlassCard>
-        </div>
-
-        {/* Performance Tracker (optional) */}
-        <div className="mt-8">
-          {/* <GlassCard>
-            <HeaderWithStatus isLive={!!isLive} />
-            <PerformanceTracker data={list} />
-          </GlassCard> */}
         </div>
       </div>
     </main>
@@ -155,16 +153,16 @@ function HeaderWithStatus({ isLive }: { isLive: boolean }) {
 function GlassCard({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       whileHover={{
-        scale: 1.02,
-        boxShadow: "0px 0px 40px rgba(99,102,241,0.25)",
+        scale: 1.01,
+        boxShadow: "0px 0px 40px rgba(99,102,241,0.2)",
       }}
-      className="h-full relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl lg:p-6"
+      className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl p-4 sm:p-6 overflow-hidden"
     >
-      <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
       {children}
     </motion.div>
   );

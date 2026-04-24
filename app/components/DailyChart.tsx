@@ -12,43 +12,7 @@ import {
   Cell,
   LabelList,
 } from "recharts";
-import { splitTeamName } from "../lib/utils";
-import type { Leader } from "../types"; // ✅ IMPORTANT FIX
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomXAxisTick = (props: any) => {
-  const { x, y, payload, isMobile } = props;
-
-  if (isMobile) {
-    return (
-      <g transform={`translate(${x},${y})`}>
-        <text
-          transform="rotate(-90)"
-          textAnchor="end"
-          fill="#94a3b8"
-          fontSize={10}
-        >
-          {payload.value}
-        </text>
-      </g>
-    );
-  }
-
-  const lines = splitTeamName(payload.value);
-
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text textAnchor="middle" fill="#94a3b8" fontSize={10}>
-        {lines[0]}
-      </text>
-      {lines[1] && (
-        <text y={14} textAnchor="middle" fill="#94a3b8" fontSize={10}>
-          {lines[1]}
-        </text>
-      )}
-    </g>
-  );
-};
+import type { Leader } from "../types";
 
 const getRandomColor = (seed: string) => {
   let hash = 0;
@@ -63,24 +27,23 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const updateMobile = () => setIsMobile(window.innerWidth < 640);
-    updateMobile();
-    window.addEventListener("resize", updateMobile);
-    return () => window.removeEventListener("resize", updateMobile);
+    const update = () => setIsMobile(window.innerWidth < 640);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   const list = Array.isArray(data) ? data : [];
 
   if (!list.length) {
     return (
-      <div className="p-6">
-        <h2 className="text-xl font-bold">📊 Current Match Performance</h2>
+      <div className="p-4">
+        <h2 className="text-lg font-bold">📊 Current Match Performance</h2>
         <p className="text-slate-400 text-sm">No match data available.</p>
       </div>
     );
   }
 
-  // ✅ SAFE fallback logic (never blank)
   const matchData = list.filter(
     (p) =>
       typeof p.lastMatchPoints === "number" &&
@@ -97,78 +60,92 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
           ? p.lastMatchPoints
           : Number(p.points ?? 0),
     }))
-    .filter((p) => p.points > 0) // ✅ prevent empty bars
+    .filter((p) => p.points > 0)
     .sort((a, b) => b.points - a.points);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ scale: 1.01 }}
-      className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden"
     >
-      <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 via-transparent to-blue-500/10 blur-2xl pointer-events-none" />
-
-      <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent)] animate-shimmer" />
-
-      <div className="relative z-10 p-6 mb-4">
-        <h2 className="text-2xl font-bold bg-linear-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+      {/* Header */}
+      <div className="p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold text-cyan-300">
           📊 Current Match Performance
         </h2>
-        <p className="text-slate-400 text-sm">
-        Runs, regrets, and questionable decisions        </p>
+        <p className="text-slate-400 text-xs sm:text-sm mt-1">
+          Runs, regrets, and questionable decisions
+        </p>
       </div>
 
-      {/* ✅ FIXED HEIGHT */}
-      <div className="w-full h-[340px] px-4">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
-                    <XAxis
-            dataKey="name"
-            stroke="#475569"
-            angle={-90}
-            textAnchor="end"
-            interval={0}
-            height={140}
-            tick={{ fill: "#94a3b8", fontSize: 11 }}
-          />
-
-            <YAxis
-              stroke="#475569"
-              tick={{ fill: "#94a3b8", fontSize: 11 }}
-            />
-
-            <Tooltip
-              cursor={{ fill: "rgba(255,255,255,0.05)" }}
-              contentStyle={{
-                background: "rgba(2,6,23,0.95)",
-                border: "1px solid rgba(148,163,184,0.2)",
-                borderRadius: "12px",
-                backdropFilter: "blur(10px)",
+      {/* Chart */}
+      <div className="w-full px-2 sm:px-4 pb-6">
+        <div className="h-[240px] sm:h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{
+                top: 10,
+                right: 10,
+                left: -10,
+                bottom: isMobile ? 65 : 60, // ✅ ONLY CHANGE
               }}
-            />
+              barCategoryGap={isMobile ? "10%" : "20%"}
+            >
+              <XAxis
+                dataKey="name"
+                stroke="#ffffff"
+                tick={{
+                  fill: "#ffffff",
+                  fontSize: isMobile ? 9 : 11,
+                }}
+                interval={0}
+                angle={isMobile ? -30 : -25}
+textAnchor="end"
+height={isMobile ? 70 : 75}
+              />
 
-            <Bar dataKey="points" radius={[10, 10, 0, 0]}>
-              {chartData.map((entry) => (
-                <Cell
-                  key={entry.name}
-                  fill={getRandomColor(entry.name)}
-                />
-              ))}
+              <YAxis
+                stroke="#ffffff"
+                tick={{ fill: "#ffffff", fontSize: 10 }}
+                width={30}
+              />
 
-              <LabelList
-                dataKey="points"
-                position="top"
-                style={{
-                  fill: "#fff",
-                  fontSize: 12,
-                  fontWeight: 600,
+              <Tooltip
+                cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                contentStyle={{
+                  background: "rgba(2,6,23,0.95)",
+                  border: "1px solid rgba(148,163,184,0.2)",
+                  borderRadius: "10px",
                 }}
               />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+
+              <Bar
+                dataKey="points"
+                radius={[8, 8, 0, 0]}
+                barSize={isMobile ? 22 : 30}
+              >
+                {chartData.map((entry) => (
+                  <Cell
+                    key={entry.name}
+                    fill={getRandomColor(entry.name)}
+                  />
+                ))}
+
+                <LabelList
+                  dataKey="points"
+                  position="top"
+                  style={{
+                    fill: "#fff",
+                    fontSize: isMobile ? 10 : 12,
+                    fontWeight: 600,
+                  }}
+                />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </motion.div>
   );
