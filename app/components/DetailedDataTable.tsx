@@ -41,11 +41,11 @@ export default function DetailedDataTable({
             <tr>
               <th className="px-1 py-1.5 w-[42px]">Rk</th>
               <th className="px-1 py-1.5">Name</th>
-              <th className="px-1 py-1.5 w-[75px] text-right">Pts</th>
-              <th className="px-1 py-1.5 w-[60px] text-right">LM</th>
-              <th className="px-1 py-1.5 w-[55px] text-right">Tr</th>
-              <th className="px-1 py-1.5 w-[55px] text-right">Bst</th>
-              <th className="px-1 py-1.5 w-[65px] text-right">Eff</th>
+              <th className="px-1 py-1.5 w-[75px] text-left">Pts</th>
+              <th className="px-1 py-1.5 w-[60px] text-left">LM</th>
+              <th className="px-1 py-1.5 w-[55px] text-left">Tr</th>
+              <th className="px-1 py-1.5 w-[55px] text-left">Bst</th>
+              <th className="px-1 py-1.5 w-[65px] text-left">Eff</th>
             </tr>
           </thead>
 
