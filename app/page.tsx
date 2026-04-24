@@ -62,10 +62,10 @@ export default function Home() {
           transition={{ duration: 0.6 }}
           className="mb-10 sm:mb-14"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-left">
             <div className="flex items-center gap-3">
-              <span className="text-4xl">🏏</span>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">
+              <span className="text-4xl">🏆</span>
+              <h1 className="text-[20px] sm:text-3xl md:text-4xl font-extrabold text-white">
                 ADSK IPL Fun Fantasy 2026
               </h1>
             </div>
