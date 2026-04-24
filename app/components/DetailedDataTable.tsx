@@ -18,7 +18,6 @@ export default function DetailedDataTable({
     );
   }
 
-  // Normalize + sort
   const sorted = [...list]
     .map((d) => ({
       ...d,
@@ -29,24 +28,24 @@ export default function DetailedDataTable({
     .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">
+    <div className="p-3 sm:p-6">
+      <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">
         📋 Detailed Leaderboard
       </h2>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left border-collapse">
+        <table className="w-full text-[11px] sm:text-sm text-left border-collapse">
           
           {/* Header */}
           <thead className="bg-white/10 text-slate-300">
             <tr>
-              <th className="px-4 py-3">Rank</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3 text-center">Total Points</th>
-              <th className="px-4 py-3 text-center">Last Match</th>
-              <th className="px-4 py-3 text-center">Transfers</th>
-              <th className="px-4 py-3 text-center">Boosters</th>
-              <th className="px-4 py-3 text-center">EFF</th>
+              <th className="px-1.5 py-2 w-[45px]">Rk</th>
+              <th className="px-1.5 py-2">Name</th>
+              <th className="px-1.5 py-2 text-center">Pts</th>
+              <th className="px-1.5 py-2 text-center">LM</th>
+              <th className="px-1.5 py-2 text-center">Tr</th>
+              <th className="px-1.5 py-2 text-center">Bst</th>
+              <th className="px-1.5 py-2 text-center">Eff</th>
             </tr>
           </thead>
 
@@ -71,7 +70,7 @@ export default function DetailedDataTable({
                 >
                   {/* Rank */}
                   <td
-                    className={`px-4 py-3 border-l-4 ${
+                    className={`px-1.5 py-2 w-[45px] border-l-4 ${
                       rank <= 3
                         ? "border-green-400"
                         : rank >= 6
@@ -79,7 +78,7 @@ export default function DetailedDataTable({
                         : "border-transparent"
                     }`}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-[2px]">
                       {rank === 1 && "🏆"}
                       {rank === 2 && "🥈"}
                       {rank === 3 && "🥉"}
@@ -88,33 +87,33 @@ export default function DetailedDataTable({
                   </td>
 
                   {/* Name */}
-                  <td className="px-4 py-3 font-medium text-white">
+                  <td className="px-1.5 py-2 font-medium text-white max-w-[70px] truncate">
                     {row.name}
                   </td>
 
                   {/* Total Points */}
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-1.5 py-2 text-center">
                     {row.points.toLocaleString("en-IN")}
                   </td>
 
                   {/* Last Match */}
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-1.5 py-2 text-center">
                     {row.lastMatchPoints || "-"}
                   </td>
 
                   {/* Transfers */}
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-1.5 py-2 text-center">
                     {transfersLeft}
                   </td>
 
                   {/* Boosters */}
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-1.5 py-2 text-center">
                     {row.boostersUsed ?? "-"}
                   </td>
 
                   {/* Efficiency */}
                   <td
-                    className={`px-4 py-3 text-center font-semibold ${
+                    className={`px-1.5 py-2 text-center font-semibold ${
                       efficiency === "–"
                         ? "text-slate-400"
                         : efficiencyNum > 70
