@@ -18,20 +18,21 @@ export default function TeamCards({ teams }: { teams: any[] }) {
     .sort((a, b) => Number(b.percentage) - Number(a.percentage));
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-6 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4 space-y-4 sm:space-y-5">
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold mb-6">Who's your captain today?
+        <h2 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">
+          Who's your captain today?
         </h2>
-        <p className="text-sm text-slate-400">
+        <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
           Quick snapshot of captain picks across teams
         </p>
       </div>
 
       {/* Popular Captain Choice */}
       <div>
-        <h3 className="text-xs uppercase tracking-wide text-slate-500 mb-3">
+        <h3 className="text-[10px] sm:text-xs uppercase tracking-wide text-slate-500 mb-2">
           Popular Captain Choice
         </h3>
 
@@ -39,7 +40,7 @@ export default function TeamCards({ teams }: { teams: any[] }) {
           {captainStats.map((c) => (
             <div
               key={c.name}
-              className="glass-card px-3 py-1.5 text-sm text-slate-200"
+              className="glass-card px-2 py-1 text-xs sm:text-sm text-slate-200"
             >
               {c.name}{" "}
               <span className="text-slate-400">{c.percentage}%</span>
@@ -52,50 +53,50 @@ export default function TeamCards({ teams }: { teams: any[] }) {
       <div className="border-t border-white/10" />
 
       {/* Cards */}
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {teams
           .sort((a, b) => a.rank - b.rank)
           .map((t) => (
             <div
               key={t.name}
-              className="glass-card p-5 hover:scale-[1.02] transition-all"
+              className="glass-card p-3 sm:p-4 hover:scale-[1.02] transition-all"
             >
               {/* Team Header */}
-              <div className="font-semibold text-sm text-slate-300 mb-4">
+              <div className="font-semibold text-xs sm:text-sm text-slate-300 mb-2 sm:mb-3">
                 #{t.rank} {t.name}
               </div>
 
               {/* Players */}
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 
                 {/* Captain */}
                 <div className="flex justify-between items-center text-yellow-300">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <img
                       src={t.captain?.image}
-                      className="w-10 h-10 rounded-full border border-white/10"
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/10"
                     />
-                    <span className="text-sm font-medium">
+                    <span className="text-xs sm:text-sm font-medium">
                       {t.captain?.name}
                     </span>
                   </div>
-                  <span className="text-sm font-semibold">
+                  <span className="text-xs sm:text-sm font-semibold">
                     {t.captain?.points}
                   </span>
                 </div>
 
                 {/* Vice Captain */}
                 <div className="flex justify-between items-center text-blue-300">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <img
                       src={t.viceCaptain?.image}
-                      className="w-10 h-10 rounded-full border border-white/10"
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/10"
                     />
-                    <span className="text-sm font-medium">
+                    <span className="text-xs sm:text-sm font-medium">
                       {t.viceCaptain?.name}
                     </span>
                   </div>
-                  <span className="text-sm font-semibold">
+                  <span className="text-xs sm:text-sm font-semibold">
                     {t.viceCaptain?.points}
                   </span>
                 </div>
