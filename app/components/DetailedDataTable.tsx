@@ -29,8 +29,7 @@ export default function DetailedDataTable({
 
   return (
     <div className="p-3 sm:p-6">
-      <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">
-        📋 Detailed Leaderboard
+      <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">Detailed Leaderboard
       </h2>
 
       <div className="overflow-x-auto">

@@ -22,8 +22,7 @@ export default function TeamCards({ teams }: { teams: any[] }) {
       
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold mb-6">
-          🧢 Who's your captain today?
+        <h2 className="text-2xl font-bold mb-6">Who's your captain today?
         </h2>
         <p className="text-sm text-slate-400">
           Quick snapshot of captain picks across teams
