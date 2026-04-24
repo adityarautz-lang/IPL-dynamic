@@ -33,7 +33,7 @@ export default function DetailedDataTable({
       </h2>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-[11px] sm:text-sm text-left border-collapse">
+        <table className="w-full text-[10px] sm:text-sm text-left border-collapse">
           
           {/* Header */}
           <thead className="bg-white/10 text-slate-300">
