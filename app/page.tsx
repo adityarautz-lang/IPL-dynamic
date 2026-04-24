@@ -44,6 +44,36 @@ export default function Home() {
   const isLive =
     updatedAt && Date.now() - updatedAt.getTime() < 120 * 1000;
 
+  /* 🔥 Top performer (same logic as DailyChart) */
+  const topPerformer = (() => {
+    if (!list.length) return null;
+
+    const matchData = list.filter(
+      (p) =>
+        typeof p.lastMatchPoints === "number" &&
+        p.lastMatchPoints > 0
+    );
+
+    const source = matchData.length > 0 ? matchData : list;
+
+    const processed = source
+      .map((p) => ({
+        name: p.name,
+        points:
+          typeof p.lastMatchPoints === "number" &&
+          p.lastMatchPoints > 0
+            ? p.lastMatchPoints
+            : Number(p.points ?? 0),
+      }))
+      .filter((p) => p.points > 0);
+
+    if (!processed.length) return null;
+
+    return processed.reduce((max, team) =>
+      team.points > max.points ? team : max
+    );
+  })();
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#020617] text-white">
       {/* Background Glow */}
@@ -54,17 +84,18 @@ export default function Home() {
 
       <LiveMatchTicker />
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-10 sm:py-12">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-8 sm:py-10">
+        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-10 sm:mb-14"
+          className="mb-4 sm:mb-6"
         >
-          <div className="flex items-center justify-left">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-4xl">🏆</span>
+              <span className="text-3xl sm:text-4xl">🏆</span>
               <h1 className="text-[20px] sm:text-3xl md:text-4xl font-extrabold text-white">
                 ADSK IPL Fun Fantasy 2026
               </h1>
@@ -81,6 +112,22 @@ export default function Home() {
             Last updated: {updatedAt?.toLocaleTimeString() || "—"}
           </p>
         </motion.div>
+
+        {/* 🔥 Top Performer (correct position) */}
+        {topPerformer && (
+          <div className="mb-4 sm:mb-6 text-sm sm:text-base">
+            <span className="text-red-400 mr-1">🔥</span>
+            <span className="text-slate-400">
+              Today’s top performer:
+            </span>{" "}
+            <span className="text-yellow-400 font-semibold">
+              {topPerformer.name}
+            </span>{" "}
+            <span className="text-white">
+              ({topPerformer.points} pts)
+            </span>
+          </div>
+        )}
 
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8 mb-6 sm:mb-8">
