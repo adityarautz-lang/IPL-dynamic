@@ -1,5 +1,5 @@
 "use client";
-
+import TopPerformer from "./components/TopPerformer";
 import { motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
