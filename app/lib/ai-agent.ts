@@ -1,7 +1,3 @@
-/**
- * Dynamic Roast Generator - Unique roasts guaranteed
- */
-
 import Groq from "groq-sdk";
 
 export interface RoastResult {
@@ -16,292 +12,181 @@ export interface RoastResult {
   analysis: {
     matchRank: number;
     seasonRank: number;
-    performance: "legendary" | "solid" | "mid" | "struggling" | "disaster";
-    vsExpectation: "overperforming" | "underperforming" | "as_expected";
-    rankMovement: "up" | "down" | "same";
-    matchPerformance: "very_low" | "low" | "average" | "good" | "excellent";
+    matchPerformance: string;
   };
 }
 
-// Massive variety of fallback templates - NO repeats
-const FALLBACK_TEMPLATES: Record<string, Array<(t: string, p: number, r: number) => string>> = {
-  very_low: [
-    (t: string, p: number, r: number) => `${t} got ${p} at #${r}. Auto-fill mode activated! 💀`,
-    (t: string, p: number, r: number) => `Kay re ${t}, ${p} points? Random generator do better 📝`,
-    (t: string, p: number, r: number) => `${t} with ${p} - even calculator shows error at #${r} 🧮`,
-    (t: string, p: number, r: number) => `${p} points for ${t}. What were the criteria?! 🤔`,
-    (t: string, p: number, r: number) => `${t} scored ${p} - that's not a team, that's a joke at #${r} 😵`,
-    (t: string, p: number, r: number) => `Re ${t}, ${p} points? Your fantasy deserves a vacation 💤`,
-    (t: string, p: number, r: number) => `${t} baghun lagtoy at ${p} points. System error?! 🔧`,
-    (t: string, p: number, r: number) => `${p} for ${t}. Em chestunnav ra - this is comedy gold 😂`,
-    (t: string, p: number, r: number) => `${t} - ${p} points at #${r}. The void welcomes you 🕳️`,
-    (t: string, p: number, r: number) => `Random pick > ${t} at ${p} points. Facts only 💯`,
-  ],
-  low: [
-    (t: string, p: number, r: number) => `${t} managed ${p} at #${r}. Thoda try kar le bhai 😅`,
-    (t: string, p: number, r: number) => `${p} points for ${t}. Still figuring out the game? 📚`,
-    (t: string, p: number, r: number) => `Kay re ${t}, ${p} points - potential ki dukan band 😬`,
-    (t: string, p: number, r: number) => `${t} at ${p}. The struggle is real, yaar 💪... or not 🔻`,
-    (t: string, p: number, r: number) => `${p} points from ${t}. Next match panic mode on 🤡`,
-    (t: string, p: number, r: number) => `Re ${t} - ${p} at #${r}. Dimag se khel bhai 🧠`,
-    (t: string, p: number, r: number) => `${t} got ${p} - not bad, not bad... actually bad 😔`,
-    (t: string, p: number, r: number) => `${p} points ${t}. The learning curve is steep 📈⬇️`,
-  ],
-  excellent: [
-    (t: string, p: number, r: number) => `${t} dropped ${p} at #${r}! Full jhakaas 🔥`,
-    (t: string, p: number, r: number) => `${p} points - ${t} in beast mode today 😎`,
-    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Rest are just practicing 🏆`,
-    (t: string, p: number, r: number) => `${p} points - ${t}. The dynasty is real 💪`,
-    (t: string, p: number, r: number) => `${t} cooked today - ${p} at #${r}. Others packing up 🔥`,
-    (t: string, p: number, r: number) => `${p} for ${t}. Aaj sabka baap mode ON 👑`,
-    (t: string, p: number, r: number) => `Wah ${t}! ${p} points. The throne stays occupied 😏`,
-    (t: string, p: number, r: number) => `${t} proving why at #${r} with ${p}. Legends only 🏅`,
-  ],
-  good: [
-    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Aaj thoda sahi kiya 😏`,
-    (t: string, p: number, r: number) => `${p} points for ${t}. Finally showing up! 👀`,
-    (t: string, p: number, r: number) => `Re ${t}, ${p} at #${r} - not bad at all 🤙`,
-    (t: string, p: number, r: number) => `${t} got ${p}. The sleeper awakens at #${r} 😴💪`,
-    (t: string, p: number, r: number) => `${p} from ${t}. Something clicking today 🔄`,
-    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Dimag use kiya, finally 🧠`,
-  ],
-  average: [
-    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Safe game, safe scorecard 📋`,
-    (t: string, p: number, r: number) => `${p} points for ${t}. Neither hero nor zero 🤷`,
-    (t: string, p: number, r: number) => `${t} - ${p} at #${r}. The perfect mid-table energy 🥪`,
-    (t: string, p: number, r: number) => `${p} from ${t}. As expected, as always 🎭`,
-    (t: string, p: number, r: number) => `${t} with ${p}. Middle of the road vibes 🚗`,
-    (t: string, p: number, r: number) => `${t} at ${p}. Standard edition activated 📦`,
-  ],
+// 🔥 PERSONALITY MAP (manager traits)
+const TEAM_PERSONALITY: Record<string, string> = {
+  "PKs11": "plays cricket day and night, still chaotic",
+  "RSAwesome 11": "always late, ditches plans",
+  "Watapi": "sarpanch mindset, big land owner energy",
+  "Deccan Dominators": "lavish lifestyle, talks big",
+  "VATVAGHOOL XI": "food lover, everywhere but distracted",
+  "Bat Bowl XI": "missing from plans, lost in his own world",
+  "SquadSeven9": "travels more than plans",
+  "RushS01": "barely participates but still here somehow"
 };
 
 class DynamicRoastAgent {
   private groq: Groq | null = null;
-  private usedFallbacks: Map<string, number> = new Map();
-  private generationCount: number = 0;
 
-  initialize(apiKey: string): void {
+  initialize(apiKey: string) {
     this.groq = new Groq({ apiKey });
-    this.usedFallbacks.clear();
-    this.generationCount = 0;
-    console.log("🔥 Dynamic Roast Agent initialized");
   }
 
-  isReady(): boolean {
-    return this.groq !== null;
+  isReady() {
+    return !!this.groq;
   }
 
-  private getPerformanceLevel(matchPoints: number, avgPoints: number, maxPoints: number): RoastResult["analysis"]["matchPerformance"] {
-    if (matchPoints >= maxPoints * 0.9) return "excellent";
-    if (matchPoints / avgPoints >= 1.4) return "excellent";
-    if (matchPoints / avgPoints >= 1.1) return "good";
-    if (matchPoints / avgPoints >= 0.8) return "average";
-    if (matchPoints / avgPoints >= 0.4) return "low";
-    return "very_low";
-  }
+  async generateRoast(user: any, context: any) {
+    if (!this.groq) throw new Error("Not initialized");
 
-  private getRankMovement(matchRank: number, seasonRank: number): "up" | "down" | "same" {
-    const diff = seasonRank - matchRank;
-    if (diff > 2) return "up";
-    if (diff < -2) return "down";
-    return "same";
-  }
+    const captain = user.captain?.name || "Unknown";
+    const captainPts = user.captain?.points || 0;
+    const personality = TEAM_PERSONALITY[user.name] || "";
 
-  private getUniqueFallback(
-    teamName: string, 
-    points: number, 
-    rank: number, 
-    performance: string
-  ): string {
-    const templates = FALLBACK_TEMPLATES[performance as keyof typeof FALLBACK_TEMPLATES] || FALLBACK_TEMPLATES.average;
-    
-    // Find an unused template based on team hash + count
-    const hash = (teamName + points + this.generationCount).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-    const index = hash % templates.length;
-    
-    const template = templates[index];
-    const roast = template(teamName, points, rank);
-    
-    this.generationCount++;
-    return roast;
-  }
+    const trend =
+      user.previousPoints !== undefined
+        ? user.lastMatchPoints - user.previousPoints
+        : 0;
 
-  async generateRoast(
-    teamName: string,
-    matchPoints: number,
-    matchRank: number,
-    seasonPoints: number,
-    seasonRank: number,
-    totalTeams: number,
-    avgPerMatch: number,
-    maxPoints: number,
-    performance: RoastResult["analysis"]["matchPerformance"],
-    rankMovement: "up" | "down" | "same"
-  ): Promise<string> {
-    if (!this.groq) {
-      throw new Error("Not initialized");
-    }
+    let trendText = "same pattern again";
+    if (trend > 50) trendText = "finally improved";
+    if (trend < -50) trendText = "somehow got worse";
 
-    const isTop = matchRank <= totalTeams * 0.1;
-    const isBottom = matchRank > totalTeams * 0.5;
-    const rankPercentile = Math.round((matchRank / totalTeams) * 100);
-    const ptsDiff = Math.round(matchPoints - avgPerMatch);
+    // 🎲 Random angle to reduce repetition
+    const angles = [
+      "decision making",
+      "personality mismatch",
+      "pattern repetition",
+      "expectation vs reality",
+      "captain choice"
+    ];
 
-    const prompt = `Roast "${teamName}" savagely. 2 lines only. Include ${matchPoints} points.
+    const angle = angles[Math.floor(Math.random() * angles.length)];
 
-CONTEXT:
-- ${matchPoints} POINTS at #${matchRank} (top ${rankPercentile}%)
-- Season: #${seasonRank} with ${seasonPoints} total
-- ${ptsDiff >= 0 ? "+" : ""}${ptsDiff} vs average
+    const prompt = `
+Manager: ${user.name}
+Points: ${user.lastMatchPoints}
+Previous Points: ${user.previousPoints || "unknown"}
+Trend: ${trendText}
 
-${isTop && performance !== "excellent" ? "Top team choking today - destroy them" : ""}
-${isBottom ? "Bottom team - savage comedy mode" : ""}
-${performance === "very_low" ? "Terrible score - brutal roast" : ""}
-${performance === "excellent" ? "Top score - hype but warn" : ""}
-${rankMovement === "down" ? "Rank dropped - expose them" : ""}
-${rankMovement === "up" ? "Rank improved - acknowledge" : ""}
+Match Rank: #${context.rank}/${context.total}
+Overall Rank: #${context.seasonRank}
 
-2 lines. Hinglish. Max 3 emojis. Be different every time. Write:`;
+Captain Pick: ${captain} (${captainPts})
+
+Personality:
+${personality}
+
+Focus Angle:
+${angle}
+
+Write a sarcastic roast about the MANAGER (not players).
+
+STRICT RULES:
+- Roast the manager’s decisions, not players
+- ALWAYS compare (vs others, vs past, or expectation)
+- Personality MUST be central
+- Avoid phrases like "good", "decent", "nice"
+- Avoid repeating structure
+
+Tone:
+- Sarcastic, slightly harsh, playful
+- Like teasing a friend
+
+Constraints:
+- 1 sentence only
+- Max 18–20 words
+- Use "points", NOT runs
+- No emojis
+- No formal commentary
+
+Examples:
+- "All that cricket all day and still these captain calls, others clearly thinking ahead."
+- "Always late and now even your points seem to arrive after everyone else."
+- "Big talk off the field, but these decisions keep you exactly where you started."
+- "Barely shows up and somehow the points reflect that commitment perfectly."
+
+Write:
+`;
 
     try {
-      const response = await this.groq.chat.completions.create({
+      const res = await this.groq.chat.completions.create({
         messages: [
           {
             role: "system",
-            content: `You are a savage WhatsApp friend roasting teams. Be creative and varied. 
-            2 lines max. Include exact points. Mix Hindi English naturally.
-            Examples: "727 at #1 - top of the world! 🌐" | "25 points? Even auto-pick better 💀"
-            Be DIFFERENT each time. Never repeat patterns.`
+            content: `You roast fantasy team managers.
+
+Rules:
+- Never talk like a cricket commentator
+- Always target decisions and patterns
+- Be sarcastic, varied, and slightly harsh (but not abusive)
+- Avoid repetition`,
           },
-          { role: "user", content: prompt }
+          { role: "user", content: prompt },
         ],
         model: "llama-3.1-8b-instant",
+        temperature: 1.0,
+        top_p: 0.95,
         max_tokens: 60,
-        temperature: 0.95,
-        top_p: 0.9,
       });
 
-      let roast = response.choices[0]?.message?.content?.trim() || "";
-      
-      // Clean up
-      roast = roast.replace(/^["']|["']$/g, "").trim();
-      roast = roast.replace(/\n{2,}/g, "\n").trim();
-      
-      // Ensure 2 lines
-      const lines = roast.split("\n").filter(l => l.trim().length > 3);
-      if (lines.length >= 2) {
-        roast = lines.slice(0, 2).join("\n");
-      } else if (lines.length === 1 && lines[0].length > 30) {
-        const words = lines[0].split(" ");
-        const mid = Math.floor(words.length / 2);
-        roast = words.slice(0, mid).join(" ") + "\n" + words.slice(mid).join(" ");
-      }
+      let roast = res.choices[0]?.message?.content?.trim() || "";
 
-      // Validate - must have points and be reasonable length
-      if (roast.length < 15 || !roast.includes(matchPoints.toString())) {
-        return this.getUniqueFallback(teamName, matchPoints, matchRank, performance);
+      // enforce wording
+      roast = roast.replace(/\bruns\b/gi, "points");
+      roast = roast.replace(/\n+/g, " ").trim();
+
+      // safety trim
+      const words = roast.split(" ");
+      if (words.length > 20) {
+        roast = words.slice(0, 20).join(" ");
       }
 
       return roast;
 
-    } catch (error) {
-      console.error("AI failed, using fallback:", error);
-      return this.getUniqueFallback(teamName, matchPoints, matchRank, performance);
+    } catch (err) {
+      console.error("AI error:", err);
+
+      return `${user.name} keeps doing the same thing and expecting different results, which is honestly impressive at this point.`;
     }
   }
 
-  async processMatch(
-    users: { name: string; points: number; lastMatchPoints: number; previousMatchPoints?: number }[],
-    matchId: number
-  ): Promise<RoastResult[]> {
-    if (!this.isReady()) {
-      throw new Error("Not initialized");
-    }
+  async processMatch(users: any[], matchId: number): Promise<RoastResult[]> {
+    const sorted = [...users].sort(
+      (a, b) => b.lastMatchPoints - a.lastMatchPoints
+    );
 
-    this.generationCount = 0;
-    console.log("🔥 Processing", users.length, "teams");
+    return Promise.all(
+      sorted.map(async (u, i) => {
+        const roast = await this.generateRoast(u, {
+          rank: i + 1,
+          total: users.length,
+          seasonRank: u.rank,
+        });
 
-    const validUsers = users.filter(u => u.lastMatchPoints > 0);
-    const allMatchPoints = validUsers.map(u => u.lastMatchPoints);
-    const maxPoints = Math.max(...allMatchPoints);
-
-    const matchRanking = [...validUsers].sort((a, b) => b.lastMatchPoints - a.lastMatchPoints);
-    const matchRankMap = new Map(matchRanking.map((u, i) => [u.name, i + 1]));
-
-    const seasonRanking = [...validUsers].sort((a, b) => b.points - a.points);
-    const seasonRankMap = new Map(seasonRanking.map((u, i) => [u.name, i + 1]));
-
-    const roasts: RoastResult[] = [];
-
-    for (const user of validUsers) {
-      const mRank = matchRankMap.get(user.name) || 1;
-      const sRank = seasonRankMap.get(user.name) || 1;
-      const avg = user.points / Math.max(validUsers.length, 1);
-
-      const perf = this.getPerformanceLevel(user.lastMatchPoints, avg, maxPoints);
-      const rankMov = this.getRankMovement(mRank, sRank);
-
-      const roast = await this.generateRoast(
-        user.name,
-        user.lastMatchPoints,
-        mRank,
-        user.points,
-        sRank,
-        validUsers.length,
-        avg,
-        maxPoints,
-        perf,
-        rankMov
-      );
-
-      let performance: RoastResult["analysis"]["performance"];
-      let vsExpectation: RoastResult["analysis"]["vsExpectation"];
-      let sentiment: RoastResult["sentiment"];
-
-      if (perf === "excellent") {
-        performance = "legendary";
-        sentiment = "positive";
-        vsExpectation = "overperforming";
-      } else if (perf === "very_low" || perf === "low") {
-        performance = "disaster";
-        sentiment = "negative";
-        vsExpectation = "underperforming";
-      } else if (mRank <= sRank - 3) {
-        performance = "solid";
-        sentiment = "positive";
-        vsExpectation = "overperforming";
-      } else if (mRank > sRank + 3 || (sRank <= 3 && mRank > 6)) {
-        performance = "struggling";
-        sentiment = "negative";
-        vsExpectation = "underperforming";
-      } else {
-        performance = perf === "good" ? "solid" : "mid";
-        sentiment = "neutral";
-        vsExpectation = "as_expected";
-      }
-
-      roasts.push({
-        id: `roast_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-        teamName: user.name,
-        matchPoints: user.lastMatchPoints,
-        seasonPoints: user.points,
-        roast,
-        sentiment,
-        matchId,
-        timestamp: new Date(),
-        analysis: {
-          matchRank: mRank,
-          seasonRank: sRank,
-          performance,
-          vsExpectation,
-          rankMovement: rankMov,
-          matchPerformance: perf,
-        },
-      });
-    }
-
-    return roasts.sort((a, b) => b.matchPoints - a.matchPoints);
+        return {
+          id: `roast_${i}`,
+          teamName: u.name,
+          matchPoints: u.lastMatchPoints,
+          seasonPoints: u.points,
+          roast,
+          sentiment: "neutral",
+          matchId,
+          timestamp: new Date(),
+          analysis: {
+            matchRank: i + 1,
+            seasonRank: u.rank,
+            matchPerformance: "avg",
+          },
+        };
+      })
+    );
   }
 }
 
-export const roastAgent = new DynamicRoastAgent();
+// ✅ FIXED EXPORT
+const roastAgent = new DynamicRoastAgent();
+export default roastAgent;

@@ -1,6 +1,5 @@
 /**
  * Real AI Roast Generator using Groq
- * Dynamically generates roast comments for each team based on their actual performance
  */
 
 import Groq from "groq-sdk";
@@ -17,7 +16,6 @@ export interface MatchRoast {
   timestamp: Date;
 }
 
-// Initialize Groq client
 let groqClient: Groq | null = null;
 
 function getGroqClient(): Groq {
@@ -31,22 +29,35 @@ function getGroqClient(): Groq {
   return groqClient;
 }
 
-// System prompt for the AI roaster
-const SYSTEM_PROMPT = `You are a hilarious, savage IPL fantasy league commentator. You roast teams in a funny,阴阳怪气的 style.
-You MUST:
-- Be sarcastic and witty
-- Reference their actual points (DELTA shows change from last match)
-- Make jokes about specific scores
-- Use casual internet humor
-- Keep roasts SHORT (1-2 sentences max)
-- NEVER be overly nice - roast hard!
-- Mix of Hindi-English slang is encouraged
+// ✅ UPDATED SYSTEM PROMPT (STRICT ENGLISH + CURRENT MATCH FOCUS)
+const SYSTEM_PROMPT = `You are a witty IPL fantasy league commentator with a dry, British-style sense of humour.
+
+Tone:
+- Lightly sarcastic, never insulting
+- Calm, observant, and clever
+- Fully in English (no slang or mixed language)
+- Respectful and suitable for a broad audience
+
+Context:
+- You are commenting ONLY on the current match performance
+- Do NOT reference past matches, trends, or improvements
+- Focus only on how the team performed in this match
+
+Style:
+- Use cricketing language (innings, form, collapse, partnerships)
+- Optional light Bollywood-style comparisons, but subtle
+- Keep it relatable for an Indian audience
+
+Rules:
+- Maximum 1–2 short sentences
+- No aggressive humour or internet slang
+- No emojis in the middle of sentences (optional at end)
 
 Examples:
-- "700 points?? Bro was COOKING while others were reheating leftover teams 💀"
-- "Yikes, 25 points. Even my WiFi router scores higher than {team} today"
-- "{team} went from {prev} to {curr}. That's not a comeback, that's a cry for help 📉"
-- "POV: You're {team} with {points} points. The leaderboard laughed. Then cried."`;
+- "{team} put up {points} — a steady innings, though not one that will trouble the scorers."
+- "{team} with {points} points. A performance that felt more cautious than commanding."
+- "{team} managed {points}. One might say it lacked the final flourish."
+- "{team} on {points}. A decent outing, though unlikely to dominate discussions."`;
 
 async function generateSingleRoast(
   teamName: string,
@@ -57,17 +68,15 @@ async function generateSingleRoast(
 ): Promise<string> {
   const client = getGroqClient();
 
-  const avgPoints = allTeamsPoints.reduce((a, b) => a + b, 0) / allTeamsPoints.length;
-  const percentile = Math.round(
-    (allTeamsPoints.filter(p => p < points).length / allTeamsPoints.length) * 100
-  );
+  const avgPoints =
+    allTeamsPoints.reduce((a, b) => a + b, 0) / allTeamsPoints.length;
 
-  const userPrompt = `Generate a SHORT roast comment for "${teamName}" who scored ${points} points this match.
-${prevPoints > 0 ? `Previous match: ${prevPoints} points.` : 'First match of the season.'}
-${delta !== 0 ? `Change: ${delta >= 0 ? '+' : ''}${delta} points.` : ''}
-League average: ${Math.round(avgPoints)} pts. They're at ${percentile}th percentile.
+  // ✅ USER PROMPT — CURRENT MATCH ONLY
+  const userPrompt = `Generate a short cricket-style comment for "${teamName}" who scored ${points} points in this match.
 
-Keep it under 25 words. Make it savage and funny. No emojis in the middle of sentences - only at the end if needed.`;
+League average for this match is ${Math.round(avgPoints)} points.
+
+Keep it under 25 words. Make it subtle, witty, and focused only on this match performance.`;
 
   try {
     const chat = await client.chat.completions.create({
@@ -77,7 +86,7 @@ Keep it under 25 words. Make it savage and funny. No emojis in the middle of sen
       ],
       model: "llama-3.1-8b-instant",
       max_tokens: 100,
-      temperature: 0.8,
+      temperature: 0.7,
     });
 
     const roast = chat.choices[0]?.message?.content?.trim();
@@ -85,47 +94,43 @@ Keep it under 25 words. Make it savage and funny. No emojis in the middle of sen
     throw new Error("Empty response from AI");
   } catch (error) {
     console.error("AI roast error:", error);
-    // Fallback
-    return generateFallbackRoast(teamName, points, prevPoints, delta, avgPoints);
+    return generateFallbackRoast(teamName, points, avgPoints);
   }
 }
 
+// ✅ SIMPLIFIED FALLBACK (CURRENT MATCH ONLY)
 function generateFallbackRoast(
   teamName: string,
   points: number,
-  prevPoints: number,
-  delta: number,
   avgPoints: number
 ): string {
-  if (delta > 200) {
-    return `${teamName} just dropped ${points} points after ${prevPoints}. ABSOLUTE UNITS!`;
-  } else if (points > avgPoints * 1.5) {
-    return `${teamName} with ${points} pts is absolutely cooking today. Others are catching up? Never.`;
-  } else if (points < avgPoints * 0.3) {
-    return `${teamName} managed ${points} pts. Even the stadium WiFi had better connectivity today.`;
-  } else if (delta > 50) {
-    return `${teamName} bounced back from ${prevPoints} to ${points}. Redemption arc activated.`;
-  } else if (delta < -50) {
-    return `${teamName} dropped from ${prevPoints} to ${points}. That's not a slump, that's a freefall.`;
+  if (points > avgPoints * 1.5) {
+    return `${teamName} delivered ${points} — a commanding performance with little left to question.`;
+  } else if (points < avgPoints * 0.5) {
+    return `${teamName} managed ${points}. A difficult outing that never quite found momentum.`;
   } else {
-    return `${teamName} scored ${points} pts. Mid-tier energy but someone's gotta be there.`;
+    return `${teamName} scored ${points}. A measured performance without much drama.`;
   }
 }
 
-// Generate roasts for all teams
 export async function generateMatchRoasts(
   users: { temname: string; matches: { matchId: number; points: number }[] }[],
   currentMatchId: number
 ): Promise<MatchRoast[]> {
   const roasts: MatchRoast[] = [];
-  const totalTeams = users.length;
 
-  // Collect all points for this match for percentile calculation
   const allTeamsPoints: number[] = [];
-  const teamData: { name: string; points: number; prev: number; delta: number }[] = [];
+  const teamData: {
+    name: string;
+    points: number;
+    prev: number;
+    delta: number;
+  }[] = [];
 
   users.forEach((user) => {
-    const currentMatch = user.matches.find((m) => m.matchId === currentMatchId);
+    const currentMatch = user.matches.find(
+      (m) => m.matchId === currentMatchId
+    );
     const previousMatch = user.matches
       .filter((m) => m.matchId < currentMatchId && m.points > 0)
       .sort((a, b) => b.matchId - a.matchId)[0];
@@ -145,11 +150,9 @@ export async function generateMatchRoasts(
     });
   });
 
-  // Sort by points (best to worst)
   teamData.sort((a, b) => b.points - a.points);
 
-  // Generate AI roast for each team
-  const roastPromises = teamData.map(async (data, index) => {
+  const roastPromises = teamData.map(async (data) => {
     const message = await generateSingleRoast(
       data.name,
       data.points,
@@ -159,14 +162,18 @@ export async function generateMatchRoasts(
     );
 
     const sentiment: MatchRoast["sentiment"] =
-      data.points > 500 || data.delta > 100
+      data.points > 500
         ? "positive"
-        : data.points < 100 || data.delta < -100
+        : data.points < 100
         ? "negative"
         : "neutral";
 
     return {
-      id: "roast_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
+      id:
+        "roast_" +
+        Date.now() +
+        "_" +
+        Math.random().toString(36).substring(2, 7),
       teamName: data.name,
       matchId: currentMatchId,
       points: data.points,
@@ -178,18 +185,17 @@ export async function generateMatchRoasts(
     };
   });
 
-  // Wait for all roasts (they run in parallel)
   const results = await Promise.all(roastPromises);
   roasts.push(...results);
 
-  return roasts.sort((a, b) => b.delta - a.delta);
+  return roasts.sort((a, b) => b.points - a.points);
 }
 
-// Singleton for caching
+// Cache
 let lastMatchId: number | null = null;
 let cachedRoasts: MatchRoast[] = [];
 let cacheTimestamp: number = 0;
-const CACHE_DURATION = 60000; // 1 minute
+const CACHE_DURATION = 60000;
 
 export function getCachedRoasts(matchId: number): MatchRoast[] {
   if (lastMatchId !== matchId) return [];
