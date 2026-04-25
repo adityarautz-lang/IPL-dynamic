@@ -1,46 +1,51 @@
 // server/wsServer.ts
 import { WebSocketServer } from "ws";
-import { roastGenerator } from "@/app/lib/ai-roast";
-import type { DashboardData } from "@/app/types";
+import { generateMatchRoasts, cacheRoasts, type MatchRoast } from "@/app/lib/ai-roast";
 
 const wss = new WebSocketServer({ port: 3001 });
 
-interface WSMessage {
-  type: "dashboard_update" | "get_roasts" | "roast_update";
-  data?: DashboardData;
-  roasts?: unknown[];
-  timestamp?: string;
+interface MatchUpdate {
+  type: "match_update";
+  matchId: number;
 }
 
-let latestData: DashboardData | null = null;
-let cachedRoasts: unknown[] = [];
+interface GetRoastsRequest {
+  type: "get_roasts";
+  matchId?: number;
+}
+
+type WSMessage = MatchUpdate | GetRoastsRequest;
+
+let latestMatchId = 29;
+let cachedRoasts: MatchRoast[] = [];
 
 wss.on("connection", (ws) => {
   console.log("🔌 Client connected");
 
-  // Send latest data and roasts immediately
-  if (latestData) {
-    const roasts = roastGenerator.generateAllRoasts(latestData);
-    cachedRoasts = roasts;
-    
+  // Send current roasts on connect
+  if (cachedRoasts.length > 0) {
     ws.send(JSON.stringify({
-      type: "dashboard_update",
-      data: latestData,
-      roasts,
-      timestamp: new Date().toISOString(),
+      type: "match_update",
+      matchId: latestMatchId,
+      roasts: cachedRoasts,
     }));
   }
 
   ws.on("message", (message) => {
     try {
       const msg: WSMessage = JSON.parse(message.toString());
-      
-      if (msg.type === "get_roasts") {
-        ws.send(JSON.stringify({
-          type: "roast_update",
-          roasts: cachedRoasts,
-          timestamp: new Date().toISOString(),
-        }));
+
+      if (msg.type === "match_update") {
+        latestMatchId = msg.matchId;
+        // Broadcast to all clients
+        wss.clients.forEach((client) => {
+          if (client.readyState === 1) {
+            client.send(JSON.stringify({
+              type: "match_update",
+              matchId: latestMatchId,
+            }));
+          }
+        });
       }
     } catch (e) {
       console.error("Failed to parse message:", e);
@@ -52,33 +57,19 @@ wss.on("connection", (ws) => {
   });
 });
 
-// 🔥 Broadcast function - call this when dashboard data updates
-export function broadcast(data: DashboardData) {
-  latestData = data;
-  
-  // Generate fresh roasts
-  cachedRoasts = roastGenerator.generateAllRoasts(data);
-
-  const payload: WSMessage = {
-    type: "dashboard_update",
-    data,
-    roasts: cachedRoasts,
-    timestamp: new Date().toISOString(),
-  };
+export function broadcastMatchUpdate(matchId: number): void {
+  latestMatchId = matchId;
 
   wss.clients.forEach((client) => {
     if (client.readyState === 1) {
-      client.send(JSON.stringify(payload));
+      client.send(JSON.stringify({
+        type: "match_update",
+        matchId,
+      }));
     }
   });
 }
 
-// Get current roasts
-export function getRoasts() {
+export function getLatestRoasts(): MatchRoast[] {
   return cachedRoasts;
-}
-
-// Check if server is ready
-export function isReady() {
-  return latestData !== null;
 }

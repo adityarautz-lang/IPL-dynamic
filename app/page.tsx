@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
 import Summary from "./components/Summary";
+import RoastDisplay from "./components/RoastDisplay";
 import OverallChart from "./components/OverallChart";
 import DailyChart from "./components/DailyChart";
 import PointDifferences from "./components/PointDifferences";
@@ -139,7 +140,7 @@ export default function Home() {
 
         {/* AI Roast Zone - Now at the bottom! */}
         <div className="mt-6 sm:mt-8">
-          <Summary data={data} />
+          <Summary />
         </div>
         
       </div>

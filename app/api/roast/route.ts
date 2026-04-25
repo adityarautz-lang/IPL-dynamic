@@ -1,81 +1,80 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { roastGenerator, type Roast } from "@/app/lib/ai-roast";
-import type { DashboardData } from "@/app/types";
+import { roastAgent, type RoastResult } from "@/app/lib/ai-agent";
+import fs from "fs";
 
-// Store roasts in memory (in production, use Redis or a database)
-let cachedRoasts: Roast[] = [];
-let lastGeneratedAt: Date | null = null;
+const TMP_FILE = "/tmp/data.json";
+const SNAPSHOT_FILE = "/tmp/snapshot.json";
+
+// NO CACHING - Always fresh generation
+function jsonResponse(data: unknown) {
+  return new Response(JSON.stringify(data), {
+    headers: {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    },
+  });
+}
+
+function ensureAgent(): void {
+  if (!roastAgent.isReady()) {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (apiKey) {
+      roastAgent.initialize(apiKey);
+    }
+  }
+}
+
+interface LeaderboardEntry {
+  name: string;
+  points: number;
+  lastMatchPoints: number;
+  previousMatchPoints?: number;
+}
 
 export async function GET() {
-  try {
-    return NextResponse.json({
-      roasts: cachedRoasts,
-      lastGeneratedAt: lastGeneratedAt?.toISOString() || null,
-      count: cachedRoasts.length,
+  ensureAgent();
+
+  if (!roastAgent.isReady()) {
+    return jsonResponse({
+      error: "Add GROQ_API_KEY to .env.local",
+      roasts: [],
     });
-  } catch (error) {
-    console.error("Roast GET error:", error);
-    return NextResponse.json(
-      { error: "Failed to get roasts" },
-      { status: 500 }
-    );
   }
-}
 
-export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const dashboardData: DashboardData = body.dashboardData;
+    let dashboardData: { leaders?: LeaderboardEntry[] } | null = null;
 
-    if (!dashboardData) {
-      return NextResponse.json(
-        { error: "No dashboard data provided" },
-        { status: 400 }
-      );
+    if (fs.existsSync(TMP_FILE)) {
+      const raw = fs.readFileSync(TMP_FILE, "utf-8");
+      dashboardData = JSON.parse(raw);
+    } else if (fs.existsSync(SNAPSHOT_FILE)) {
+      const raw = fs.readFileSync(SNAPSHOT_FILE, "utf-8");
+      dashboardData = JSON.parse(raw);
     }
 
-    // Generate fresh roasts based on dashboard data
-    const newRoasts = roastGenerator.generateAllRoasts(dashboardData);
-    
-    // Update cache
-    cachedRoasts = newRoasts;
-    lastGeneratedAt = new Date();
+    if (!dashboardData?.leaders) {
+      return jsonResponse({
+        error: "No leaderboard data available",
+        roasts: [],
+      });
+    }
 
-    return NextResponse.json({
-      success: true,
-      roasts: cachedRoasts,
-      lastGeneratedAt: lastGeneratedAt.toISOString(),
-      summary: {
-        total: cachedRoasts.length,
-        positive: cachedRoasts.filter(r => r.sentiment === "positive").length,
-        negative: cachedRoasts.filter(r => r.sentiment === "negative").length,
-        neutral: cachedRoasts.filter(r => r.sentiment === "neutral").length,
-      },
+    // ALWAYS generate fresh roasts - NO caching
+    const roasts = await roastAgent.processMatch(dashboardData.leaders, Date.now());
+
+    return jsonResponse({
+      roasts,
+      totalTeams: roasts.length,
+      timestamp: new Date().toISOString(),
+      generated: true,
     });
   } catch (error) {
-    console.error("Roast POST error:", error);
-    return NextResponse.json(
-      { error: "Failed to generate roasts" },
-      { status: 500 }
-    );
-  }
-}
-
-// DELETE to clear roast history
-export async function DELETE() {
-  try {
-    roastGenerator.clearHistory();
-    cachedRoasts = [];
-    lastGeneratedAt = null;
-    
-    return NextResponse.json({ success: true, message: "Roast history cleared" });
-  } catch (error) {
-    console.error("Roast DELETE error:", error);
-    return NextResponse.json(
-      { error: "Failed to clear history" },
-      { status: 500 }
-    );
+    console.error("Roast error:", error);
+    return jsonResponse({
+      error: String(error),
+      roasts: [],
+    });
   }
 }

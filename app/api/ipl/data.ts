@@ -6,7 +6,7 @@ const calculateTotalPoints = (
   return matches.reduce((sum, match) => sum + match.points, 0);
 };
 
-export const rawApiUsers: RawApiUser[] = [
+const rawData = [
   {
     "rno": 1,
     "temname": "Deccan Dominators",
@@ -975,7 +975,9 @@ export const rawApiUsers: RawApiUser[] = [
       }
     ]
   }
-]
+];
+
+export const rawApiUsers: RawApiUser[] = rawData
   .map((user) => ({
     ...user,
     points: calculateTotalPoints(user.matches),

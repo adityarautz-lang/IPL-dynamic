@@ -1,155 +1,128 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import type { Roast } from "@/app/lib/ai-roast";
-import { useRoastAgent } from "@/app/hooks/useRoastAgent";
-import type { DashboardData } from "@/app/types";
+import { useState, useEffect, useCallback } from "react";
+import type { RoastResult } from "@/app/lib/ai-agent";
 
-interface RoastDisplayProps {
-  dashboardData?: DashboardData;
-  maxDisplay?: number;
-  autoRefresh?: boolean;
-  showSentiment?: {
-    positive?: boolean;
-    negative?: boolean;
-    neutral?: boolean;
-  };
+// Compact color palettes
+const COLOR_PALETTES = [
+  { bg: "bg-pink-500/15", border: "border-pink-500/50", accent: "text-pink-400" },
+  { bg: "bg-purple-500/15", border: "border-purple-500/50", accent: "text-purple-400" },
+  { bg: "bg-blue-500/15", border: "border-blue-500/50", accent: "text-blue-400" },
+  { bg: "bg-cyan-500/15", border: "border-cyan-500/50", accent: "text-cyan-400" },
+  { bg: "bg-teal-500/15", border: "border-teal-500/50", accent: "text-teal-400" },
+  { bg: "bg-green-500/15", border: "border-green-500/50", accent: "text-green-400" },
+  { bg: "bg-yellow-500/15", border: "border-yellow-500/50", accent: "text-yellow-400" },
+  { bg: "bg-orange-500/15", border: "border-orange-500/50", accent: "text-orange-400" },
+  { bg: "bg-red-500/15", border: "border-red-500/50", accent: "text-red-400" },
+  { bg: "bg-rose-500/15", border: "border-rose-500/50", accent: "text-rose-400" },
+  { bg: "bg-indigo-500/15", border: "border-indigo-500/50", accent: "text-indigo-400" },
+  { bg: "bg-fuchsia-500/15", border: "border-fuchsia-500/50", accent: "text-fuchsia-400" },
+];
+
+function getTeamColor(teamName: string) {
+  const hash = teamName.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return COLOR_PALETTES[hash % COLOR_PALETTES.length];
 }
 
-export function RoastDisplay({
-  dashboardData,
-  maxDisplay = 4,
-  autoRefresh = true,
-  showSentiment = { positive: true, negative: true, neutral: true },
-}: RoastDisplayProps) {
-  const {
-    roasts,
-    isConnected,
-    lastUpdate,
-    isGenerating,
-    generateRoasts,
-  } = useRoastAgent({
-    autoRefresh,
-  });
+export function RoastDisplay() {
+  const [roasts, setRoasts] = useState<RoastResult[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Generate roasts when dashboard data changes
+  const fetchRoasts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/roast?" + Date.now());
+      const data = await res.json();
+      if (data.error) setError(data.error);
+      else setRoasts(data.roasts || []);
+    } catch { setError("Connection failed"); }
+    finally { setLoading(false); }
+  }, []);
+
   useEffect(() => {
-    if (dashboardData) {
-      generateRoasts(dashboardData);
-    }
-  }, [dashboardData, generateRoasts]);
+    fetchRoasts();
+    const interval = setInterval(fetchRoasts, 30000);
+    return () => clearInterval(interval);
+  }, [fetchRoasts]);
 
-  // Show all team roasts
-  const displayRoasts = useMemo(() => {
-    return [...roasts];
-  }, [roasts]);
-
-  // Sentiment styling
-  const getSentimentStyle = (sentiment: Roast["sentiment"]) => {
-    switch (sentiment) {
-      case "positive":
-        return {
-          bg: "bg-emerald-500/10",
-          border: "border-emerald-500/20",
-          icon: "🔥",
-          text: "text-emerald-400",
-        };
-      case "negative":
-        return {
-          bg: "bg-red-500/10",
-          border: "border-red-500/20",
-          icon: "💀",
-          text: "text-red-400",
-        };
-      default:
-        return {
-          bg: "bg-slate-500/10",
-          border: "border-slate-500/20",
-          icon: "😐",
-          text: "text-slate-400",
-        };
-    }
-  };
-
-  if (displayRoasts.length === 0) {
+  if (error && roasts.length === 0) {
     return (
-      <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-bold text-white">🏆 Team Verdicts</h3>
-          <ConnectionStatus connected={isConnected} />
-        </div>
-        <p className="text-slate-400 text-sm">
-          {isGenerating ? "🤔 Analyzing teams..." : "Waiting for data..."}
-        </p>
+      <div className="p-3 rounded-lg bg-white/5 border border-white/10 text-center text-xs text-red-400">
+        {error}
       </div>
     );
   }
 
   return (
-    <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+    <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-white">🏆 Team Verdicts</h3>
-        <div className="flex items-center gap-3">
-          {isGenerating && (
-            <span className="text-xs text-slate-400 animate-pulse">analyzing...</span>
-          )}
-          <ConnectionStatus connected={isConnected} />
+      <div className="flex items-center justify-between mb-3 px-1">
+        <span className="text-sm font-bold text-white">🔥 AI Roasts</span>
+        <span className="text-xs text-slate-500">Auto-refresh active</span>
+      </div>
+
+      {/* Loading */}
+      {loading && roasts.length === 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="h-24 rounded-lg bg-white/5 animate-pulse" />
+          ))}
         </div>
+      )}
+
+      {/* Grid: 3 cols desktop, 2 cols tablet, 1 col mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {roasts.map((roast) => {
+          const colors = getTeamColor(roast.teamName);
+          const lines = roast.roast.split("\n").filter(l => l.trim());
+          
+          return (
+            <div 
+              key={roast.id}
+              className={`p-2.5 rounded-lg ${colors.bg} border-l-2 ${colors.border}`}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-white truncate max-w-[100px]">
+                    {roast.teamName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-[10px]">
+                  <span className="text-cyan-400">#{roast.analysis.matchRank}</span>
+                  <span className={
+                    roast.analysis.rankMovement === "up" ? "text-emerald-400" : 
+                    roast.analysis.rankMovement === "down" ? "text-red-400" : "text-slate-500"
+                  }>
+                    {roast.analysis.rankMovement === "up" ? "↑" : 
+                     roast.analysis.rankMovement === "down" ? "↓" : "→"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Roast */}
+              <div className={`text-[11px] leading-snug ${colors.accent} min-h-[2.5rem]`}>
+                <div className="truncate">{lines[0] || ""}</div>
+                <div className="truncate opacity-80">{lines[1] || ""}</div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between mt-1.5 text-[10px] text-slate-500">
+                <span>{roast.matchPoints}pts</span>
+                <span className="capitalize">{roast.analysis.matchPerformance.replace("_", " ")}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* All team roasts */}
-      <div className="space-y-2">
-        {displayRoasts.map((roast) => (
-          <div
-            key={roast.id}
-            className={`flex items-center gap-3 p-2.5 rounded-lg ${getSentimentStyle(roast.sentiment).bg} border ${getSentimentStyle(roast.sentiment).border}`}
-          >
-            <span className="text-sm flex-shrink-0 w-6 text-center">
-              {getSentimentStyle(roast.sentiment).icon}
-            </span>
-            <span className="text-xs font-bold w-6 flex-shrink-0 text-slate-400">
-              #{roast.performance.rank}
-            </span>
-            <p className="text-sm text-white flex-1">
-              {roast.message}
-            </p>
-          </div>
-        ))}
-      </div>
+      {loading && roasts.length > 0 && (
+        <div className="text-center text-[10px] text-slate-500 mt-2 animate-pulse">
+          Refreshing...
+        </div>
+      )}
     </div>
-  );
-}
-
-// Connection status indicator
-function ConnectionStatus({ connected }: { connected: boolean }) {
-  return (
-    <div className="flex items-center gap-1.5 text-xs">
-      <div
-        className={`w-2 h-2 rounded-full ${
-          connected ? "bg-green-500" : "bg-red-500"
-        }`}
-      />
-      <span className="text-slate-400">
-        {connected ? "Live" : "Offline"}
-      </span>
-    </div>
-  );
-}
-
-// Compact badge version
-export function RoastBadge({ roast }: { roast: Roast }) {
-  const style = {
-    positive: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-    negative: "bg-red-500/20 text-red-400 border-red-500/30",
-    neutral: "bg-slate-500/20 text-slate-400 border-slate-500/30",
-  };
-
-  return (
-    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs border ${style[roast.sentiment]}`}>
-      {roast.sentiment === "positive" ? "🔥" : roast.sentiment === "negative" ? "💀" : "😐"}
-      {roast.teamName}
-    </span>
   );
 }
 
