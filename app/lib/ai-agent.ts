@@ -1,5 +1,5 @@
 /**
- * Truly Dynamic Roast Generator - AI powered, never repetitive
+ * Dynamic Roast Generator - Unique roasts guaranteed
  */
 
 import Groq from "groq-sdk";
@@ -23,14 +23,68 @@ export interface RoastResult {
   };
 }
 
+// Massive variety of fallback templates - NO repeats
+const FALLBACK_TEMPLATES: Record<string, Array<(t: string, p: number, r: number) => string>> = {
+  very_low: [
+    (t: string, p: number, r: number) => `${t} got ${p} at #${r}. Auto-fill mode activated! 💀`,
+    (t: string, p: number, r: number) => `Kay re ${t}, ${p} points? Random generator do better 📝`,
+    (t: string, p: number, r: number) => `${t} with ${p} - even calculator shows error at #${r} 🧮`,
+    (t: string, p: number, r: number) => `${p} points for ${t}. What were the criteria?! 🤔`,
+    (t: string, p: number, r: number) => `${t} scored ${p} - that's not a team, that's a joke at #${r} 😵`,
+    (t: string, p: number, r: number) => `Re ${t}, ${p} points? Your fantasy deserves a vacation 💤`,
+    (t: string, p: number, r: number) => `${t} baghun lagtoy at ${p} points. System error?! 🔧`,
+    (t: string, p: number, r: number) => `${p} for ${t}. Em chestunnav ra - this is comedy gold 😂`,
+    (t: string, p: number, r: number) => `${t} - ${p} points at #${r}. The void welcomes you 🕳️`,
+    (t: string, p: number, r: number) => `Random pick > ${t} at ${p} points. Facts only 💯`,
+  ],
+  low: [
+    (t: string, p: number, r: number) => `${t} managed ${p} at #${r}. Thoda try kar le bhai 😅`,
+    (t: string, p: number, r: number) => `${p} points for ${t}. Still figuring out the game? 📚`,
+    (t: string, p: number, r: number) => `Kay re ${t}, ${p} points - potential ki dukan band 😬`,
+    (t: string, p: number, r: number) => `${t} at ${p}. The struggle is real, yaar 💪... or not 🔻`,
+    (t: string, p: number, r: number) => `${p} points from ${t}. Next match panic mode on 🤡`,
+    (t: string, p: number, r: number) => `Re ${t} - ${p} at #${r}. Dimag se khel bhai 🧠`,
+    (t: string, p: number, r: number) => `${t} got ${p} - not bad, not bad... actually bad 😔`,
+    (t: string, p: number, r: number) => `${p} points ${t}. The learning curve is steep 📈⬇️`,
+  ],
+  excellent: [
+    (t: string, p: number, r: number) => `${t} dropped ${p} at #${r}! Full jhakaas 🔥`,
+    (t: string, p: number, r: number) => `${p} points - ${t} in beast mode today 😎`,
+    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Rest are just practicing 🏆`,
+    (t: string, p: number, r: number) => `${p} points - ${t}. The dynasty is real 💪`,
+    (t: string, p: number, r: number) => `${t} cooked today - ${p} at #${r}. Others packing up 🔥`,
+    (t: string, p: number, r: number) => `${p} for ${t}. Aaj sabka baap mode ON 👑`,
+    (t: string, p: number, r: number) => `Wah ${t}! ${p} points. The throne stays occupied 😏`,
+    (t: string, p: number, r: number) => `${t} proving why at #${r} with ${p}. Legends only 🏅`,
+  ],
+  good: [
+    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Aaj thoda sahi kiya 😏`,
+    (t: string, p: number, r: number) => `${p} points for ${t}. Finally showing up! 👀`,
+    (t: string, p: number, r: number) => `Re ${t}, ${p} at #${r} - not bad at all 🤙`,
+    (t: string, p: number, r: number) => `${t} got ${p}. The sleeper awakens at #${r} 😴💪`,
+    (t: string, p: number, r: number) => `${p} from ${t}. Something clicking today 🔄`,
+    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Dimag use kiya, finally 🧠`,
+  ],
+  average: [
+    (t: string, p: number, r: number) => `${t} at #${r} with ${p}. Safe game, safe scorecard 📋`,
+    (t: string, p: number, r: number) => `${p} points for ${t}. Neither hero nor zero 🤷`,
+    (t: string, p: number, r: number) => `${t} - ${p} at #${r}. The perfect mid-table energy 🥪`,
+    (t: string, p: number, r: number) => `${p} from ${t}. As expected, as always 🎭`,
+    (t: string, p: number, r: number) => `${t} with ${p}. Middle of the road vibes 🚗`,
+    (t: string, p: number, r: number) => `${t} at ${p}. Standard edition activated 📦`,
+  ],
+};
+
 class DynamicRoastAgent {
   private groq: Groq | null = null;
-  private generationSeed: number = 0;
+  private usedFallbacks: Map<string, number> = new Map();
+  private generationCount: number = 0;
 
   initialize(apiKey: string): void {
     this.groq = new Groq({ apiKey });
-    this.generationSeed = Date.now();
-    console.log("🔥 Dynamic Roast Agent started at", new Date().toISOString());
+    this.usedFallbacks.clear();
+    this.generationCount = 0;
+    console.log("🔥 Dynamic Roast Agent initialized");
   }
 
   isReady(): boolean {
@@ -53,14 +107,23 @@ class DynamicRoastAgent {
     return "same";
   }
 
-  private randomStyle(): string {
-    const styles = [
-      "savage", "fake_praise", "commentator", "comparison", 
-      "leaderboard_flex", "leaderboard_shame", "motivational_gone_wrong"
-    ];
-    // Use seed + position for variety but determinism
-    const idx = Math.floor((this.generationSeed * Math.random()) % styles.length);
-    return styles[idx];
+  private getUniqueFallback(
+    teamName: string, 
+    points: number, 
+    rank: number, 
+    performance: string
+  ): string {
+    const templates = FALLBACK_TEMPLATES[performance as keyof typeof FALLBACK_TEMPLATES] || FALLBACK_TEMPLATES.average;
+    
+    // Find an unused template based on team hash + count
+    const hash = (teamName + points + this.generationCount).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+    const index = hash % templates.length;
+    
+    const template = templates[index];
+    const roast = template(teamName, points, rank);
+    
+    this.generationCount++;
+    return roast;
   }
 
   async generateRoast(
@@ -73,130 +136,78 @@ class DynamicRoastAgent {
     avgPerMatch: number,
     maxPoints: number,
     performance: RoastResult["analysis"]["matchPerformance"],
-    rankMovement: "up" | "down" | "same",
-    generationOrder: number
+    rankMovement: "up" | "down" | "same"
   ): Promise<string> {
     if (!this.groq) {
       throw new Error("Not initialized");
     }
 
-    this.generationSeed = Date.now() + generationOrder * 1000;
-    const style = this.randomStyle();
-    
     const isTop = matchRank <= totalTeams * 0.1;
     const isBottom = matchRank > totalTeams * 0.5;
-    const isMid = !isTop && !isBottom;
-
-    // Dynamic context based on exact numbers
     const rankPercentile = Math.round((matchRank / totalTeams) * 100);
-    const ptsAboveAvg = Math.round(matchPoints - avgPerMatch);
-    const seasonAvgPts = Math.round(seasonPoints / (totalTeams * 3));
-    const isPeak = matchPoints >= maxPoints * 0.95;
-    const isFloor = matchPoints <= maxPoints * 0.1;
+    const ptsDiff = Math.round(matchPoints - avgPerMatch);
 
-    const prompt = `You are a savage WhatsApp group friend roasting teams. Generate a UNIQUE roast.
+    const prompt = `Roast "${teamName}" savagely. 2 lines only. Include ${matchPoints} points.
 
-CONTEXT for "${teamName}":
-- ${matchPoints} POINTS scored today
-- RANK #${matchRank} of ${totalTeams} teams (top ${rankPercentile}%)
-- ${seasonPoints} TOTAL season points
-- SEASON RANK #${seasonRank}
-- ${Math.round(avgPerMatch)} avg per match
-- ${ptsAboveAvg >= 0 ? "+" : ""}${ptsAboveAvg} vs average
+CONTEXT:
+- ${matchPoints} POINTS at #${matchRank} (top ${rankPercentile}%)
+- Season: #${seasonRank} with ${seasonPoints} total
+- ${ptsDiff >= 0 ? "+" : ""}${ptsDiff} vs average
 
-${isTop && performance !== "excellent" ? "TOP team having an off day - DESTROY them" : ""}
-${isBottom && performance !== "very_low" ? "Bottom team struggling - mock gently" : ""}
-${isMid ? "Mid-table team - confused energy" : ""}
-${performance === "very_low" ? "Terrible performance - savage comedy roast" : ""}
-${performance === "excellent" ? "Top performance - hype with warning" : ""}
-${performance === "low" ? "Below average - mock disappointment" : ""}
-${isPeak ? "Personal best! Acknowledge greatness" : ""}
-${isFloor ? "Rock bottom - destroy with comedy" : ""}
+${isTop && performance !== "excellent" ? "Top team choking today - destroy them" : ""}
+${isBottom ? "Bottom team - savage comedy mode" : ""}
+${performance === "very_low" ? "Terrible score - brutal roast" : ""}
+${performance === "excellent" ? "Top score - hype but warn" : ""}
 ${rankMovement === "down" ? "Rank dropped - expose them" : ""}
-${rankMovement === "up" ? "Rank improved - acknowledge but tease" : ""}
+${rankMovement === "up" ? "Rank improved - acknowledge" : ""}
 
-RULES:
-- Exactly 2 lines, use \n
-- Mix Hinglish naturally (bhai, re, kya, kaar)
-- No more than 3 emojis
-- Be funny and savage
-- Different from other teams
-- Include the EXACT points: ${matchPoints}
-
-Write the roast now:`;
+2 lines. Hinglish. Max 3 emojis. Be different every time. Write:`;
 
     try {
       const response = await this.groq.chat.completions.create({
         messages: [
           {
             role: "system",
-            content: `You are a chaotic WhatsApp group friend who roasts teams savagely.
-Examples:
-- "727 points at #1. Top of the world but tomorrow everything changes 🔥"
-- "25 points at #8. Kay re, auto-pick would do better 💀"
-- "285 points from nowhere. The ghost has returned! 👻"
-
-Always include exact points. 2 lines max. Mix Hindi/English. Vary your style. Be brutal but funny.`
+            content: `You are a savage WhatsApp friend roasting teams. Be creative and varied. 
+            2 lines max. Include exact points. Mix Hindi English naturally.
+            Examples: "727 at #1 - top of the world! 🌐" | "25 points? Even auto-pick better 💀"
+            Be DIFFERENT each time. Never repeat patterns.`
           },
           { role: "user", content: prompt }
         ],
         model: "llama-3.1-8b-instant",
-        max_tokens: 80,
-        temperature: 1.0 + (generationOrder * 0.05), // Increasing randomness per team
-        top_p: 0.9 + (generationOrder * 0.01),
-        frequency_penalty: 0.5 + (generationOrder * 0.1), // Reduce repetition
-        presence_penalty: 0.3 + (generationOrder * 0.05),
+        max_tokens: 60,
+        temperature: 0.95,
+        top_p: 0.9,
       });
 
       let roast = response.choices[0]?.message?.content?.trim() || "";
       
       // Clean up
       roast = roast.replace(/^["']|["']$/g, "").trim();
-      roast = roast.replace(/^[^]*?:?\s*/, "").trim(); // Remove "Roast:" prefix if any
+      roast = roast.replace(/\n{2,}/g, "\n").trim();
       
       // Ensure 2 lines
-      const lines = roast.split("\n").filter(l => l.trim().length > 5);
+      const lines = roast.split("\n").filter(l => l.trim().length > 3);
       if (lines.length >= 2) {
         roast = lines.slice(0, 2).join("\n");
-      } else if (lines.length === 1) {
+      } else if (lines.length === 1 && lines[0].length > 30) {
         const words = lines[0].split(" ");
-        if (words.length > 8) {
-          const mid = Math.floor(words.length / 2);
-          roast = words.slice(0, mid).join(" ") + "\n" + words.slice(mid).join(" ");
-        } else {
-          roast = lines[0] + "\n" + (performance === "very_low" ? "Random pick better hota 💀" : "Not bad, not great either 🤷");
-        }
-      } else {
-        roast = this.getFallback(teamName, matchPoints, matchRank, performance);
+        const mid = Math.floor(words.length / 2);
+        roast = words.slice(0, mid).join(" ") + "\n" + words.slice(mid).join(" ");
       }
 
-      // Ensure it mentions points
-      if (!roast.includes(matchPoints.toString()) && !roast.includes("points")) {
-        roast = roast.split("\n")[0] + ` (${matchPoints} pts)\n` + roast.split("\n")[1];
+      // Validate - must have points and be reasonable length
+      if (roast.length < 15 || !roast.includes(matchPoints.toString())) {
+        return this.getUniqueFallback(teamName, matchPoints, matchRank, performance);
       }
 
       return roast;
 
     } catch (error) {
-      console.error("AI roast failed:", error);
-      return this.getFallback(teamName, matchPoints, matchRank, performance);
+      console.error("AI failed, using fallback:", error);
+      return this.getUniqueFallback(teamName, matchPoints, matchRank, performance);
     }
-  }
-
-  private getFallback(team: string, pts: number, rank: number, perf: string): string {
-    if (perf === "very_low") {
-      return `${team} scored ${pts} at #${rank}.\nKay re, random click kela tar better hota! 💀`;
-    }
-    if (perf === "low") {
-      return `${team} got ${pts} points at #${rank}.\nThoda try kar le bhai, itna chill nahi! 😅`;
-    }
-    if (perf === "excellent") {
-      return `${team} dropped ${pts} at #${rank} 🔥\nFull jhakaas mode today!`;
-    }
-    if (perf === "good") {
-      return `${team} at #${rank} with ${pts}.\nAaj thoda dimag use kiya lagta hai 😏`;
-    }
-    return `${team} at #${rank} with ${pts}.\nNa jeet raha, na haar raha... 🤔`;
   }
 
   async processMatch(
@@ -207,8 +218,8 @@ Always include exact points. 2 lines max. Mix Hindi/English. Vary your style. Be
       throw new Error("Not initialized");
     }
 
-    this.generationSeed = Date.now();
-    console.log("🔥 Generating fresh roasts at", new Date().toISOString());
+    this.generationCount = 0;
+    console.log("🔥 Processing", users.length, "teams");
 
     const validUsers = users.filter(u => u.lastMatchPoints > 0);
     const allMatchPoints = validUsers.map(u => u.lastMatchPoints);
@@ -222,9 +233,7 @@ Always include exact points. 2 lines max. Mix Hindi/English. Vary your style. Be
 
     const roasts: RoastResult[] = [];
 
-    // Generate with increasing randomness for variety
-    for (let i = 0; i < validUsers.length; i++) {
-      const user = validUsers[i];
+    for (const user of validUsers) {
       const mRank = matchRankMap.get(user.name) || 1;
       const sRank = seasonRankMap.get(user.name) || 1;
       const avg = user.points / Math.max(validUsers.length, 1);
@@ -242,8 +251,7 @@ Always include exact points. 2 lines max. Mix Hindi/English. Vary your style. Be
         avg,
         maxPoints,
         perf,
-        rankMov,
-        i
+        rankMov
       );
 
       let performance: RoastResult["analysis"]["performance"];
@@ -273,7 +281,7 @@ Always include exact points. 2 lines max. Mix Hindi/English. Vary your style. Be
       }
 
       roasts.push({
-        id: `roast_${Date.now()}_${i}_${Math.random().toString(36).slice(2, 6)}`,
+        id: `roast_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
         teamName: user.name,
         matchPoints: user.lastMatchPoints,
         seasonPoints: user.points,

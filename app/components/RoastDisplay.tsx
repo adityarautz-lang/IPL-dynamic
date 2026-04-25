@@ -42,7 +42,7 @@ export function RoastDisplay() {
 
   useEffect(() => {
     fetchRoasts();
-    const interval = setInterval(fetchRoasts, 30000);
+    const interval = setInterval(fetchRoasts, 4 * 60 * 60 * 1000); // 4 hours
     return () => clearInterval(interval);
   }, [fetchRoasts]);
 
@@ -59,7 +59,6 @@ export function RoastDisplay() {
       {/* Header */}
       <div className="flex items-center justify-between mb-3 px-1">
         <span className="text-sm font-bold text-white">🔥 AI Roasts</span>
-        <span className="text-xs text-slate-500">Auto-refresh active</span>
       </div>
 
       {/* Loading */}
