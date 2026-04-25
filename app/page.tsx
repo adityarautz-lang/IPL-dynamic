@@ -140,7 +140,7 @@ export default function Home() {
 
         {/* AI Roast Zone - Now at the bottom! */}
         <div className="mt-6 sm:mt-8">
-          <Summary />
+        <Summary data={list} />
         </div>
         
       </div>
