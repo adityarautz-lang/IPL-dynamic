@@ -44,7 +44,7 @@ export default function RoastDisplay() {
     <div>
       {/* Header */}
       <div className="mb-3 px-1">
-        <span className="text-sm font-bold text-white">🔥 AI Roasts</span>
+        <span className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">🔥 AI Roasts</span>
       </div>
 
       {/* Grid */}
