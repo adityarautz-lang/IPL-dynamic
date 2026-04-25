@@ -3,7 +3,7 @@ import roastAgent from "@/app/lib/ai-agent"; // ✅ default import
 
 export async function GET() {
   try {
-    const res = await fetch("http://127.0.0.1:3000/api/ipl", {
+    const res = await fetch("https://ipl-dynamic.vercel.app/api/ipl", {
       cache: "no-store",
     });
 
