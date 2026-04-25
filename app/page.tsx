@@ -1,10 +1,10 @@
 "use client";
-import TopPerformer from "./components/TopPerformer";
+
 import { motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
 import Summary from "./components/Summary";
-import RoastDisplay from "./components/RoastDisplay";
+import TopPerformer from "./components/TopPerformer";
 import OverallChart from "./components/OverallChart";
 import DailyChart from "./components/DailyChart";
 import PointDifferences from "./components/PointDifferences";
@@ -85,31 +85,29 @@ export default function Home() {
           </p>
         </motion.div>
 
+        {/* 🥇 Top Performer (FIXED POSITION) */}
+        <div className="mt-6 mb-6">
+          <TopPerformer data={list} />
+        </div>
+
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8 mb-6 sm:mb-8">
+          
           {/* Daily */}
-          <div>
-            <GlassCard>
-              <HeaderWithStatus isLive={!!isLive} />
-              <div className="mt-4">
-                <div className="h-60 sm:h-75 w-full">
-                  <DailyChart data={list} />
-                </div>
-              </div>
-            </GlassCard>
-          </div>
+          <GlassCard>
+            <HeaderWithStatus isLive={!!isLive} />
+            <div className="mt-4 h-60 sm:h-75 w-full">
+              <DailyChart data={list} />
+            </div>
+          </GlassCard>
 
           {/* Overall */}
-          <div>
-            <GlassCard>
-              <HeaderWithStatus isLive={!!isLive} />
-              <div className="mt-4">
-                <div className="h-60 sm:h-75 w-full">
-                  <OverallChart data={list} />
-                </div>
-              </div>
-            </GlassCard>
-          </div>
+          <GlassCard>
+            <HeaderWithStatus isLive={!!isLive} />
+            <div className="mt-4 h-60 sm:h-75 w-full">
+              <OverallChart data={list} />
+            </div>
+          </GlassCard>
         </div>
 
         {/* Captain Insights */}
@@ -125,9 +123,7 @@ export default function Home() {
         {/* Point Differences */}
         <div className="mt-6 sm:mt-8">
           <GlassCard>
-            <div className="mt-4">
-              <PointDifferences data={list} />
-            </div>
+            <PointDifferences data={list} />
           </GlassCard>
         </div>
 
@@ -138,10 +134,10 @@ export default function Home() {
           </GlassCard>
         </div>
 
-        {/* AI Roast Zone - Now at the bottom! */}
+        {/* 🔥 AI Roast (BOTTOM) */}
         <div className="mt-6 sm:mt-8">
-        <Summary />
-                </div>
+          <Summary />
+        </div>
         
       </div>
     </main>
