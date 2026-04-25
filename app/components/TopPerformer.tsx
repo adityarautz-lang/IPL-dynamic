@@ -16,7 +16,7 @@ export default function TopPerformer({ data }: { data: any[] }) {
   return (
     <div className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/30">
       <div className="text-sm text-green-400 font-semibold">
-        🥇 Top Performer (Today)
+        🥇 Today's killer performer
       </div>
 
       <div className="text-lg font-bold text-white mt-1">
@@ -27,9 +27,9 @@ export default function TopPerformer({ data }: { data: any[] }) {
         {top.lastMatchPoints} pts
       </div>
 
-      <div className="text-xs text-slate-400 mt-1">
+      {/* <div className="text-xs text-slate-400 mt-1">
         Captain: {top.captain?.name || "—"}
-      </div>
+      </div> */}
     </div>
   );
 }
