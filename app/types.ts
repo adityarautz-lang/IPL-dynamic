@@ -45,9 +45,12 @@ export type DashboardData = {
   leaders: Leader[];
   leagueData?: any[];
 
-  // ✅ ADD THESE
+  // analytics
   overall?: any;
   daily?: any;
+
+  // 🔥 NEW FIX
+  source?: string;
 };
 
 
