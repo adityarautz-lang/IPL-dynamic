@@ -41,54 +41,68 @@ export default function RoastDisplay() {
   }, [fetchRoasts]);
 
   return (
-    <div>
-      {/* Header */}
-      <div className="mb-3 px-1">
-        <span className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">🔥 AI Roasts</span>
-      </div>
+    <div className="mt-6">
+      {/* 🔥 GLASS CONTAINER */}
+      <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
-        {roasts.map((roast) => {
-          const colors = getTeamColor(roast.teamName);
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
 
-          return (
-            <div
-              key={roast.id}
-              className={`p-4 rounded-lg ${colors.bg} border-l-2 ${colors.border} h-auto flex flex-col`}
-            >
-              {/* Header */}
-              <div className="flex justify-between mb-2">
-                <span className="text-xs font-bold text-white break-words">
-                  {roast.teamName}
-                </span>
-                <span className="text-xs text-cyan-400">
-                  #{roast.analysis.matchRank}
-                </span>
-              </div>
+        {/* Content */}
+        <div className="relative z-10 p-4 sm:p-6">
 
-              {/* ✅ FULL TEXT - NO LIMITS */}
-              <p
-                className={`text-sm leading-relaxed ${colors.accent} break-words whitespace-normal`}
-              >
-                {roast.roast}
-              </p>
+          {/* Header */}
+          <div className="mb-3 px-1">
+            <span className="text-lg sm:text-2xl font-bold">
+              🔥 AI Roasts
+            </span>
+          </div>
 
-              {/* Footer */}
-              <div className="mt-2 text-xs text-slate-400">
-                {roast.matchPoints} pts
-              </div>
+          {/* Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
+            {roasts.map((roast) => {
+              const colors = getTeamColor(roast.teamName);
+
+              return (
+                <div
+                  key={roast.id}
+                  className={`p-4 rounded-lg ${colors.bg} border-l-2 ${colors.border} h-auto flex flex-col`}
+                >
+                  {/* Header */}
+                  <div className="flex justify-between mb-2">
+                    <span className="text-xs font-bold text-white break-words">
+                      {roast.teamName}
+                    </span>
+                    <span className="text-xs text-cyan-400">
+                      #{roast.analysis.matchRank}
+                    </span>
+                  </div>
+
+                  {/* Roast Text */}
+                  <p
+                    className={`text-sm leading-relaxed ${colors.accent} break-words whitespace-normal`}
+                  >
+                    {roast.roast}
+                  </p>
+
+                  {/* Footer */}
+                  <div className="mt-2 text-xs text-slate-400">
+                    {roast.matchPoints} pts
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Loading */}
+          {loading && (
+            <div className="text-xs text-slate-500 mt-3">
+              Loading...
             </div>
-          );
-        })}
-      </div>
+          )}
 
-      {/* Loading */}
-      {loading && (
-        <div className="text-xs text-slate-500 mt-2">
-          Loading...
         </div>
-      )}
+      </div>
     </div>
   );
 }

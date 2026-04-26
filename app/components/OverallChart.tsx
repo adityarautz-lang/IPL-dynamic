@@ -68,7 +68,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
       </div>
 
       {/* Chart */}
-      <div className="w-full px-2 sm:px-4 pb-6">
+      <div className="w-full px-2 sm:px-4">
         <div className="h-[240px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -77,9 +77,9 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 top: 10,
                 right: 10,
                 left: -10,
-                bottom: isMobile ? 65 : 60, // ✅ FIXED
+                bottom: isMobile ? 35 : 40, // 🔥 FIXED
               }}
-              barCategoryGap={isMobile ? "10%" : "20%"} // ✅ thicker bars
+              barCategoryGap={isMobile ? "12%" : "20%"} // slight spacing fix
             >
               <CartesianGrid
                 stroke="rgba(255,255,255,0.08)"
@@ -90,9 +90,9 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 dataKey="name"
                 stroke="#ffffff"
                 interval={0}
-                angle={isMobile ? -30 : -25}
+                angle={isMobile ? -25 : -25} // 🔥 less aggressive tilt
                 textAnchor="end"
-                height={isMobile ? 70 : 75}
+                height={isMobile ? 45 : 50} // 🔥 FIXED
                 tick={{
                   fill: "#ffffff",
                   fontSize: isMobile ? 9 : 11,
@@ -117,7 +117,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
               <Bar
                 dataKey="points"
                 radius={[8, 8, 0, 0]}
-                barSize={isMobile ? 22 : 30} // ✅ thicker bars
+                barSize={isMobile ? 20 : 30} // 🔥 balanced
                 animationDuration={600}
               >
                 {enrichedData.map((entry, index) => {

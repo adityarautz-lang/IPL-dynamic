@@ -7,6 +7,7 @@ export function useDashboardData() {
   const [data, setData] = useState<DashboardData>({
     updatedAt: undefined,
     leaders: [],
+    leagueData: [], // ✅ ADD DEFAULT
   });
 
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ export function useDashboardData() {
     const fetchData = async () => {
       try {
         const res = await fetch("/api/ipl", {
-          cache: "no-store", // 🔥 critical: disable caching
+          cache: "no-store",
         });
 
         if (!res.ok) throw new Error("Bad response");
@@ -27,6 +28,8 @@ export function useDashboardData() {
 
         const newData: DashboardData = {
           updatedAt: json?.updatedAt ?? undefined,
+
+          // ✅ EXISTING TRANSFORMATION (unchanged)
           leaders: Array.isArray(json?.leaders)
             ? json.leaders.map((l: any) => ({
                 rank: l.rank,
@@ -36,7 +39,6 @@ export function useDashboardData() {
                 transfersLeft: Number(l.transfersLeft ?? 0),
                 boostersUsed: l.boostersUsed ?? undefined,
 
-                // keep captain data intact
                 captain: l.captain
                   ? {
                       name: l.captain.name,
@@ -54,11 +56,16 @@ export function useDashboardData() {
                   : undefined,
               }))
             : [],
+
+          // 🔥 FIX: ADD leagueData (PASS THROUGH)
+          leagueData: Array.isArray(json?.leagueData)
+            ? json.leagueData
+            : [],
         };
 
         if (!isMounted) return;
 
-        // 🔥 Prevent stale data overwrite (VERY IMPORTANT)
+        // ✅ Prevent stale overwrite (your existing logic)
         setData((prev) => {
           if (!prev.updatedAt) return newData;
 
@@ -70,16 +77,13 @@ export function useDashboardData() {
 
       } catch (err) {
         console.warn("⚠️ transient fetch issue");
-
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
-    // initial load
     fetchData();
 
-    // polling every 5 seconds
     interval = setInterval(fetchData, 5000);
 
     return () => {

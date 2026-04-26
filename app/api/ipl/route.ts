@@ -21,9 +21,12 @@ function jsonResponse(data: any) {
   });
 }
 
+// --------------------------------------------
+// 📤 GET
+// --------------------------------------------
 export async function GET() {
   try {
-    let liveData = null;
+    let liveData: any = null;
 
     // 🔥 Try live data
     if (fs.existsSync(TMP_FILE)) {
@@ -38,10 +41,11 @@ export async function GET() {
       console.warn("⚠️ Live data stale → ignoring");
     }
 
-    // 🔥 Fallback to runtime snapshot
+    // 🔥 Fallback to snapshot
     if (fs.existsSync(SNAPSHOT_FILE)) {
       const raw = fs.readFileSync(SNAPSHOT_FILE, "utf-8");
       const snapshot = JSON.parse(raw);
+
       console.log("📦 Serving SNAPSHOT");
       return jsonResponse(snapshot);
     }
@@ -50,6 +54,7 @@ export async function GET() {
     return jsonResponse({
       updatedAt: null,
       leaders: [],
+      leagueData: [],
     });
 
   } catch (err) {
@@ -57,24 +62,56 @@ export async function GET() {
     return jsonResponse({
       updatedAt: null,
       leaders: [],
+      leagueData: [],
     });
   }
 }
 
+// --------------------------------------------
+// 📥 POST
+// --------------------------------------------
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const payload = {
-      updatedAt: body.updatedAt || new Date().toISOString(),
-      leaders: body.leaders,
+    console.log("📥 Incoming keys:", Object.keys(body));
+
+    // 🔧 Load existing data (for merge)
+    let existing: any = {
+      leaders: [],
+      leagueData: [],
+      updatedAt: null,
     };
 
-    // 🔥 Save BOTH live + snapshot in /tmp
+    if (fs.existsSync(TMP_FILE)) {
+      try {
+        existing = JSON.parse(fs.readFileSync(TMP_FILE, "utf-8"));
+      } catch {}
+    }
+
+    // ✅ Merge instead of overwrite
+    const payload = {
+      updatedAt: body.updatedAt || new Date().toISOString(),
+
+      leaders:
+        body.leaders !== undefined
+          ? body.leaders
+          : existing.leaders,
+
+      leagueData:
+        body.leagueData !== undefined
+          ? body.leagueData
+          : existing.leagueData,
+    };
+
+    // 💾 Save BOTH live + snapshot
     fs.writeFileSync(TMP_FILE, JSON.stringify(payload));
     fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(payload));
 
-    console.log("✅ Data stored (/tmp live + snapshot)");
+    console.log("✅ Stored:", {
+      leaders: payload.leaders?.length || 0,
+      leagueData: payload.leagueData?.length || 0,
+    });
 
     return jsonResponse({ success: true });
 

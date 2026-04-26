@@ -80,7 +80,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
       </div>
 
       {/* Chart */}
-      <div className="w-full px-2 sm:px-4 pb-6">
+      <div className="w-full px-2 sm:px-4 ">
         <div className="h-[240px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -89,9 +89,9 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                 top: 10,
                 right: 10,
                 left: -10,
-                bottom: isMobile ? 65 : 60, // ✅ ONLY CHANGE
+                bottom: isMobile ? 35 : 50, // 🔥 FIXED
               }}
-              barCategoryGap={isMobile ? "10%" : "20%"}
+              barCategoryGap={isMobile ? "12%" : "20%"}
             >
               <XAxis
                 dataKey="name"
@@ -101,9 +101,9 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                   fontSize: isMobile ? 9 : 11,
                 }}
                 interval={0}
-                angle={isMobile ? -30 : -25}
-textAnchor="end"
-height={isMobile ? 70 : 75}
+                angle={isMobile ? -25 : -25}
+                textAnchor="end"
+                height={isMobile ? 45 : 60} // 🔥 FIXED
               />
 
               <YAxis
@@ -124,7 +124,7 @@ height={isMobile ? 70 : 75}
               <Bar
                 dataKey="points"
                 radius={[8, 8, 0, 0]}
-                barSize={isMobile ? 22 : 30}
+                barSize={isMobile ? 20 : 30}
               >
                 {chartData.map((entry) => (
                   <Cell
