@@ -99,7 +99,7 @@ export default function Home() {
         </div>
 
         {/* 🎬 RACE */}
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <GlassCard>
 
             <div className="flex justify-between mb-4">
@@ -144,7 +144,7 @@ export default function Home() {
             )}
 
           </GlassCard>
-        </div>
+        </div> */}
 
         <div className="mt-6">
           <Summary />
