@@ -43,7 +43,11 @@ export type DailyChartRow = {
 export type DashboardData = {
   updatedAt?: string;
   leaders: Leader[];
-  leagueData?: any[]; // ✅ ADD THIS
+  leagueData?: any[];
+
+  // ✅ ADD THESE
+  overall?: any;
+  daily?: any;
 };
 
 
