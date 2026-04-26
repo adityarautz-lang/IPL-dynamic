@@ -41,11 +41,9 @@ export type DailyChartRow = {
 // =====================
 
 export type DashboardData = {
-  overall?: OverallChartItem[];
-  daily?: DailyChartRow[];
-  leaders?: Leader[];
   updatedAt?: string;
-  source?: "manual" | "live-snapshot";
+  leaders: Leader[];
+  leagueData?: any[]; // ✅ ADD THIS
 };
 
 

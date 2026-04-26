@@ -7,7 +7,7 @@ export function useDashboardData() {
   const [data, setData] = useState<DashboardData>({
     updatedAt: undefined,
     leaders: [],
-    leagueData: [], // ✅ ADD DEFAULT
+    leagueData: [], // ✅ FIX: include default
   });
 
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,6 @@ export function useDashboardData() {
         const newData: DashboardData = {
           updatedAt: json?.updatedAt ?? undefined,
 
-          // ✅ EXISTING TRANSFORMATION (unchanged)
           leaders: Array.isArray(json?.leaders)
             ? json.leaders.map((l: any) => ({
                 rank: l.rank,
@@ -57,7 +56,7 @@ export function useDashboardData() {
               }))
             : [],
 
-          // 🔥 FIX: ADD leagueData (PASS THROUGH)
+          // ✅ FIX: include leagueData safely
           leagueData: Array.isArray(json?.leagueData)
             ? json.leagueData
             : [],
@@ -65,7 +64,7 @@ export function useDashboardData() {
 
         if (!isMounted) return;
 
-        // ✅ Prevent stale overwrite (your existing logic)
+        // 🔥 Prevent stale overwrite
         setData((prev) => {
           if (!prev.updatedAt) return newData;
 
@@ -82,8 +81,10 @@ export function useDashboardData() {
       }
     };
 
+    // initial load
     fetchData();
 
+    // polling
     interval = setInterval(fetchData, 5000);
 
     return () => {
