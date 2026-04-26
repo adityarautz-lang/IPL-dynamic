@@ -174,12 +174,19 @@ export const buildDashboardFromSnapshot = (
     : null;
 
   return {
+    // ✅ REQUIRED: include leaders
+    leaders: snapshot.leaders,
+
+    // ✅ keep analytics
     overall: addLeaderboardMetrics(snapshot.leaders),
 
-    // ✅ SAFE ARRAY SPREAD
+    // ✅ safe merge
     daily: liveDaily
       ? [...(manualDashboard.daily ?? []), liveDaily]
       : manualDashboard.daily ?? [],
+
+    // ✅ preserve other existing fields (important)
+    leagueData: manualDashboard.leagueData ?? [],
 
     updatedAt: snapshot.updatedAt,
     source: "live-snapshot",
