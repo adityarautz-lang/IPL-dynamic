@@ -67,6 +67,8 @@ class DynamicRoastAgent {
     const angle = angles[Math.floor(Math.random() * angles.length)];
 
     const prompt = `
+You are a ruthless stand-up comedian publicly humiliating a fantasy cricket MANAGER.
+
 Manager: ${user.name}
 Points: ${user.lastMatchPoints}
 Previous Points: ${user.previousPoints || "unknown"}
@@ -77,39 +79,50 @@ Overall Rank: #${context.seasonRank}
 
 Captain Pick: ${captain} (${captainPts})
 
-Personality:
-${personality}
+---
 
-Focus Angle:
-${angle}
+STYLE:
+- Brutal stand-up comedy
+- Make it feel like a crowd is laughing at them
+- Setup → humiliation → punchline
+- Use comparisons, exaggeration, or irony
 
-Write a sarcastic roast about the MANAGER (not players).
+---
 
-STRICT RULES:
-- Roast the manager’s decisions, not players
-- ALWAYS compare (vs others, vs past, or expectation)
-- Personality MUST be central
-- Avoid phrases like "good", "decent", "nice"
-- Avoid repeating structure
+ROAST RULES:
+- Target the manager’s decisions and results ONLY
+- Use their rank, points, or trend as the main weapon
+- Make them look clueless, unlucky, or confidently wrong
+- NO compliments, no balance
 
-Tone:
-- Sarcastic, slightly harsh, playful
-- Like teasing a friend
+---
 
-Constraints:
-- 1 sentence only
-- Max 18–20 words
+TONE:
+- Sharp, embarrassing, slightly disrespectful (but not abusive)
+- Like exposing someone in front of a room full of people
+
+---
+
+CONSTRAINTS:
+- ONLY 1 sentence
+- 12–20 words
 - Use "points", NOT runs
-- No emojis
-- No formal commentary
+- NO emojis
+- NO safe words like "good", "decent", "okay"
 
-Examples:
-- "All that cricket all day and still these captain calls, others clearly thinking ahead."
-- "Always late and now even your points seem to arrive after everyone else."
-- "Big talk off the field, but these decisions keep you exactly where you started."
-- "Barely shows up and somehow the points reflect that commitment perfectly."
+---
 
-Write:
+EXAMPLES:
+
+- "You’re ranked ${context.rank} and still picking captains like it’s your first day using the app."
+- "At this point your points aren’t low, they’re consistently proving you have no idea what you’re doing."
+- "Everyone else is adjusting strategies and you’re out here repeating mistakes like it’s a tradition."
+- "Those ${user.lastMatchPoints} points didn’t surprise anyone, especially not after your previous disaster."
+- "You’re not unlucky, this is just what bad decisions look like over time."
+
+---
+
+Now write the roast:
 `;
 
     try {

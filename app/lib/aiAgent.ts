@@ -1,107 +1,101 @@
 /**
- * AI Agent Commentary
- * Generates sarcastic, roasting, and praising commentary for team performance
+ * AI Agent Commentary (Stand-Up Comedy Edition 🎤🔥)
+ * Less "sports analyst", more "guy roasting your entire existence on stage"
  */
 
 export const aiAgent = {
   praise: (team: string, pts: number) => {
     const lines = [
-      `${team} just cooked with ${pts} pts. Gordon Ramsay would be proud.`,
-      `${team} dropped ${pts}. Opponents currently filing complaints.`,
-      `${pts} pts?? ${team} woke up and chose violence.`,
-      `${team} is an absolute legend with ${pts}. Unstoppable force detected.`,
-      `${team} absolutely demolished with ${pts} points. That's championship energy.`,
-      `${pts} pts by ${team}? They're not just playing, they're dominating.`,
-      `${team} showed up and showed OUT with ${pts} points. Pure class.`,
-      `${team} turned it UP with ${pts} points. No mercy mode activated.`,
-      `${pts} points?? ${team} said "let's make it interesting" 🔥`,
-      `${team} blessed us with ${pts} points. A true masterclass in performance.`,
-      `${team} hit different today with ${pts}. That's the real deal right there.`,
+      `${team} dropped ${pts} points... ${pts}!! At this point, check them for hacks. That's not performance, that's a software update.`,
+      `${pts} points by ${team}? Bro, the opponent didn’t lose, they experienced character development.`,
+      `${team} scored ${pts} like rent was due tomorrow. Urgency. Panic. Excellence.`,
+      `${team} put up ${pts}… I’ve seen less dominance in dictatorship documentaries.`,
+      `${pts} points?? ${team} woke up and chose violence… and then scheduled overtime.`,
+      `${team} with ${pts} points. At this point it's not a match, it’s a TED Talk on superiority.`,
+      `${team} dropped ${pts}… even their warm-up probably had better stats than the other team.`,
+      `${pts} points by ${team}. That’s not a score, that’s a public service announcement.`,
+      `${team} really said “fair play” and then ignored it completely with ${pts}.`,
+      `${team} scored ${pts}. Somewhere, the opponent just googled “how to uninstall match”.`,
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   },
 
   roast: (team: string, pts: number) => {
     const lines = [
-      `${team} scored ${pts}. I've seen loading screens perform better.`,
-      `${team} with ${pts} pts… was this a strategy or an accident?`,
-      `${pts} pts by ${team}. Bold of you to call that a performance.`,
-      `${team} really said "minimum effort, maximum embarrassment".`,
-      `${team}: ${pts} pts and a prayer 🙏`,
-      `${pts}? ${team}, that's not even trying.`,
-      `${team} showed up with ${pts} points. Showed up to disappoint, that is.`,
-      `${pts} pts?? ${team} said "let's keep it consistent" — consistently bad 💀`,
-      `${team} managed ${pts}. Even their effort needs effort.`,
-      `${pts} pts from ${team}. A performance we'll all try to forget.`,
-      `${team} delivered ${pts}... delivered us straight to disappointment town.`,
+      `${team} scored ${pts}… ${pts}. I’ve seen people accidentally type higher numbers.`,
+      `${pts} points by ${team}? That’s not a score, that’s a typo.`,
+      `${team} with ${pts}… were they playing or just… present emotionally?`,
+      `${team} scored ${pts}. At this point, even their excuses need practice.`,
+      `${pts} points?? Bro my phone battery lasts longer than that performance.`,
+      `${team} dropped ${pts}… dropped is correct, because nothing was lifted.`,
+      `${team} really gave us ${pts} and said “this is enough”. The confidence?? Delusional.`,
+      `${pts} points by ${team}. That’s not effort, that’s a suggestion.`,
+      `${team}: ${pts} points and zero explanation. Scientists are still confused.`,
+      `${team} scored ${pts}. Honestly I respect it… takes courage to fail this publicly.`,
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   },
 
   consistency: (team: string, volatility: number) => {
     const lines = [
-      `${team} is so consistent it's suspicious—volatility ${volatility.toFixed(1)}.`,
-      `${team} shows up every match like clockwork. No drama, no surprises.`,
-      `${team} proves consistency beats flashiness (vol: ${volatility.toFixed(1)}).`,
-      `${team} is the definition of reliable—steady as a rock with vol ${volatility.toFixed(1)}.`,
-      `${team} doesn't gamble. Every match is a calculated, consistent performance.`,
-      `That ${volatility.toFixed(1)} volatility? ${team} said "boring is beautiful".`,
-      `${team} has mastered the art of showing up the same way every single time.`,
-      `Boring? Maybe. But ${team}'s consistency (vol: ${volatility.toFixed(1)}) is elite.`,
-      `${team} decided consistency is the best policy. Hard to argue with that logic.`,
-      `${team} doesn't do rollercoasters—just smooth, steady sailing (vol: ${volatility.toFixed(1)}).`,
-      `If predictability was a superpower, ${team} would be unstoppable (vol: ${volatility.toFixed(1)}).`,
+      `${team} is so consistent (vol ${volatility.toFixed(1)}), it’s honestly suspicious. Check if they’re a government job.`,
+      `${team} plays the same every time. Same energy, same results… same personality too probably.`,
+      `${volatility.toFixed(1)} volatility? ${team} said “why grow when you can plateau professionally?”`,
+      `${team} is consistent. Not exciting, not terrible… just emotionally stable like a spreadsheet.`,
+      `${team} with that ${volatility.toFixed(1)} volatility… I’ve seen more variation in elevator music.`,
+      `${team} doesn’t believe in surprises. Every match feels like a rerun episode.`,
+      `${team} is so predictable, even spoilers don’t matter anymore (vol ${volatility.toFixed(1)}).`,
+      `${volatility.toFixed(1)} volatility? ${team} said “we don’t do chaos here, only mild satisfaction.”`,
+      `${team} brings the same performance every time… like a franchise that refuses to innovate.`,
+      `${team} is consistent. Not winning hearts, not breaking records… just existing reliably.`,
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   },
 
   leader: (team: string, avg: number) => {
     const lines = [
-      `${team} dominating at ${avg.toFixed(1)} pts/match. Simply built different.`,
-      `${team} is the season's true backbone—averaging ${avg.toFixed(1)} per match.`,
-      `${team} said "I'll be #1" and delivered. ${avg.toFixed(1)} pts avg proves it.`,
-      `${avg.toFixed(1)} pts per match?? ${team} is the undisputed king of consistency and dominance.`,
-      `${team} doesn't just lead—they inspire. ${avg.toFixed(1)} avg is the proof.`,
-      `The bar isn't just high, it's ${team}-high. ${avg.toFixed(1)} pts per match sets the standard.`,
-      `${team} is out here rewriting the rulebook. ${avg.toFixed(1)} pts/match is legendary.`,
-      `Other teams are playing checkers. ${team} is playing chess at ${avg.toFixed(1)} pts/match.`,
-      `${team} averaged ${avg.toFixed(1)} pts? That's not just leading, that's leaving everyone behind.`,
-      `${team}'s ${avg.toFixed(1)} pts/match average is basically a mic drop for the entire season.`,
-      `${team} didn't just perform—they set a new definition of excellence. ${avg.toFixed(1)} says it all.`,
+      `${team} averaging ${avg.toFixed(1)}… at this point, they’re not leading, they’re gatekeeping success.`,
+      `${avg.toFixed(1)} per match?? ${team} didn’t climb the leaderboard, they bought property there.`,
+      `${team} with ${avg.toFixed(1)} average. Others are competing, these guys are hosting the event.`,
+      `${team} said “we’ll lead” and then never looked back. Toxic behavior honestly.`,
+      `${avg.toFixed(1)} pts average by ${team}. That’s not leadership, that’s intimidation.`,
+      `${team} averaging ${avg.toFixed(1)}… the rest of the teams are basically extras in their story.`,
+      `${team} didn’t just take first place… they redecorated it. ${avg.toFixed(1)} says it all.`,
+      `${avg.toFixed(1)} average?? ${team} is playing chess, others are still reading the rules.`,
+      `${team} at ${avg.toFixed(1)}… this isn’t a leaderboard, it’s a gap analysis.`,
+      `${team} leads with ${avg.toFixed(1)}. At this point, even second place needs therapy.`,
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   },
 
   surge: (team: string, delta: number, day: string) => {
     const lines = [
-      `${team} exploded with +${delta} in ${day}. That's a career moment right there.`,
-      `${team} reminded everyone why they're dangerous: +${delta} swing in ${day}.`,
-      `From zero to hero: ${team} +${delta} in ${day}. The comeback is real.`,
-      `${team} just turned up the volume with +${delta} in ${day}. Absolute madness!`,
-      `+${delta} points in ${day}?? ${team} said "let's make a statement" 💥`,
-      `${team} went from sleeping to AWAKE in ${day} with a +${delta} explosion.`,
-      `${team} flipped the script with +${delta} in ${day}. That's momentum right there.`,
-      `The opposition didn't see it coming: ${team} +${delta} surge in ${day}.`,
-      `${team} proved they belong with a massive +${delta} jump in ${day}. Pure fire.`,
-      `+${delta} in a single match by ${team}?? That's not luck, that's skill on display in ${day}.`,
-      `${team} turned up the gas and +${delta} is exactly what happened in ${day}.`,
+      `${team} jumped +${delta} in ${day}… out of nowhere. Even they didn’t see that coming.`,
+      `+${delta} by ${team} in ${day}? That’s not improvement, that’s a plot twist.`,
+      `${team} went +${delta} in ${day}. Someone clearly threatened them.`,
+      `${team} with a +${delta} surge… this is what happens when panic meets talent.`,
+      `+${delta} in ${day}?? ${team} remembered they’re actually good. Timing is interesting.`,
+      `${team} exploded +${delta}… this wasn’t a comeback, this was revenge.`,
+      `${team} gained +${delta} in ${day}. Motivation finally downloaded successfully.`,
+      `${team} said “enough is enough” and added +${delta}. Character arc completed.`,
+      `+${delta} jump by ${team}… from background character to main storyline in one episode.`,
+      `${team} surged +${delta} in ${day}. That’s not momentum, that’s a personality change.`,
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   },
 
   collapse: (team: string, delta: number) => {
     const lines = [
-      `${team} took a ${Math.abs(delta)}-point nosedive. Gravity working overtime.`,
-      `${team} went from hero to zero with a ${Math.abs(delta)} drop. Ouch.`,
-      `That ${Math.abs(delta)}-point collapse by ${team}? Never forget 💀`,
-      `${team} said "let's tank this" and succeeded—${Math.abs(delta)} pts down.`,
-      `${team} free-fell ${Math.abs(delta)} points. Someone check on them 😬`,
-      `The wheels fell off for ${team}: ${Math.abs(delta)} points down the drain.`,
-      `${team} just experienced a spectacular ${Math.abs(delta)}-point disaster.`,
-      `From there to here: ${team} dropped ${Math.abs(delta)} like it's hot. But it's NOT.`,
-      `${team}'s ${Math.abs(delta)}-point crash is the kind of thing analysts will study for years.`,
-      `${Math.abs(delta)} points?? ${team} didn't just drop—they PLUMMETED.`,
-      `${team} and their newfound strategy: lose ${Math.abs(delta)} points and disappoint everyone.`,
+      `${team} dropped ${Math.abs(delta)}… not a fall, a full documentary on failure.`,
+      `${Math.abs(delta)} point drop by ${team}. That wasn’t a mistake, that was a lifestyle choice.`,
+      `${team} lost ${Math.abs(delta)} points… even gravity was like “damn relax”.`,
+      `${team} with a ${Math.abs(delta)} drop. That’s not collapse, that’s early retirement.`,
+      `${Math.abs(delta)} down?? ${team} didn’t choke, they evaporated.`,
+      `${team} fell ${Math.abs(delta)} points. At this point, just restart the season.`,
+      `${team} lost ${Math.abs(delta)}… I’ve seen smoother crashes in video games.`,
+      `${Math.abs(delta)} drop by ${team}. Investors are pulling out as we speak.`,
+      `${team} went down ${Math.abs(delta)}. That wasn’t a dip, that was a disappearance.`,
+      `${team} dropped ${Math.abs(delta)}… even their confidence left the chat.`,
     ];
     return lines[Math.floor(Math.random() * lines.length)];
   },
