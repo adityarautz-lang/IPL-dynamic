@@ -26,9 +26,9 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // ✅ Safe formatter
+  // ✅ Formatter with NO decimals
   const formatNumber = (num: number) =>
-    num.toLocaleString("en-IN");
+    Math.round(num).toLocaleString("en-IN");
 
   const list = Array.isArray(data) ? data : [];
 
@@ -103,7 +103,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 }}
               />
 
-              {/* ✅ Y Axis formatted safely */}
+              {/* ✅ Y Axis */}
               <YAxis
                 stroke="#ffffff"
                 tick={{ fill: "#ffffff", fontSize: 10 }}
@@ -113,7 +113,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 }
               />
 
-              {/* ✅ Tooltip fixed */}
+              {/* ✅ Tooltip */}
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 contentStyle={{
@@ -149,7 +149,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   );
                 })}
 
-                {/* ✅ Centered ABOVE bar */}
+                {/* ✅ Centered ABOVE bar (no decimals) */}
                 <LabelList
                   dataKey="points"
                   content={(props: any) => {
