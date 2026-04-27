@@ -33,6 +33,10 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
+  // ✅ Number formatter
+  const formatNumber = (num: number) =>
+    num.toLocaleString("en-IN");
+
   const list = Array.isArray(data) ? data : [];
 
   if (!list.length) {
@@ -86,10 +90,10 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
             <BarChart
               data={chartData}
               margin={{
-                top: 10,
+                top: 20, // ✅ space for labels
                 right: 10,
                 left: -10,
-                bottom: isMobile ? 35 : 50, // 🔥 FIXED
+                bottom: isMobile ? 35 : 50,
               }}
               barCategoryGap={isMobile ? "12%" : "20%"}
             >
@@ -101,17 +105,20 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                   fontSize: isMobile ? 9 : 11,
                 }}
                 interval={0}
-                angle={isMobile ? -25 : -25}
+                angle={-25}
                 textAnchor="end"
-                height={isMobile ? 45 : 60} // 🔥 FIXED
+                height={isMobile ? 45 : 60}
               />
 
+              {/* ✅ Y Axis formatted */}
               <YAxis
                 stroke="#ffffff"
                 tick={{ fill: "#ffffff", fontSize: 10 }}
-                width={30}
+                width={40}
+                tickFormatter={formatNumber}
               />
 
+              {/* ✅ Tooltip formatted */}
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 contentStyle={{
@@ -119,6 +126,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                   border: "1px solid rgba(148,163,184,0.2)",
                   borderRadius: "10px",
                 }}
+                formatter={(value: number) => formatNumber(value)}
               />
 
               <Bar
@@ -133,13 +141,24 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                   />
                 ))}
 
+                {/* ✅ Centered ABOVE bar */}
                 <LabelList
                   dataKey="points"
-                  position="top"
-                  style={{
-                    fill: "#fff",
-                    fontSize: isMobile ? 10 : 12,
-                    fontWeight: 600,
+                  content={(props: any) => {
+                    const { x, y, width, value } = props;
+
+                    return (
+                      <text
+                        x={x + width / 2}
+                        y={y - 6}
+                        fill="#fff"
+                        fontSize={isMobile ? 10 : 12}
+                        fontWeight={600}
+                        textAnchor="middle"
+                      >
+                        {formatNumber(value)}
+                      </text>
+                    );
                   }}
                 />
               </Bar>

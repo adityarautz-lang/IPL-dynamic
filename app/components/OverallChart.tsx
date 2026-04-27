@@ -26,6 +26,10 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
+  // ✅ Number formatter
+  const formatNumber = (num: number) =>
+    num.toLocaleString("en-IN");
+
   const list = Array.isArray(data) ? data : [];
 
   if (!list.length) {
@@ -74,12 +78,12 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
             <BarChart
               data={enrichedData}
               margin={{
-                top: 10,
+                top: 20, // 🔥 slightly more space for labels
                 right: 10,
                 left: -10,
-                bottom: isMobile ? 35 : 40, // 🔥 FIXED
+                bottom: isMobile ? 35 : 40,
               }}
-              barCategoryGap={isMobile ? "12%" : "20%"} // slight spacing fix
+              barCategoryGap={isMobile ? "12%" : "20%"}
             >
               <CartesianGrid
                 stroke="rgba(255,255,255,0.08)"
@@ -90,9 +94,9 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 dataKey="name"
                 stroke="#ffffff"
                 interval={0}
-                angle={isMobile ? -25 : -25} // 🔥 less aggressive tilt
+                angle={-25}
                 textAnchor="end"
-                height={isMobile ? 45 : 50} // 🔥 FIXED
+                height={isMobile ? 45 : 50}
                 tick={{
                   fill: "#ffffff",
                   fontSize: isMobile ? 9 : 11,
@@ -102,7 +106,8 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
               <YAxis
                 stroke="#ffffff"
                 tick={{ fill: "#ffffff", fontSize: 10 }}
-                width={30}
+                width={40}
+                tickFormatter={formatNumber}
               />
 
               <Tooltip
@@ -112,12 +117,13 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   border: "1px solid rgba(148,163,184,0.2)",
                   borderRadius: "10px",
                 }}
+                formatter={(value: number) => formatNumber(value)}
               />
 
               <Bar
                 dataKey="points"
                 radius={[8, 8, 0, 0]}
-                barSize={isMobile ? 20 : 30} // 🔥 balanced
+                barSize={isMobile ? 20 : 30}
                 animationDuration={600}
               >
                 {enrichedData.map((entry, index) => {
@@ -137,14 +143,24 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   );
                 })}
 
-                {/* Points */}
+                {/* ✅ Points ABOVE bar but CENTERED */}
                 <LabelList
                   dataKey="points"
-                  position="top"
-                  style={{
-                    fill: "#fff",
-                    fontSize: isMobile ? 10 : 12,
-                    fontWeight: 600,
+                  content={(props: any) => {
+                    const { x, y, width, value } = props;
+
+                    return (
+                      <text
+                        x={x + width / 2} // ✅ true center
+                        y={y - 6} // slightly above bar
+                        fill="#fff"
+                        fontSize={isMobile ? 10 : 12}
+                        fontWeight={600}
+                        textAnchor="middle"
+                      >
+                        {formatNumber(value)}
+                      </text>
+                    );
                   }}
                 />
 
