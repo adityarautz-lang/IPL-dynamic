@@ -26,7 +26,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // ✅ Number formatter
+  // ✅ Safe formatter
   const formatNumber = (num: number) =>
     num.toLocaleString("en-IN");
 
@@ -78,7 +78,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
             <BarChart
               data={enrichedData}
               margin={{
-                top: 20, // 🔥 slightly more space for labels
+                top: 20,
                 right: 10,
                 left: -10,
                 bottom: isMobile ? 35 : 40,
@@ -103,13 +103,17 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 }}
               />
 
+              {/* ✅ Y Axis formatted safely */}
               <YAxis
                 stroke="#ffffff"
                 tick={{ fill: "#ffffff", fontSize: 10 }}
                 width={40}
-                tickFormatter={formatNumber}
+                tickFormatter={(value) =>
+                  formatNumber(Number(value))
+                }
               />
 
+              {/* ✅ Tooltip fixed */}
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 contentStyle={{
@@ -117,7 +121,9 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   border: "1px solid rgba(148,163,184,0.2)",
                   borderRadius: "10px",
                 }}
-                formatter={(value: number) => formatNumber(value)}
+                formatter={(value) =>
+                  formatNumber(Number(value))
+                }
               />
 
               <Bar
@@ -143,7 +149,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   );
                 })}
 
-                {/* ✅ Points ABOVE bar but CENTERED */}
+                {/* ✅ Centered ABOVE bar */}
                 <LabelList
                   dataKey="points"
                   content={(props: any) => {
@@ -151,14 +157,14 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
 
                     return (
                       <text
-                        x={x + width / 2} // ✅ true center
-                        y={y - 6} // slightly above bar
+                        x={x + width / 2}
+                        y={y - 6}
                         fill="#fff"
                         fontSize={isMobile ? 10 : 12}
                         fontWeight={600}
                         textAnchor="middle"
                       >
-                        {formatNumber(value)}
+                        {formatNumber(Number(value))}
                       </text>
                     );
                   }}

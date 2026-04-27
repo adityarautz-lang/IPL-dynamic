@@ -33,7 +33,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
     return () => window.removeEventListener("resize", update);
   }, []);
 
-  // ✅ Number formatter
+  // ✅ Safe formatter
   const formatNumber = (num: number) =>
     num.toLocaleString("en-IN");
 
@@ -90,7 +90,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
             <BarChart
               data={chartData}
               margin={{
-                top: 20, // ✅ space for labels
+                top: 20,
                 right: 10,
                 left: -10,
                 bottom: isMobile ? 35 : 50,
@@ -115,10 +115,12 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                 stroke="#ffffff"
                 tick={{ fill: "#ffffff", fontSize: 10 }}
                 width={40}
-                tickFormatter={formatNumber}
+                tickFormatter={(value) =>
+                  formatNumber(Number(value))
+                }
               />
 
-              {/* ✅ Tooltip formatted */}
+              {/* ✅ Tooltip FIXED */}
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 contentStyle={{
@@ -126,7 +128,9 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                   border: "1px solid rgba(148,163,184,0.2)",
                   borderRadius: "10px",
                 }}
-                formatter={(value: number) => formatNumber(value)}
+                formatter={(value) =>
+                  formatNumber(Number(value))
+                }
               />
 
               <Bar
@@ -156,7 +160,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
                         fontWeight={600}
                         textAnchor="middle"
                       >
-                        {formatNumber(value)}
+                        {formatNumber(Number(value))}
                       </text>
                     );
                   }}
