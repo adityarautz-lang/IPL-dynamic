@@ -8,6 +8,8 @@ const DASHBOARD_API =
 const TARGET_URL =
   "https://fantasy.iplt20.com/classic/league/view/66930102";
 
+const TOTAL_MATCHES = 70;
+
 async function scrapeIPL() {
   console.log("🚀 Starting IPL scraper...");
 
@@ -21,6 +23,51 @@ async function scrapeIPL() {
 
   try {
     await page.goto(TARGET_URL, { waitUntil: "networkidle" });
+
+    // ==============================
+    // 📊 MATCH PROGRESS (NEW)
+    // ==============================
+
+    let currentMatch = null;
+    let completedMatches = null;
+    let completedPct = null;
+
+    try {
+      await page.waitForTimeout(2000); // allow UI to stabilize
+
+      const matchText = await page
+        .$eval(
+          ".m11c-scoreBoard__box .m11c-matchTxt",
+          (el) => el.textContent.trim()
+        )
+        .catch(() => null);
+
+      console.log("📍 Raw match text:", matchText);
+
+      if (matchText) {
+        const matchNumber = matchText.match(/\d+/);
+
+        if (matchNumber) {
+          currentMatch = Number(matchNumber[0]);
+
+          completedMatches = currentMatch - 1;
+          completedPct =
+            (completedMatches / TOTAL_MATCHES) * 100;
+        }
+      }
+    } catch (err) {
+      console.log("⚠️ Match progress scrape failed:", err);
+    }
+
+    console.log("📊 Match Progress:", {
+      currentMatch,
+      completedMatches,
+      completedPct,
+    });
+
+    // ==============================
+    // 👇 EXISTING LOGIC
+    // ==============================
 
     await page.waitForSelector("#leadersList li", { timeout: 30000 });
 
@@ -199,7 +246,12 @@ async function scrapeIPL() {
     const payload = {
       updatedAt: new Date().toISOString(),
       leaders: results,
+      currentMatch,
+      completedMatches,
+      completedPct,
     };
+
+    console.log("📦 Payload:", payload);
 
     // 👉 PUSH DATA
     const res = await fetch(DASHBOARD_API, {

@@ -35,7 +35,7 @@ export async function GET() {
 
       if (isFresh(liveData.updatedAt)) {
         console.log("📡 Serving LIVE data");
-        return jsonResponse(liveData);
+        return jsonResponse(liveData); // ✅ already includes new fields
       }
 
       console.warn("⚠️ Live data stale → ignoring");
@@ -47,7 +47,7 @@ export async function GET() {
       const snapshot = JSON.parse(raw);
 
       console.log("📦 Serving SNAPSHOT");
-      return jsonResponse(snapshot);
+      return jsonResponse(snapshot); // ✅ includes new fields
     }
 
     // ❌ No data
@@ -55,6 +55,8 @@ export async function GET() {
       updatedAt: null,
       leaders: [],
       leagueData: [],
+      completedPct: null,
+      completedMatches: null,
     });
 
   } catch (err) {
@@ -63,6 +65,8 @@ export async function GET() {
       updatedAt: null,
       leaders: [],
       leagueData: [],
+      completedPct: null,
+      completedMatches: null,
     });
   }
 }
@@ -81,6 +85,8 @@ export async function POST(req: Request) {
       leaders: [],
       leagueData: [],
       updatedAt: null,
+      completedPct: null,
+      completedMatches: null,
     };
 
     if (fs.existsSync(TMP_FILE)) {
@@ -102,6 +108,17 @@ export async function POST(req: Request) {
         body.leagueData !== undefined
           ? body.leagueData
           : existing.leagueData,
+
+      // 🔥 FIX: Persist new fields
+      completedPct:
+        body.completedPct !== undefined
+          ? body.completedPct
+          : existing.completedPct,
+
+      completedMatches:
+        body.completedMatches !== undefined
+          ? body.completedMatches
+          : existing.completedMatches,
     };
 
     // 💾 Save BOTH live + snapshot
@@ -111,6 +128,8 @@ export async function POST(req: Request) {
     console.log("✅ Stored:", {
       leaders: payload.leaders?.length || 0,
       leagueData: payload.leagueData?.length || 0,
+      completedPct: payload.completedPct,
+      completedMatches: payload.completedMatches,
     });
 
     return jsonResponse({ success: true });

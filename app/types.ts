@@ -49,8 +49,12 @@ export type DashboardData = {
   overall?: any;
   daily?: any;
 
-  // 🔥 NEW FIX
+  // existing
   source?: string;
+
+  // ✅ NEW — REQUIRED FOR PROGRESS BAR
+  completedPct?: number;        // e.g. 55.7
+  completedMatches?: number;    // e.g. 39
 };
 
 
@@ -74,12 +78,16 @@ export type ScrapedLeaderboardItem = {
   points: number;
   lastMatchPoints?: number;
   transfersLeft?: number;
-  boostersUsed?: string | number; // ✅ FIXED
+  boostersUsed?: string | number;
 };
 
 export type ScrapedDashboardPayload = {
   updatedAt?: string;
   leaders: ScrapedLeaderboardItem[];
+
+  // ✅ optional but good to reflect scraper payload
+  completedPct?: number;
+  completedMatches?: number;
 };
 
 export type RawOverviewUser = {

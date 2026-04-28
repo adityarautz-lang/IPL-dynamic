@@ -1,6 +1,16 @@
 "use client";
 
-export default function TopPerformer({ data }: { data: any[] }) {
+import ProgressBar from "./ProgressBar";
+
+export default function TopPerformer({
+  data,
+  completedPct,
+  completedMatches,
+}: {
+  data: any[];
+  completedPct?: number;
+  completedMatches?: number;
+}) {
   const list = Array.isArray(data) ? data : [];
 
   const top =
@@ -14,16 +24,24 @@ export default function TopPerformer({ data }: { data: any[] }) {
   if (!top) return null;
 
   return (
-    <div className="mt-2 text-sm text-slate-300 animate-pulse">
-      🔥 Today’s top performer:{" "}
-      <span className="font-semibold text-yellow-400">
-        {top.name}
-      </span>{" "}
-      (
-      <span className="font-semibold text-white">
-        {Math.round(top.lastMatchPoints)} pts
-      </span>
-      )
+    <div className="mt-2 w-full">
+      {/* 🔥 Top Performer */}
+      <div className="text-sm text-slate-300 animate-pulse">
+        🔥 Today’s top performer:{" "}
+        <span className="font-semibold text-white">
+          {top.name}
+        </span>{" "}
+        (<span className="text-green-400 font-semibold">
+          {top.lastMatchPoints}
+        </span>{" "}
+        pts)
+      </div>
+
+      {/* 📊 Progress Bar */}
+      <ProgressBar
+        completedPct={completedPct}
+        completedMatches={completedMatches}
+      />
     </div>
   );
 }

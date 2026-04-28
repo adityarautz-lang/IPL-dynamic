@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { DashboardData, Leader } from "../types";
+import type { DashboardData } from "../types";
 
 export function useDashboardData() {
   const [data, setData] = useState<DashboardData>({
     updatedAt: undefined,
     leaders: [],
-    leagueData: [], // ✅ FIX: include default
+    leagueData: [],
+    completedPct: undefined,
+    completedMatches: undefined,
   });
 
   const [loading, setLoading] = useState(true);
@@ -28,6 +30,17 @@ export function useDashboardData() {
 
         const newData: DashboardData = {
           updatedAt: json?.updatedAt ?? undefined,
+
+          // ✅ FIX: handle string OR number
+          completedPct:
+            json?.completedPct != null
+              ? Number(json.completedPct)
+              : undefined,
+
+          completedMatches:
+            json?.completedMatches != null
+              ? Number(json.completedMatches)
+              : undefined,
 
           leaders: Array.isArray(json?.leaders)
             ? json.leaders.map((l: any) => ({
@@ -56,7 +69,6 @@ export function useDashboardData() {
               }))
             : [],
 
-          // ✅ FIX: include leagueData safely
           leagueData: Array.isArray(json?.leagueData)
             ? json.leagueData
             : [],
@@ -64,15 +76,11 @@ export function useDashboardData() {
 
         if (!isMounted) return;
 
-        // 🔥 Prevent stale overwrite
-        setData((prev) => {
-          if (!prev.updatedAt) return newData;
-
-          const prevTime = new Date(prev.updatedAt).getTime();
-          const newTime = new Date(newData.updatedAt || 0).getTime();
-
-          return newTime > prevTime ? newData : prev;
-        });
+        // ✅ Simple merge (no timestamp blocking)
+        setData((prev) => ({
+          ...prev,
+          ...newData,
+        }));
 
       } catch (err) {
         console.warn("⚠️ transient fetch issue");
@@ -81,10 +89,7 @@ export function useDashboardData() {
       }
     };
 
-    // initial load
     fetchData();
-
-    // polling
     interval = setInterval(fetchData, 5000);
 
     return () => {

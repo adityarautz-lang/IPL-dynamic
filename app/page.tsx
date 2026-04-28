@@ -16,10 +16,13 @@ import TeamCards from "./components/TeamCards";
 /* STATUS */
 function StatusBadge({ isLive }: { isLive: boolean }) {
   return (
-    <div className={`text-xs px-2 py-1 rounded-full ${
-      isLive ? "bg-green-500/20 text-green-400"
-             : "bg-yellow-500/20 text-yellow-400"
-    }`}>
+    <div
+      className={`text-xs px-2 py-1 rounded-full ${
+        isLive
+          ? "bg-green-500/20 text-green-400"
+          : "bg-yellow-500/20 text-yellow-400"
+      }`}
+    >
       {isLive ? "LIVE" : "SNAPSHOT"}
     </div>
   );
@@ -28,21 +31,23 @@ function StatusBadge({ isLive }: { isLive: boolean }) {
 /* 🔥 CHARTS ISOLATED */
 const ChartsSection = React.memo(function ChartsSection({ list }: any) {
   return (
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-    <GlassCard>
-      <DailyChart data={list} />
-    </GlassCard>
-  
-    <GlassCard>
-      <OverallChart data={list} />
-    </GlassCard>
-  
-  </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+      <GlassCard>
+        <DailyChart data={list} />
+      </GlassCard>
+
+      <GlassCard>
+        <OverallChart data={list} />
+      </GlassCard>
+    </div>
   );
 });
 
 export default function Home() {
   const { data, loading } = useDashboardData();
+
+  // ✅ DEBUG LOG (KEY STEP)
+  console.log("PAGE DATA:", data);
 
   const [showRace, setShowRace] = useState(false);
   const [raceMatch, setRaceMatch] = useState(1);
@@ -57,8 +62,12 @@ export default function Home() {
     );
   }
 
+  // DATA EXTRACTION
   const list = data?.leaders || [];
   const leagueData = data?.leagueData || [];
+
+  const completedPct = data?.completedPct;
+  const completedMatches = data?.completedMatches;
 
   const updatedAt = data?.updatedAt
     ? new Date(data.updatedAt)
@@ -72,7 +81,6 @@ export default function Home() {
       <LiveMatchTicker />
 
       <div className="max-w-7xl mx-auto px-5 py-8">
-
         {/* HEADER */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl sm:text-3xl font-bold">
@@ -81,9 +89,14 @@ export default function Home() {
           <StatusBadge isLive={!!isLive} />
         </div>
 
-        <TopPerformer data={list} />
+        {/* TOP PERFORMER + PROGRESS */}
+        <TopPerformer
+          data={list}
+          completedPct={completedPct}
+          completedMatches={completedMatches}
+        />
 
-        {/* Charts (stable) */}
+        {/* Charts */}
         <ChartsSection list={list} />
 
         <div className="mt-6">
@@ -98,71 +111,18 @@ export default function Home() {
           <DetailedDataTable data={list} />
         </div>
 
-        {/* 🎬 RACE */}
-        {/* <div className="mt-8">
-          <GlassCard>
-
-            <div className="flex justify-between mb-4">
-              <div>
-                <div className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">🎬 Race Replay</div>
-                {showRace && (
-                  <div className="text-yellow-400 text-sm">
-                    Match {raceMatch}
-                  </div>
-                )}
-              </div>
-
-              {!raceFinished ? (
-                <button
-                  onClick={() => setShowRace(!showRace)}
-                  className="bg-yellow-400 text-black px-3 py-1 rounded"
-                >
-                  {showRace ? "Hide" : "View"}
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    setRaceFinished(false);
-                    setRaceMatch(1);
-                    setRaceKey((k) => k + 1);
-                    setShowRace(true);
-                  }}
-                  className="bg-blue-500 text-white px-3 py-1 rounded"
-                >
-                  🔁 Replay
-                </button>
-              )}
-            </div>
-
-            {showRace && (
-              <RaceSection
-                key={raceKey}
-                data={leagueData}
-                onMatchChange={setRaceMatch}
-                onFinish={() => setRaceFinished(true)}
-              />
-            )}
-
-          </GlassCard>
-        </div> */}
-
         <div className="mt-6">
           <Summary />
         </div>
-
       </div>
     </main>
   );
 }
 
 /* 🔥 FANCY RACE */
-function RaceSection({
-  data,
-  onMatchChange,
-  onFinish,
-}: any) {
+function RaceSection({ data, onMatchChange, onFinish }: any) {
   const [step, setStep] = useState(0);
-  const [finished, setFinished] = useState(false); // ✅ local state
+  const [finished, setFinished] = useState(false);
 
   if (!data || data.length === 0) return <div>No data</div>;
 
@@ -194,7 +154,6 @@ function RaceSection({
     return result;
   }, [data]);
 
-  // 🔥 SAFE animation loop
   useEffect(() => {
     if (!standings.length) return;
 
@@ -202,7 +161,7 @@ function RaceSection({
       setStep((s) => {
         if (s >= standings.length - 1) {
           clearInterval(interval);
-          setFinished(true); // ✅ only local update
+          setFinished(true);
           return s;
         }
         return s + 1;
@@ -212,17 +171,15 @@ function RaceSection({
     return () => clearInterval(interval);
   }, [standings.length]);
 
-  // 🔄 Update match label
   useEffect(() => {
     if (onMatchChange) {
       onMatchChange(step + 1);
     }
   }, [step]);
 
-  // 🔔 Notify parent safely AFTER render
   useEffect(() => {
     if (finished && onFinish) {
-      onFinish(); // ✅ safe
+      onFinish();
     }
   }, [finished]);
 
@@ -234,25 +191,11 @@ function RaceSection({
       {current.map((t: any) => {
         const width = (t.points / max) * 100;
 
-        const isLeader = t.rank === 1;
-        const isTop = t.rank <= 3;
-        const isMid = t.rank <= 5;
-        const isBottom = t.rank >= 6;
-
         return (
           <motion.div
             key={t.team}
             layout
-            transition={{ type: "spring", stiffness: 120, damping: 25 }}
-            className={`p-3 rounded-xl border ${
-              isLeader
-                ? "border-yellow-400/30 bg-yellow-400/5"
-                : isTop
-                ? "border-green-400/20 bg-green-400/5"
-                : isBottom
-                ? "border-red-400/20 bg-red-400/5"
-                : "border-blue-400/20 bg-blue-400/5"
-            }`}
+            className="p-3 rounded-xl border border-blue-400/20 bg-blue-400/5"
           >
             <div className="flex justify-between text-sm mb-1">
               <span>#{t.rank} {t.team}</span>
@@ -261,17 +204,8 @@ function RaceSection({
 
             <div className="bg-slate-700 h-2 rounded">
               <motion.div
-                className={`h-2 rounded ${
-                  isLeader
-                    ? "bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-500"
-                    : isTop
-                    ? "bg-gradient-to-r from-green-400 via-emerald-400 to-green-500"
-                    : isBottom
-                    ? "bg-gradient-to-r from-red-500 via-rose-500 to-pink-500"
-                    : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600"
-                }`}
+                className="h-2 rounded bg-blue-500"
                 animate={{ width: `${width}%` }}
-                transition={{ duration: 0.7 }}
               />
             </div>
           </motion.div>
