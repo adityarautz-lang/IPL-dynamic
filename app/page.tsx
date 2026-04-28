@@ -28,25 +28,25 @@ function StatusBadge({ isLive }: { isLive: boolean }) {
   );
 }
 
-/* 👀 PAGE VIEWS */
-function ViewsCounter() {
-  const [views, setViews] = useState<number | null>(null);
+// /* 👀 PAGE VIEWS */
+// function ViewsCounter() {
+//   const [views, setViews] = useState<number | null>(null);
 
-  useEffect(() => {
-    fetch("/api/views")
-      .then((res) => res.json())
-      .then((data) => setViews(data.views))
-      .catch(() => {});
-  }, []);
+//   useEffect(() => {
+//     fetch("/api/views")
+//       .then((res) => res.json())
+//       .then((data) => setViews(data.views))
+//       .catch(() => {});
+//   }, []);
 
-  if (views === null) return null;
+//   if (views === null) return null;
 
-  return (
-    <div className="text-xs text-slate-400 mt-1">
-      {views.toLocaleString()} currently watching!
-    </div>
-  );
-}
+//   return (
+//     <div className="text-xs text-slate-400 mt-1">
+//       {views.toLocaleString()} currently watching!
+//     </div>
+//   );
+// }
 
 /* 🔥 CHARTS ISOLATED */
 const ChartsSection = React.memo(function ChartsSection({ list }: any) {
@@ -108,7 +108,7 @@ export default function Home() {
         </div>
 
         {/* 👀 VIEWS (subtle placement) */}
-        <ViewsCounter />
+        {/* <ViewsCounter /> */}
 
         {/* TOP PERFORMER + PROGRESS */}
         <TopPerformer
