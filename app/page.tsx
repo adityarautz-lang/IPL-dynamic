@@ -28,6 +28,26 @@ function StatusBadge({ isLive }: { isLive: boolean }) {
   );
 }
 
+/* 👀 PAGE VIEWS */
+function ViewsCounter() {
+  const [views, setViews] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/views")
+      .then((res) => res.json())
+      .then((data) => setViews(data.views))
+      .catch(() => {});
+  }, []);
+
+  if (views === null) return null;
+
+  return (
+    <div className="text-xs text-slate-400 mt-1">
+      {views.toLocaleString()} currently watching!
+    </div>
+  );
+}
+
 /* 🔥 CHARTS ISOLATED */
 const ChartsSection = React.memo(function ChartsSection({ list }: any) {
   return (
@@ -46,7 +66,6 @@ const ChartsSection = React.memo(function ChartsSection({ list }: any) {
 export default function Home() {
   const { data, loading } = useDashboardData();
 
-  // ✅ DEBUG LOG (KEY STEP)
   console.log("PAGE DATA:", data);
 
   const [showRace, setShowRace] = useState(false);
@@ -62,7 +81,6 @@ export default function Home() {
     );
   }
 
-  // DATA EXTRACTION
   const list = data?.leaders || [];
   const leagueData = data?.leagueData || [];
 
@@ -82,12 +100,15 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-5 py-8">
         {/* HEADER */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-2">
           <h1 className="text-xl sm:text-3xl font-bold">
             🏆 ADSK IPL Fantasy
           </h1>
           <StatusBadge isLive={!!isLive} />
         </div>
+
+        {/* 👀 VIEWS (subtle placement) */}
+        <ViewsCounter />
 
         {/* TOP PERFORMER + PROGRESS */}
         <TopPerformer
@@ -198,7 +219,9 @@ function RaceSection({ data, onMatchChange, onFinish }: any) {
             className="p-3 rounded-xl border border-blue-400/20 bg-blue-400/5"
           >
             <div className="flex justify-between text-sm mb-1">
-              <span>#{t.rank} {t.team}</span>
+              <span>
+                #{t.rank} {t.team}
+              </span>
               <span>{t.points.toFixed(0)}</span>
             </div>
 
