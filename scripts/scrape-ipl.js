@@ -1,9 +1,9 @@
 import { chromium } from "playwright";
 
 const DASHBOARD_API =
-  process.env.TARGET === "prod"
-    ? "https://ipl-dynamic.vercel.app/api/ipl"
-    : "http://localhost:3000/api/ipl";
+  process.env.TARGET === "local"
+    ? "http://localhost:3000/api/ipl"
+    : "https://ipl-dynamic.vercel.app/api/ipl";
 
 const TARGET_URL =
   "https://fantasy.iplt20.com/classic/league/view/66930102";
@@ -12,10 +12,10 @@ const TOTAL_MATCHES = 70;
 
 const now = () => new Date().toISOString();
 
-// 🧠 Decide if snapshot should run (midnight window)
+// Snapshot only at midnight
 function shouldSnapshot() {
   const hour = new Date().getHours();
-  return hour === 0; // midnight
+  return hour === 0;
 }
 
 async function scrapeIPL() {
@@ -31,7 +31,7 @@ async function scrapeIPL() {
   const page = await context.newPage();
 
   try {
-    // 🔧 FIX: avoid networkidle hang
+    // ✅ FIX: safer navigation
     await page.goto(TARGET_URL, {
       waitUntil: "domcontentloaded",
       timeout: 15000,
@@ -45,8 +45,6 @@ async function scrapeIPL() {
     let completedPct = null;
 
     try {
-      await page.waitForTimeout(1500);
-
       const matchText = await page
         .$eval(
           ".m11c-scoreBoard__box .m11c-matchTxt",
@@ -54,7 +52,7 @@ async function scrapeIPL() {
         )
         .catch(() => null);
 
-      console.log(`📍 [${now()}] Raw match text:`, matchText);
+      console.log(`📍 Raw match text:`, matchText);
 
       if (matchText) {
         const matchNumber = matchText.match(/\d+/);
@@ -66,11 +64,9 @@ async function scrapeIPL() {
             (completedMatches / TOTAL_MATCHES) * 100;
         }
       }
-    } catch (err) {
-      console.log(`⚠️ [${now()}] Match progress failed:`, err);
-    }
+    } catch {}
 
-    console.log(`📊 [${now()}] Match Progress:`, {
+    console.log(`📊 Match Progress:`, {
       currentMatch,
       completedMatches,
       completedPct,
@@ -84,11 +80,7 @@ async function scrapeIPL() {
 
     const rows = await page.$$("#leadersList li");
 
-    console.log(`📊 [${now()}] Rows found: ${rows.length}`);
-
-    if (rows.length === 0) {
-      console.log(`⚠️ No rows found — possible session issue`);
-    }
+    console.log(`📊 Rows found: ${rows.length}`);
 
     const results = [];
 
@@ -114,12 +106,21 @@ async function scrapeIPL() {
             .replace(/,/g, "")
         );
 
+        // 👉 OPEN TEAM
         await row.scrollIntoViewIfNeeded();
         await row.click({ timeout: 5000 });
 
-        await page.waitForSelector(".m11c-pitch__plyr", {
-          timeout: 10000,
-        });
+        // ✅ CRITICAL FIX: wait for match points to load
+        await page.waitForFunction(() => {
+          const el = document.querySelector(".m11c-pitch__fix-rgt em");
+          if (!el) return false;
+
+          const text = el.textContent || "";
+          return text.trim() !== "";
+        }, { timeout: 10000 }).catch(() => {});
+
+        // small buffer (stabilization)
+        await page.waitForTimeout(300);
 
         const matchPoints =
           parseFloat(
@@ -156,13 +157,9 @@ async function scrapeIPL() {
               viceCaptain = { name: playerName.trim(), points: playerPoints };
             }
           }
-        } catch {
-          console.log(`⚠️ Captain parse failed for: ${name}`);
-        }
+        } catch {}
 
-        console.log(
-          `📌 ${name} | Match: ${matchPoints}`
-        );
+        console.log(`📌 ${name} | Match: ${matchPoints}`);
 
         results.push({
           rank,
@@ -173,7 +170,7 @@ async function scrapeIPL() {
           viceCaptain,
         });
 
-        // close modal
+        // 👉 CLOSE PANEL
         try {
           await page.keyboard.press("Escape");
           await page.waitForSelector(".m11c-overlay__wrap", {
@@ -184,7 +181,7 @@ async function scrapeIPL() {
           await page.mouse.click(10, 10);
         }
 
-      } catch (err) {
+      } catch {
         console.log(`⚠️ Row ${i} failed`);
         continue;
       }
@@ -216,7 +213,7 @@ async function scrapeIPL() {
     console.log("📡 LIVE pushed");
 
     // ---------------------------
-    // 📸 SNAPSHOT (midnight only)
+    // 📸 SNAPSHOT (midnight)
     // ---------------------------
     if (shouldSnapshot()) {
       console.log("📸 Creating snapshot...");
