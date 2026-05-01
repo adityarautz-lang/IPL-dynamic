@@ -6,7 +6,7 @@ import { kv } from "@vercel/kv";
 function isFresh(updatedAt: string | undefined) {
   if (!updatedAt) return false;
   const diff = Date.now() - new Date(updatedAt).getTime();
-  return diff < 3 * 60 * 1000;
+  return diff < 10 * 1000; // 10 seconds
 }
 
 function jsonResponse(data: any) {
