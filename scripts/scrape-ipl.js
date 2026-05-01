@@ -10,8 +10,11 @@ const TARGET_URL =
 
 const TOTAL_MATCHES = 70;
 
+const now = () => new Date().toISOString();
+
 async function scrapeIPL() {
-  console.log("🚀 Starting IPL scraper...");
+  console.log(`\n==============================`);
+  console.log(`🚀 START scrape at: ${now()}`);
 
   const browser = await chromium.launch({ headless: true });
 
@@ -25,15 +28,14 @@ async function scrapeIPL() {
     await page.goto(TARGET_URL, { waitUntil: "networkidle" });
 
     // ==============================
-    // 📊 MATCH PROGRESS (NEW)
+    // 📊 MATCH PROGRESS
     // ==============================
-
     let currentMatch = null;
     let completedMatches = null;
     let completedPct = null;
 
     try {
-      await page.waitForTimeout(2000); // allow UI to stabilize
+      await page.waitForTimeout(2000);
 
       const matchText = await page
         .$eval(
@@ -42,31 +44,30 @@ async function scrapeIPL() {
         )
         .catch(() => null);
 
-      console.log("📍 Raw match text:", matchText);
+      console.log(`📍 [${now()}] Raw match text:`, matchText);
 
       if (matchText) {
         const matchNumber = matchText.match(/\d+/);
 
         if (matchNumber) {
           currentMatch = Number(matchNumber[0]);
-
           completedMatches = currentMatch - 1;
           completedPct =
             (completedMatches / TOTAL_MATCHES) * 100;
         }
       }
     } catch (err) {
-      console.log("⚠️ Match progress scrape failed:", err);
+      console.log(`⚠️ [${now()}] Match progress failed:`, err);
     }
 
-    console.log("📊 Match Progress:", {
+    console.log(`📊 [${now()}] Match Progress:`, {
       currentMatch,
       completedMatches,
       completedPct,
     });
 
     // ==============================
-    // 👇 EXISTING LOGIC
+    // 👇 LEADERBOARD
     // ==============================
 
     await page.waitForSelector("#leadersList li", { timeout: 30000 });
@@ -77,6 +78,12 @@ async function scrapeIPL() {
       "#leadersList li",
       (els) => els.length
     );
+
+    console.log(`📊 [${now()}] Rows found: ${totalRows}`);
+
+    if (totalRows === 0) {
+      console.log(`⚠️ [${now()}] No rows found — possible session issue`);
+    }
 
     for (let i = 0; i < totalRows; i++) {
       const rows = await page.$$("#leadersList li");
@@ -104,10 +111,8 @@ async function scrapeIPL() {
       // 👉 OPEN TEAM
       await row.scrollIntoViewIfNeeded();
       await row.click();
-
       await page.waitForTimeout(1200);
 
-      // 👉 MATCH POINTS
       const matchPoints = parseFloat(
         await page
           .$eval(".m11c-pitch__fix-rgt em", (el) => el.innerText)
@@ -116,7 +121,6 @@ async function scrapeIPL() {
 
       await page.waitForSelector(".m11c-pitch__plyr");
 
-      // 👉 CAPTAIN / VC
       let captain = null;
       let viceCaptain = null;
 
@@ -146,26 +150,18 @@ async function scrapeIPL() {
           const image = match ? match[1] : null;
 
           if (className.includes("m11c-cap")) {
-            captain = {
-              name: playerName.trim(),
-              points: playerPoints,
-              image,
-            };
+            captain = { name: playerName.trim(), points: playerPoints, image };
           }
 
           if (className.includes("m11c-vcap")) {
-            viceCaptain = {
-              name: playerName.trim(),
-              points: playerPoints,
-              image,
-            };
+            viceCaptain = { name: playerName.trim(), points: playerPoints, image };
           }
         }
       } catch {
-        console.log("⚠️ Captain parse failed for:", name);
+        console.log(`⚠️ [${now()}] Captain parse failed for: ${name}`);
       }
 
-      // 👉 SWITCH TO OVERALL TAB
+      // 👉 OVERALL TAB
       const tabs = await page.$$("li.swiper-slide");
 
       for (const tab of tabs) {
@@ -178,7 +174,6 @@ async function scrapeIPL() {
 
       await page.waitForTimeout(1200);
 
-      // 👉 TRANSFERS + BOOSTERS
       let transfersLeft = null;
       let boostersUsed = null;
 
@@ -196,9 +191,7 @@ async function scrapeIPL() {
                 .$eval("em", (el) => el.innerText)
                 .catch(() => null);
 
-              if (val) {
-                transfersLeft = parseInt(val.split("/")[0]);
-              }
+              if (val) transfersLeft = parseInt(val.split("/")[0]);
             }
 
             if (text.includes("Boosters used")) {
@@ -209,11 +202,11 @@ async function scrapeIPL() {
           }
         }
       } catch {
-        console.log("⚠️ Transfer parse failed for:", name);
+        console.log(`⚠️ [${now()}] Transfer parse failed for: ${name}`);
       }
 
       console.log(
-        `📌 ${name} | Match: ${matchPoints} | Tx: ${transfersLeft} | Boost: ${boostersUsed}`
+        `📌 [${now()}] ${name} | Match: ${matchPoints} | Tx: ${transfersLeft}`
       );
 
       results.push({
@@ -241,19 +234,18 @@ async function scrapeIPL() {
       await page.waitForSelector("#leadersList li");
     }
 
-    console.log("✅ Scraped", results.length);
+    console.log(`✅ [${now()}] Scraped ${results.length} teams`);
 
     const payload = {
-      updatedAt: new Date().toISOString(),
+      updatedAt: now(),
       leaders: results,
       currentMatch,
       completedMatches,
       completedPct,
     };
 
-    console.log("📦 Payload:", payload);
+    console.log(`📦 [${now()}] Payload ready`);
 
-    // 👉 PUSH DATA
     const res = await fetch(DASHBOARD_API, {
       method: "POST",
       headers: {
@@ -262,18 +254,23 @@ async function scrapeIPL() {
       body: JSON.stringify(payload),
     });
 
-    console.log("📡 API status:", res.status);
+    const text = await res.text();
+
+    console.log(`📡 [${now()}] API status: ${res.status}`);
+    console.log(`📡 [${now()}] API response: ${text}`);
 
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error(`❌ [${now()}] Fatal error:`, err);
   } finally {
     await browser.close();
+    console.log(`🏁 END scrape at: ${now()}`);
+    console.log(`==============================\n`);
   }
 }
 
 export default scrapeIPL;
 
-// 👉 Allow direct run
-if (process.argv[1].includes("scrape-ipl.js")) {
+// 👉 safer direct run
+if (process.argv[1]?.includes("scrape-ipl")) {
   scrapeIPL();
 }
