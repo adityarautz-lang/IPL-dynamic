@@ -1,9 +1,6 @@
 export const runtime = "nodejs";
 
-import fs from "fs";
-
-const TMP_FILE = "/tmp/data.json";
-const SNAPSHOT_FILE = "/tmp/snapshot.json";
+import { kv } from "@vercel/kv";
 
 // freshness check (3 minutes)
 function isFresh(updatedAt: string | undefined) {
@@ -22,32 +19,34 @@ function jsonResponse(data: any) {
 }
 
 // --------------------------------------------
+// 🧠 Match window (adjust if needed)
+// --------------------------------------------
+function isLiveTime() {
+  const hour = new Date().getHours();
+  return hour >= 19 && hour <= 23; // IPL window
+}
+
+// --------------------------------------------
 // 📤 GET
 // --------------------------------------------
 export async function GET() {
   try {
-    let liveData: any = null;
+    const liveData: any = await kv.get("live");
+    const snapshot: any = await kv.get("snapshot");
 
-    // 🔥 Try live data
-    if (fs.existsSync(TMP_FILE)) {
-      const raw = fs.readFileSync(TMP_FILE, "utf-8");
-      liveData = JSON.parse(raw);
-
-      if (isFresh(liveData.updatedAt)) {
-        console.log("📡 Serving LIVE data");
-        return jsonResponse(liveData); // ✅ already includes new fields
-      }
-
-      console.warn("⚠️ Live data stale → ignoring");
+    // 🟢 LIVE
+    if (isLiveTime() && liveData && isFresh(liveData.updatedAt)) {
+      console.log("📡 Serving LIVE data");
+      return jsonResponse({ ...liveData, mode: "live" });
     }
 
-    // 🔥 Fallback to snapshot
-    if (fs.existsSync(SNAPSHOT_FILE)) {
-      const raw = fs.readFileSync(SNAPSHOT_FILE, "utf-8");
-      const snapshot = JSON.parse(raw);
-
-      console.log("📦 Serving SNAPSHOT");
-      return jsonResponse(snapshot); // ✅ includes new fields
+    // 🔵 SNAPSHOT
+    if (snapshot) {
+      console.log("📸 Serving SNAPSHOT");
+      return jsonResponse({
+        ...snapshot,
+        mode: "snapshot_kv",
+      });
     }
 
     // ❌ No data
@@ -57,6 +56,7 @@ export async function GET() {
       leagueData: [],
       completedPct: null,
       completedMatches: null,
+      mode: "empty",
     });
 
   } catch (err) {
@@ -67,12 +67,13 @@ export async function GET() {
       leagueData: [],
       completedPct: null,
       completedMatches: null,
+      mode: "error",
     });
   }
 }
 
 // --------------------------------------------
-// 📥 POST
+// 📥 POST → LIVE
 // --------------------------------------------
 export async function POST(req: Request) {
   try {
@@ -80,8 +81,8 @@ export async function POST(req: Request) {
 
     console.log("📥 Incoming keys:", Object.keys(body));
 
-    // 🔧 Load existing data (for merge)
-    let existing: any = {
+    // 🔧 Load existing LIVE (for merge)
+    let existing: any = (await kv.get("live")) || {
       leaders: [],
       leagueData: [],
       updatedAt: null,
@@ -89,13 +90,7 @@ export async function POST(req: Request) {
       completedMatches: null,
     };
 
-    if (fs.existsSync(TMP_FILE)) {
-      try {
-        existing = JSON.parse(fs.readFileSync(TMP_FILE, "utf-8"));
-      } catch {}
-    }
-
-    // ✅ Merge instead of overwrite
+    // ✅ Merge
     const payload = {
       updatedAt: body.updatedAt || new Date().toISOString(),
 
@@ -109,7 +104,6 @@ export async function POST(req: Request) {
           ? body.leagueData
           : existing.leagueData,
 
-      // 🔥 FIX: Persist new fields
       completedPct:
         body.completedPct !== undefined
           ? body.completedPct
@@ -121,21 +115,50 @@ export async function POST(req: Request) {
           : existing.completedMatches,
     };
 
-    // 💾 Save BOTH live + snapshot
-    fs.writeFileSync(TMP_FILE, JSON.stringify(payload));
-    fs.writeFileSync(SNAPSHOT_FILE, JSON.stringify(payload));
+    // 💾 Save LIVE only
+    await kv.set("live", payload);
 
-    console.log("✅ Stored:", {
+    console.log("✅ LIVE Stored:", {
       leaders: payload.leaders?.length || 0,
-      leagueData: payload.leagueData?.length || 0,
       completedPct: payload.completedPct,
-      completedMatches: payload.completedMatches,
     });
 
     return jsonResponse({ success: true });
 
   } catch (err) {
     console.error("❌ POST error:", err);
+    return jsonResponse({ error: "Server error" });
+  }
+}
+
+// --------------------------------------------
+// 📸 PUT → SNAPSHOT
+// --------------------------------------------
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+
+    // 🛡 Don't store bad snapshot
+    if (!body?.leaders?.length) {
+      console.log("⚠️ Snapshot skipped (invalid)");
+      return jsonResponse({ skipped: true });
+    }
+
+    // 🛡 Prevent stale snapshot
+    const age = Date.now() - new Date(body.updatedAt).getTime();
+    if (age > 6 * 60 * 60 * 1000) {
+      console.log("⚠️ Snapshot skipped (too old)");
+      return jsonResponse({ skipped: true });
+    }
+
+    await kv.set("snapshot", body);
+
+    console.log("📸 Snapshot stored");
+
+    return jsonResponse({ success: true });
+
+  } catch (err) {
+    console.error("❌ SNAPSHOT error:", err);
     return jsonResponse({ error: "Server error" });
   }
 }

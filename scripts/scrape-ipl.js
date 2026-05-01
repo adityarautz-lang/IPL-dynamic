@@ -12,6 +12,12 @@ const TOTAL_MATCHES = 70;
 
 const now = () => new Date().toISOString();
 
+// 🧠 Decide if snapshot should run (midnight window)
+function shouldSnapshot() {
+  const hour = new Date().getHours();
+  return hour === 0; // midnight
+}
+
 async function scrapeIPL() {
   console.log(`\n==============================`);
   console.log(`🚀 START scrape at: ${now()}`);
@@ -25,7 +31,11 @@ async function scrapeIPL() {
   const page = await context.newPage();
 
   try {
-    await page.goto(TARGET_URL, { waitUntil: "networkidle" });
+    // 🔧 FIX: avoid networkidle hang
+    await page.goto(TARGET_URL, {
+      waitUntil: "domcontentloaded",
+      timeout: 15000,
+    });
 
     // ==============================
     // 📊 MATCH PROGRESS
@@ -35,7 +45,7 @@ async function scrapeIPL() {
     let completedPct = null;
 
     try {
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(1500);
 
       const matchText = await page
         .$eval(
@@ -70,171 +80,117 @@ async function scrapeIPL() {
     // 👇 LEADERBOARD
     // ==============================
 
-    await page.waitForSelector("#leadersList li", { timeout: 30000 });
+    await page.waitForSelector("#leadersList li", { timeout: 10000 });
+
+    const rows = await page.$$("#leadersList li");
+
+    console.log(`📊 [${now()}] Rows found: ${rows.length}`);
+
+    if (rows.length === 0) {
+      console.log(`⚠️ No rows found — possible session issue`);
+    }
 
     const results = [];
 
-    const totalRows = await page.$$eval(
-      "#leadersList li",
-      (els) => els.length
-    );
-
-    console.log(`📊 [${now()}] Rows found: ${totalRows}`);
-
-    if (totalRows === 0) {
-      console.log(`⚠️ [${now()}] No rows found — possible session issue`);
-    }
-
-    for (let i = 0; i < totalRows; i++) {
-      const rows = await page.$$("#leadersList li");
-      const row = rows[i];
-
-      const rank = parseInt(
-        (await row
-          .$eval(".m11c-matchCount", (el) => el.innerText)
-          .catch(() => "999"))
-          .trim(),
-        10
-      );
-
-      const name = await row
-        .$eval(".m11c-plyrSel__name span", (el) => el.innerText)
-        .catch(() => "");
-
-      const points = parseFloat(
-        (await row
-          .$eval(".m11c-tbl__cell--pts span", (el) => el.innerText)
-          .catch(() => "0"))
-          .replace(/,/g, "")
-      );
-
-      // 👉 OPEN TEAM
-      await row.scrollIntoViewIfNeeded();
-      await row.click();
-      await page.waitForTimeout(1200);
-
-      const matchPoints = parseFloat(
-        await page
-          .$eval(".m11c-pitch__fix-rgt em", (el) => el.innerText)
-          .catch(() => "0")
-      );
-
-      await page.waitForSelector(".m11c-pitch__plyr");
-
-      let captain = null;
-      let viceCaptain = null;
-
+    for (let i = 0; i < rows.length; i++) {
       try {
-        const players = await page.$$(".m11c-pitch__plyr");
+        const row = rows[i];
 
-        for (const player of players) {
-          const className = (await player.getAttribute("class")) || "";
+        const rank = parseInt(
+          (await row
+            .$eval(".m11c-matchCount", (el) => el.innerText)
+            .catch(() => "999")).trim(),
+          10
+        );
 
-          const playerName = await player
-            .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
-            .catch(() => "");
+        const name = await row
+          .$eval(".m11c-plyrSel__name span", (el) => el.innerText)
+          .catch(() => "");
 
-          const pointsText = await player
-            .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
-            .catch(() => "");
+        const points = parseFloat(
+          (await row
+            .$eval(".m11c-tbl__cell--pts span", (el) => el.innerText)
+            .catch(() => "0"))
+            .replace(/,/g, "")
+        );
 
-          const playerPoints = parseInt(pointsText) || 0;
+        await row.scrollIntoViewIfNeeded();
+        await row.click({ timeout: 5000 });
 
-          const style = await player
-            .$eval(".m11c-pitch__plyr-thumb", (el) =>
-              el.getAttribute("style")
-            )
-            .catch(() => "");
-
-          const match = style.match(/url\(["']?(.+?)["']?\)/);
-          const image = match ? match[1] : null;
-
-          if (className.includes("m11c-cap")) {
-            captain = { name: playerName.trim(), points: playerPoints, image };
-          }
-
-          if (className.includes("m11c-vcap")) {
-            viceCaptain = { name: playerName.trim(), points: playerPoints, image };
-          }
-        }
-      } catch {
-        console.log(`⚠️ [${now()}] Captain parse failed for: ${name}`);
-      }
-
-      // 👉 OVERALL TAB
-      const tabs = await page.$$("li.swiper-slide");
-
-      for (const tab of tabs) {
-        const text = await tab.innerText();
-        if (text.trim().toUpperCase() === "OVERALL") {
-          await tab.click();
-          break;
-        }
-      }
-
-      await page.waitForTimeout(1200);
-
-      let transfersLeft = null;
-      let boostersUsed = null;
-
-      try {
-        const transferBlock = await page.$(".m11c-transfer__head");
-
-        if (transferBlock) {
-          const spans = await transferBlock.$$("span");
-
-          for (const span of spans) {
-            const text = await span.innerText();
-
-            if (text.includes("Transfers Left")) {
-              const val = await span
-                .$eval("em", (el) => el.innerText)
-                .catch(() => null);
-
-              if (val) transfersLeft = parseInt(val.split("/")[0]);
-            }
-
-            if (text.includes("Boosters used")) {
-              boostersUsed = await span
-                .$eval("em", (el) => el.innerText)
-                .catch(() => null);
-            }
-          }
-        }
-      } catch {
-        console.log(`⚠️ [${now()}] Transfer parse failed for: ${name}`);
-      }
-
-      console.log(
-        `📌 [${now()}] ${name} | Match: ${matchPoints} | Tx: ${transfersLeft}`
-      );
-
-      results.push({
-        rank,
-        name: name.trim(),
-        points,
-        lastMatchPoints: matchPoints,
-        transfersLeft,
-        boostersUsed,
-        captain,
-        viceCaptain,
-      });
-
-      // 👉 CLOSE PANEL
-      try {
-        await page.keyboard.press("Escape");
-        await page.waitForSelector(".m11c-overlay__wrap", {
-          state: "hidden",
-          timeout: 3000,
+        await page.waitForSelector(".m11c-pitch__plyr", {
+          timeout: 10000,
         });
-      } catch {
-        await page.mouse.click(10, 10);
-      }
 
-      await page.waitForSelector("#leadersList li");
+        const matchPoints =
+          parseFloat(
+            await page
+              .$eval(".m11c-pitch__fix-rgt em", (el) => el.innerText)
+              .catch(() => "0")
+          ) || 0;
+
+        let captain = null;
+        let viceCaptain = null;
+
+        try {
+          const players = await page.$$(".m11c-pitch__plyr");
+
+          for (const player of players) {
+            const className = (await player.getAttribute("class")) || "";
+
+            const playerName = await player
+              .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
+              .catch(() => "");
+
+            const playerPoints =
+              parseInt(
+                await player
+                  .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
+                  .catch(() => "0")
+              ) || 0;
+
+            if (className.includes("m11c-cap")) {
+              captain = { name: playerName.trim(), points: playerPoints };
+            }
+
+            if (className.includes("m11c-vcap")) {
+              viceCaptain = { name: playerName.trim(), points: playerPoints };
+            }
+          }
+        } catch {
+          console.log(`⚠️ Captain parse failed for: ${name}`);
+        }
+
+        console.log(
+          `📌 ${name} | Match: ${matchPoints}`
+        );
+
+        results.push({
+          rank,
+          name: name.trim(),
+          points,
+          lastMatchPoints: matchPoints,
+          captain,
+          viceCaptain,
+        });
+
+        // close modal
+        try {
+          await page.keyboard.press("Escape");
+          await page.waitForSelector(".m11c-overlay__wrap", {
+            state: "hidden",
+            timeout: 3000,
+          });
+        } catch {
+          await page.mouse.click(10, 10);
+        }
+
+      } catch (err) {
+        console.log(`⚠️ Row ${i} failed`);
+        continue;
+      }
     }
 
-    console.log(`✅ [${now()}] Scraped ${results.length} teams`);
+    console.log(`✅ Scraped ${results.length} teams`);
 
     const payload = {
       updatedAt: now(),
@@ -244,9 +200,12 @@ async function scrapeIPL() {
       completedPct,
     };
 
-    console.log(`📦 [${now()}] Payload ready`);
+    console.log(`📦 Payload ready`);
 
-    const res = await fetch(DASHBOARD_API, {
+    // ---------------------------
+    // 🔥 LIVE UPDATE
+    // ---------------------------
+    await fetch(DASHBOARD_API, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -254,13 +213,27 @@ async function scrapeIPL() {
       body: JSON.stringify(payload),
     });
 
-    const text = await res.text();
+    console.log("📡 LIVE pushed");
 
-    console.log(`📡 [${now()}] API status: ${res.status}`);
-    console.log(`📡 [${now()}] API response: ${text}`);
+    // ---------------------------
+    // 📸 SNAPSHOT (midnight only)
+    // ---------------------------
+    if (shouldSnapshot()) {
+      console.log("📸 Creating snapshot...");
+
+      await fetch(DASHBOARD_API, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      console.log("📸 Snapshot saved");
+    }
 
   } catch (err) {
-    console.error(`❌ [${now()}] Fatal error:`, err);
+    console.error(`❌ Fatal error:`, err);
   } finally {
     await browser.close();
     console.log(`🏁 END scrape at: ${now()}`);
@@ -270,7 +243,6 @@ async function scrapeIPL() {
 
 export default scrapeIPL;
 
-// 👉 safer direct run
 if (process.argv[1]?.includes("scrape-ipl")) {
   scrapeIPL();
 }
