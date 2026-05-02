@@ -4,8 +4,10 @@ import type { Leader } from "../types";
 
 export default function DetailedDataTable({
   data,
+  history,
 }: {
   data?: Leader[];
+  history?: any;
 }) {
   const list = Array.isArray(data) ? data : [];
 
@@ -32,27 +34,48 @@ export default function DetailedDataTable({
     }))
     .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
 
+  // 🔥 Build previous ranks from history
+  const getPrevRanks = () => {
+    if (!history?.teams) return {};
+
+    const prevRanks: Record<string, number> = {};
+
+    // build previous match standings
+    const teams = history.teams;
+
+    // construct standings for last 2 matches
+    const lastMatchIndex = teams[0]?.history?.length - 1;
+
+    if (lastMatchIndex < 1) return {};
+
+    const prevStandings = teams
+      .map((t: any) => ({
+        name: t.teamName,
+        points: t.history[lastMatchIndex - 1]?.points ?? 0,
+      }))
+      .sort((a: any, b: any) => b.points - a.points);
+
+    prevStandings.forEach((t: any, idx: number) => {
+      prevRanks[t.name] = idx + 1;
+    });
+
+    return prevRanks;
+  };
+
+  const prevRanks = getPrevRanks();
+
   return (
     <div className="mt-6">
-      {/* 🔥 GLASS CONTAINER */}
       <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-
-        {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
 
-        {/* Content */}
         <div className="relative z-10 p-3 sm:p-6">
-          
-          {/* Header */}
           <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">
             📋 Detailed Leaderboard
           </h2>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-[10px] sm:text-sm text-left border-collapse">
-              
-              {/* Header */}
               <thead className="bg-white/10 text-slate-300">
                 <tr>
                   <th className="px-1.5 py-2 w-[45px]">Rk</th>
@@ -65,7 +88,6 @@ export default function DetailedDataTable({
                 </tr>
               </thead>
 
-              {/* Body */}
               <tbody>
                 {sorted.map((row, idx) => {
                   const rank = row.rank ?? idx + 1;
@@ -78,6 +100,11 @@ export default function DetailedDataTable({
                       : "–";
 
                   const efficiencyNum = Number(efficiency);
+
+                  // 🔥 movement logic
+                  const prevRank = prevRanks[row.name];
+                  const movement =
+                    prevRank !== undefined ? prevRank - rank : 0;
 
                   return (
                     <tr
@@ -102,12 +129,22 @@ export default function DetailedDataTable({
                         </div>
                       </td>
 
-                      {/* Name */}
-                      <td className="px-1.5 py-2 font-medium text-white max-w-[70px] truncate">
-                        {row.name}
+                      {/* Name + Arrow */}
+                      <td className="px-1.5 py-2 font-medium text-white max-w-[90px] truncate">
+                        <div className="flex items-center gap-1">
+                          <span className="truncate">{row.name}</span>
+
+                          {movement > 0 && (
+                            <span className="text-green-400 text-xs">↑</span>
+                          )}
+
+                          {movement < 0 && (
+                            <span className="text-red-400 text-xs">↓</span>
+                          )}
+                        </div>
                       </td>
 
-                      {/* Total Points */}
+                      {/* Points */}
                       <td className="px-1.5 py-2 text-center">
                         {row.points.toLocaleString("en-IN")}
                       </td>
@@ -145,10 +182,8 @@ export default function DetailedDataTable({
                   );
                 })}
               </tbody>
-
             </table>
           </div>
-
         </div>
       </div>
     </div>

@@ -28,26 +28,6 @@ function StatusBadge({ isLive }: { isLive: boolean }) {
   );
 }
 
-// /* 👀 PAGE VIEWS */
-// function ViewsCounter() {
-//   const [views, setViews] = useState<number | null>(null);
-
-//   useEffect(() => {
-//     fetch("/api/views")
-//       .then((res) => res.json())
-//       .then((data) => setViews(data.views))
-//       .catch(() => {});
-//   }, []);
-
-//   if (views === null) return null;
-
-//   return (
-//     <div className="text-xs text-slate-400 mt-1">
-//       {views.toLocaleString()} currently watching!
-//     </div>
-//   );
-// }
-
 /* 🔥 CHARTS ISOLATED */
 const ChartsSection = React.memo(function ChartsSection({ list }: any) {
   return (
@@ -66,12 +46,16 @@ const ChartsSection = React.memo(function ChartsSection({ list }: any) {
 export default function Home() {
   const { data, loading } = useDashboardData();
 
-  console.log("PAGE DATA:", data);
+  // 🔥 NEW: history state
+  const [historyData, setHistoryData] = useState<any>(null);
 
-  const [showRace, setShowRace] = useState(false);
-  const [raceMatch, setRaceMatch] = useState(1);
-  const [raceFinished, setRaceFinished] = useState(false);
-  const [raceKey, setRaceKey] = useState(0);
+  // 🔥 NEW: fetch history once
+  useEffect(() => {
+    fetch("/api/ipl/history-test")
+      .then((res) => res.json())
+      .then(setHistoryData)
+      .catch(() => setHistoryData(null));
+  }, []);
 
   if (loading) {
     return (
@@ -107,10 +91,7 @@ export default function Home() {
           <StatusBadge isLive={!!isLive} />
         </div>
 
-        {/* 👀 VIEWS (subtle placement) */}
-        {/* <ViewsCounter /> */}
-
-        {/* TOP PERFORMER + PROGRESS */}
+        {/* TOP PERFORMER */}
         <TopPerformer
           data={list}
           completedPct={completedPct}
@@ -128,8 +109,9 @@ export default function Home() {
           <PointDifferences data={list} />
         </div>
 
+        {/* 🔥 UPDATED: pass history */}
         <div className="mt-6">
-          <DetailedDataTable data={list} />
+          <DetailedDataTable data={list} history={historyData} />
         </div>
 
         <div className="mt-6">
@@ -140,7 +122,7 @@ export default function Home() {
   );
 }
 
-/* 🔥 FANCY RACE */
+/* 🔥 FANCY RACE (unchanged) */
 function RaceSection({ data, onMatchChange, onFinish }: any) {
   const [step, setStep] = useState(0);
   const [finished, setFinished] = useState(false);

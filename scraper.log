@@ -52815,3 +52815,599 @@ Call log:
 🏁 END scrape at: 2026-05-01T19:09:07.489Z
 ==============================
 
+
+==============================
+🚀 START scrape at: 2026-05-01T19:10:01.042Z
+📍 [2026-05-01T19:10:03.507Z] Raw match text: Match 44
+📊 [2026-05-01T19:10:03.507Z] Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 [2026-05-01T19:10:03.528Z] Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 0
+📌 RSAwesome 11 | Match: 0
+📌 VATVAGHOOL XI | Match: 0
+📌 Watapi | Match: 0
+📌 PKs11 | Match: 0
+📌 Bat Bowl XI | Match: 0
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:10:07.014Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:11:00.486Z
+📍 [2026-05-01T19:11:02.962Z] Raw match text: Match 44
+📊 [2026-05-01T19:11:02.962Z] Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 [2026-05-01T19:11:02.984Z] Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 0
+📌 RSAwesome 11 | Match: 0
+📌 VATVAGHOOL XI | Match: 0
+📌 Watapi | Match: 0
+📌 PKs11 | Match: 0
+📌 Bat Bowl XI | Match: 0
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:11:06.246Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:12:00.959Z
+📍 [2026-05-01T19:12:03.835Z] Raw match text: Match 44
+📊 [2026-05-01T19:12:03.835Z] Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 [2026-05-01T19:12:03.859Z] Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 0
+📌 RSAwesome 11 | Match: 0
+📌 VATVAGHOOL XI | Match: 0
+📌 Watapi | Match: 0
+📌 PKs11 | Match: 0
+📌 Bat Bowl XI | Match: 0
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:12:07.302Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:13:00.944Z
+📍 Raw match text: null
+📊 Match Progress: { currentMatch: null, completedMatches: null, completedPct: null }
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:13:08.116Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:14:00.664Z
+📍 Raw match text: null
+📊 Match Progress: { currentMatch: null, completedMatches: null, completedPct: null }
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:14:07.978Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:15:01.609Z
+📍 Raw match text: null
+📊 Match Progress: { currentMatch: null, completedMatches: null, completedPct: null }
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:15:08.869Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:16:01.735Z
+📍 Raw match text: null
+📊 Match Progress: { currentMatch: null, completedMatches: null, completedPct: null }
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:16:09.646Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:17:01.494Z
+📍 Raw match text: null
+📊 Match Progress: { currentMatch: null, completedMatches: null, completedPct: null }
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:17:09.002Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:18:00.555Z
+📍 [2026-05-01T19:18:03.377Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:18:08.230Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:19:00.793Z
+📍 [2026-05-01T19:19:03.428Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:19:08.521Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:20:01.578Z
+📍 [2026-05-01T19:20:04.715Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:20:09.933Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:21:01.521Z
+📍 [2026-05-01T19:21:04.300Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:21:09.511Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:22:01.185Z
+📍 [2026-05-01T19:22:03.976Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:22:09.838Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:23:01.562Z
+📍 [2026-05-01T19:23:04.408Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:23:10.516Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:24:01.292Z
+📍 [2026-05-01T19:24:04.136Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:24:10.246Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:25:00.908Z
+📍 [2026-05-01T19:25:03.860Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:25:09.121Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:26:00.775Z
+📍 [2026-05-01T19:26:03.574Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:26:09.267Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:27:00.963Z
+📍 [2026-05-01T19:27:03.862Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:27:09.917Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:28:01.621Z
+📍 [2026-05-01T19:28:04.307Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:28:09.863Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:29:01.379Z
+📍 [2026-05-01T19:29:04.101Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+📸 Creating snapshot...
+📸 Snapshot saved
+🏁 END scrape at: 2026-05-01T19:29:09.069Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:30:00.844Z
+📍 [2026-05-01T19:30:03.359Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+🏁 END scrape at: 2026-05-01T19:30:08.180Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:31:00.907Z
+📍 [2026-05-01T19:31:03.923Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+🏁 END scrape at: 2026-05-01T19:31:09.248Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:32:00.920Z
+📍 [2026-05-01T19:32:03.564Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+🏁 END scrape at: 2026-05-01T19:32:08.810Z
+==============================
+
+
+==============================
+🚀 START scrape at: 2026-05-01T19:33:01.578Z
+📍 [2026-05-01T19:33:04.440Z] Raw match text: Match 44
+📊 Match Progress: {
+  currentMatch: 44,
+  completedMatches: 43,
+  completedPct: 61.42857142857143
+}
+📊 Rows found: 8
+📌 SquadSeven9 | Match: 191.5
+📌 Deccan Dominators | Match: 282.5
+📌 RSAwesome 11 | Match: 245.5
+📌 VATVAGHOOL XI | Match: 321.5
+📌 Watapi | Match: 247.5
+📌 PKs11 | Match: 197.5
+📌 Bat Bowl XI | Match: 220
+📌 RushS01 | Match: 0
+✅ Scraped 8 teams
+📦 Payload ready
+📡 LIVE pushed
+🏁 END scrape at: 2026-05-01T19:33:09.867Z
+==============================
+
