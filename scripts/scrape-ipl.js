@@ -12,10 +12,23 @@ const TOTAL_MATCHES = 70;
 
 const now = () => new Date().toISOString();
 
-// Snapshot only at midnight
-function shouldSnapshot() {
-  const hour = new Date().getHours();
-  return hour === 0;
+const FORCE_SNAPSHOT = process.env.SNAPSHOT === "true";
+
+// -----------------------------
+// 🛡 Snapshot validation
+// -----------------------------
+function isValidSnapshot(payload) {
+  if (!payload?.leaders?.length) return false;
+
+  const validPoints = payload.leaders.every(
+    (t) => typeof t.lastMatchPoints === "number"
+  );
+
+  const validTransfers = payload.leaders.every(
+    (t) => t.transfersLeft !== null
+  );
+
+  return validPoints && validTransfers;
 }
 
 async function scrapeIPL() {
@@ -31,7 +44,6 @@ async function scrapeIPL() {
   const page = await context.newPage();
 
   try {
-    // ✅ FIX: safer navigation
     await page.goto(TARGET_URL, {
       waitUntil: "domcontentloaded",
       timeout: 15000,
@@ -45,18 +57,25 @@ async function scrapeIPL() {
     let completedPct = null;
 
     try {
-      const matchText = await page
+      await page.waitForTimeout(1500);
+
+      let matchText = await page
         .$eval(
           ".m11c-scoreBoard__box .m11c-matchTxt",
           (el) => el.textContent.trim()
         )
         .catch(() => null);
 
+      if (!matchText) {
+        matchText = await page
+          .$eval(".m11c-matchTxt", (el) => el.textContent.trim())
+          .catch(() => null);
+      }
+
       console.log(`📍 Raw match text:`, matchText);
 
       if (matchText) {
         const matchNumber = matchText.match(/\d+/);
-
         if (matchNumber) {
           currentMatch = Number(matchNumber[0]);
           completedMatches = currentMatch - 1;
@@ -72,12 +91,13 @@ async function scrapeIPL() {
       completedPct,
     });
 
+    const isMatchActive = currentMatch !== null;
+
     // ==============================
     // 👇 LEADERBOARD
     // ==============================
 
     await page.waitForSelector("#leadersList li", { timeout: 10000 });
-
     const rows = await page.$$("#leadersList li");
 
     console.log(`📊 Rows found: ${rows.length}`);
@@ -106,20 +126,26 @@ async function scrapeIPL() {
             .replace(/,/g, "")
         );
 
-        // 👉 OPEN TEAM
         await row.scrollIntoViewIfNeeded();
         await row.click({ timeout: 5000 });
 
-        // ✅ CRITICAL FIX: wait for match points to load
+        // wait for match points
         await page.waitForFunction(() => {
           const el = document.querySelector(".m11c-pitch__fix-rgt em");
-          if (!el) return false;
-
-          const text = el.textContent || "";
-          return text.trim() !== "";
+          return el && el.textContent.trim() !== "";
         }, { timeout: 10000 }).catch(() => {});
 
-        // small buffer (stabilization)
+        // 🔥 NEW FIX: wait for images to load properly
+        await page.waitForFunction(() => {
+          const imgs = document.querySelectorAll(".m11c-pitch__plyr-thumb");
+          if (!imgs.length) return false;
+
+          return Array.from(imgs).some(el => {
+            const style = el.getAttribute("style") || "";
+            return style.includes("url(") && !style.includes("0.png");
+          });
+        }, { timeout: 3000 }).catch(() => {});
+
         await page.waitForTimeout(300);
 
         const matchPoints =
@@ -149,28 +175,93 @@ async function scrapeIPL() {
                   .catch(() => "0")
               ) || 0;
 
+            const style = await player
+              .$eval(".m11c-pitch__plyr-thumb", (el) =>
+                el.getAttribute("style")
+              )
+              .catch(() => "");
+
+            const match = style.match(/url\(["']?(.+?)["']?\)/);
+
+            let image = null;
+            if (match) {
+              const raw = match[1];
+
+              // 🔥 FIX: ignore 0.png placeholder
+              if (!raw.includes("0.png")) {
+                image = raw.startsWith("http")
+                  ? raw
+                  : `https://fantasy.iplt20.com${raw}`;
+              }
+            }
+
             if (className.includes("m11c-cap")) {
-              captain = { name: playerName.trim(), points: playerPoints };
+              captain = { name: playerName.trim(), points: playerPoints, image };
             }
 
             if (className.includes("m11c-vcap")) {
-              viceCaptain = { name: playerName.trim(), points: playerPoints };
+              viceCaptain = { name: playerName.trim(), points: playerPoints, image };
             }
           }
         } catch {}
 
-        console.log(`📌 ${name} | Match: ${matchPoints}`);
+        // OVERALL tab
+        try {
+          const tabs = await page.$$("li.swiper-slide");
+
+          for (const tab of tabs) {
+            const text = await tab.innerText();
+            if (text.trim().toUpperCase() === "OVERALL") {
+              await tab.click();
+              break;
+            }
+          }
+
+          await page.waitForTimeout(500);
+        } catch {}
+
+        let transfersLeft = null;
+        let boostersUsed = null;
+
+        try {
+          const transferBlock = await page.$(".m11c-transfer__head");
+
+          if (transferBlock) {
+            const spans = await transferBlock.$$("span");
+
+            for (const span of spans) {
+              const text = await span.innerText();
+
+              if (text.includes("Transfers Left")) {
+                const val = await span
+                  .$eval("em", (el) => el.innerText)
+                  .catch(() => null);
+
+                if (val) transfersLeft = parseInt(val.split("/")[0]);
+              }
+
+              if (text.includes("Boosters used")) {
+                boostersUsed = await span
+                  .$eval("em", (el) => el.innerText)
+                  .catch(() => null);
+              }
+            }
+          }
+        } catch {}
+
+        console.log(`📌 ${name} | Match: ${matchPoints} | Tx: ${transfersLeft}`);
 
         results.push({
           rank,
           name: name.trim(),
           points,
           lastMatchPoints: matchPoints,
+          transfersLeft,
+          boostersUsed,
           captain,
           viceCaptain,
         });
 
-        // 👉 CLOSE PANEL
         try {
           await page.keyboard.press("Escape");
           await page.waitForSelector(".m11c-overlay__wrap", {
@@ -199,34 +290,28 @@ async function scrapeIPL() {
 
     console.log(`📦 Payload ready`);
 
-    // ---------------------------
-    // 🔥 LIVE UPDATE
-    // ---------------------------
     await fetch(DASHBOARD_API, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
     console.log("📡 LIVE pushed");
 
-    // ---------------------------
-    // 📸 SNAPSHOT (midnight)
-    // ---------------------------
-    if (shouldSnapshot()) {
-      console.log("📸 Creating snapshot...");
+    if (FORCE_SNAPSHOT && isMatchActive) {
+      console.log("📸 Attempting snapshot...");
 
-      await fetch(DASHBOARD_API, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      if (!isValidSnapshot(payload)) {
+        console.log("⚠️ Snapshot skipped (invalid data)");
+      } else {
+        await fetch(DASHBOARD_API, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
-      console.log("📸 Snapshot saved");
+        console.log("📸 Snapshot saved");
+      }
     }
 
   } catch (err) {
