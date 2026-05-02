@@ -2,11 +2,11 @@ export const runtime = "nodejs";
 
 import { kv } from "@vercel/kv";
 
-// freshness check (3 minutes)
+// freshness check (10 seconds)
 function isFresh(updatedAt: string | undefined) {
   if (!updatedAt) return false;
   const diff = Date.now() - new Date(updatedAt).getTime();
-  return diff < 10 * 1000; // 10 seconds
+  return diff < 10 * 1000;
 }
 
 function jsonResponse(data: any) {
@@ -19,11 +19,37 @@ function jsonResponse(data: any) {
 }
 
 // --------------------------------------------
-// 🧠 Match window (adjust if needed)
+// 🧠 Match window
 // --------------------------------------------
 function isLiveTime() {
   const hour = new Date().getHours();
-  return hour >= 19 && hour <= 23; // IPL window
+  return hour >= 19 && hour <= 23;
+}
+
+// --------------------------------------------
+// 🧠 Merge leaders (sticky fields)
+// --------------------------------------------
+function mergeLeaders(newLeaders: any[], oldLeaders: any[]) {
+  if (!oldLeaders?.length) return newLeaders;
+
+  const map = new Map();
+  oldLeaders.forEach((l) => map.set(l.name, l));
+
+  return newLeaders.map((l) => {
+    const prev = map.get(l.name);
+
+    if (!prev) return l;
+
+    return {
+      ...l,
+
+      // 🔥 Preserve fields if scraper misses them
+      captain: l.captain ?? prev.captain ?? null,
+      viceCaptain: l.viceCaptain ?? prev.viceCaptain ?? null,
+      boostersUsed: l.boostersUsed ?? prev.boostersUsed ?? null,
+      transfersLeft: l.transfersLeft ?? prev.transfersLeft ?? null,
+    };
+  });
 }
 
 // --------------------------------------------
@@ -81,7 +107,6 @@ export async function POST(req: Request) {
 
     console.log("📥 Incoming keys:", Object.keys(body));
 
-    // 🔧 Load existing LIVE (for merge)
     let existing: any = (await kv.get("live")) || {
       leaders: [],
       leagueData: [],
@@ -90,14 +115,16 @@ export async function POST(req: Request) {
       completedMatches: null,
     };
 
-    // ✅ Merge
+    // 🔥 Merge leaders safely (key fix)
+    const mergedLeaders =
+      body.leaders !== undefined
+        ? mergeLeaders(body.leaders, existing.leaders)
+        : existing.leaders;
+
     const payload = {
       updatedAt: body.updatedAt || new Date().toISOString(),
 
-      leaders:
-        body.leaders !== undefined
-          ? body.leaders
-          : existing.leaders,
+      leaders: mergedLeaders,
 
       leagueData:
         body.leagueData !== undefined
@@ -115,7 +142,6 @@ export async function POST(req: Request) {
           : existing.completedMatches,
     };
 
-    // 💾 Save LIVE only
     await kv.set("live", payload);
 
     console.log("✅ LIVE Stored:", {
@@ -138,20 +164,27 @@ export async function PUT(req: Request) {
   try {
     const body = await req.json();
 
-    // 🛡 Don't store bad snapshot
     if (!body?.leaders?.length) {
       console.log("⚠️ Snapshot skipped (invalid)");
       return jsonResponse({ skipped: true });
     }
 
-    // 🛡 Prevent stale snapshot
     const age = Date.now() - new Date(body.updatedAt).getTime();
     if (age > 6 * 60 * 60 * 1000) {
       console.log("⚠️ Snapshot skipped (too old)");
       return jsonResponse({ skipped: true });
     }
 
-    await kv.set("snapshot", body);
+    // 🔥 Also merge snapshot (important!)
+    const existing: any = (await kv.get("snapshot")) || {};
+    const mergedLeaders = mergeLeaders(body.leaders, existing.leaders || []);
+
+    const payload = {
+      ...body,
+      leaders: mergedLeaders,
+    };
+
+    await kv.set("snapshot", payload);
 
     console.log("📸 Snapshot stored");
 
