@@ -12,10 +12,8 @@ const TOTAL_MATCHES = 70;
 
 const now = () => new Date().toISOString();
 
-const FORCE_SNAPSHOT = process.env.SNAPSHOT === "true";
-
 // -----------------------------
-// 🛡 Snapshot validation
+// 🛡 Snapshot validation (kept for safety)
 // -----------------------------
 function isValidSnapshot(payload) {
   if (!payload?.leaders?.length) return false;
@@ -91,8 +89,6 @@ async function scrapeIPL() {
       completedPct,
     });
 
-    const isMatchActive = currentMatch !== null;
-
     // ==============================
     // 👇 LEADERBOARD
     // ==============================
@@ -129,22 +125,10 @@ async function scrapeIPL() {
         await row.scrollIntoViewIfNeeded();
         await row.click({ timeout: 5000 });
 
-        // wait for match points
         await page.waitForFunction(() => {
           const el = document.querySelector(".m11c-pitch__fix-rgt em");
           return el && el.textContent.trim() !== "";
         }, { timeout: 10000 }).catch(() => {});
-
-        // 🔥 NEW FIX: wait for images to load properly
-        await page.waitForFunction(() => {
-          const imgs = document.querySelectorAll(".m11c-pitch__plyr-thumb");
-          if (!imgs.length) return false;
-
-          return Array.from(imgs).some(el => {
-            const style = el.getAttribute("style") || "";
-            return style.includes("url(") && !style.includes("0.png");
-          });
-        }, { timeout: 3000 }).catch(() => {});
 
         await page.waitForTimeout(300);
 
@@ -155,73 +139,7 @@ async function scrapeIPL() {
               .catch(() => "0")
           ) || 0;
 
-        let captain = null;
-        let viceCaptain = null;
-
-        try {
-          const players = await page.$$(".m11c-pitch__plyr");
-
-          for (const player of players) {
-            const className = (await player.getAttribute("class")) || "";
-
-            const playerName = await player
-              .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
-              .catch(() => "");
-
-            const playerPoints =
-              parseInt(
-                await player
-                  .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
-                  .catch(() => "0")
-              ) || 0;
-
-            const style = await player
-              .$eval(".m11c-pitch__plyr-thumb", (el) =>
-                el.getAttribute("style")
-              )
-              .catch(() => "");
-
-            const match = style.match(/url\(["']?(.+?)["']?\)/);
-
-            let image = null;
-            if (match) {
-              const raw = match[1];
-
-              // 🔥 FIX: ignore 0.png placeholder
-              if (!raw.includes("0.png")) {
-                image = raw.startsWith("http")
-                  ? raw
-                  : `https://fantasy.iplt20.com${raw}`;
-              }
-            }
-
-            if (className.includes("m11c-cap")) {
-              captain = { name: playerName.trim(), points: playerPoints, image };
-            }
-
-            if (className.includes("m11c-vcap")) {
-              viceCaptain = { name: playerName.trim(), points: playerPoints, image };
-            }
-          }
-        } catch {}
-
-        // OVERALL tab
-        try {
-          const tabs = await page.$$("li.swiper-slide");
-
-          for (const tab of tabs) {
-            const text = await tab.innerText();
-            if (text.trim().toUpperCase() === "OVERALL") {
-              await tab.click();
-              break;
-            }
-          }
-
-          await page.waitForTimeout(500);
-        } catch {}
-
         let transfersLeft = null;
-        let boostersUsed = null;
 
         try {
           const transferBlock = await page.$(".m11c-transfer__head");
@@ -239,12 +157,6 @@ async function scrapeIPL() {
 
                 if (val) transfersLeft = parseInt(val.split("/")[0]);
               }
-
-              if (text.includes("Boosters used")) {
-                boostersUsed = await span
-                  .$eval("em", (el) => el.innerText)
-                  .catch(() => null);
-              }
             }
           }
         } catch {}
@@ -257,17 +169,10 @@ async function scrapeIPL() {
           points,
           lastMatchPoints: matchPoints,
           transfersLeft,
-          boostersUsed,
-          captain,
-          viceCaptain,
         });
 
         try {
           await page.keyboard.press("Escape");
-          await page.waitForSelector(".m11c-overlay__wrap", {
-            state: "hidden",
-            timeout: 3000,
-          });
         } catch {
           await page.mouse.click(10, 10);
         }
@@ -290,28 +195,19 @@ async function scrapeIPL() {
 
     console.log(`📦 Payload ready`);
 
-    await fetch(DASHBOARD_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    // ==============================
+    // 🔥 FIX: ALWAYS persist to KV
+    // ==============================
+    if (!isValidSnapshot(payload)) {
+      console.log("❌ Payload invalid, skipping push");
+    } else {
+      const res = await fetch(DASHBOARD_API, {
+        method: "PUT", // ✅ changed
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    console.log("📡 LIVE pushed");
-
-    if (FORCE_SNAPSHOT && isMatchActive) {
-      console.log("📸 Attempting snapshot...");
-
-      if (!isValidSnapshot(payload)) {
-        console.log("⚠️ Snapshot skipped (invalid data)");
-      } else {
-        await fetch(DASHBOARD_API, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        console.log("📸 Snapshot saved");
-      }
+      console.log("📡 PUSH status:", res.status);
     }
 
   } catch (err) {
