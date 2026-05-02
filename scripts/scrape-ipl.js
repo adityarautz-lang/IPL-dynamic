@@ -13,20 +13,14 @@ const TOTAL_MATCHES = 70;
 const now = () => new Date().toISOString();
 
 // -----------------------------
-// 🛡 Snapshot validation (kept for safety)
+// 🛡 Validation (minimal + safe)
 // -----------------------------
-function isValidSnapshot(payload) {
+function isValidPayload(payload: any) {
   if (!payload?.leaders?.length) return false;
 
-  const validPoints = payload.leaders.every(
-    (t) => typeof t.lastMatchPoints === "number"
+  return payload.leaders.every(
+    (t: any) => typeof t.lastMatchPoints === "number"
   );
-
-  const validTransfers = payload.leaders.every(
-    (t) => t.transfersLeft !== null
-  );
-
-  return validPoints && validTransfers;
 }
 
 async function scrapeIPL() {
@@ -50,23 +44,22 @@ async function scrapeIPL() {
     // ==============================
     // 📊 MATCH PROGRESS
     // ==============================
-    let currentMatch = null;
-    let completedMatches = null;
-    let completedPct = null;
+    let currentMatch: number | null = null;
+    let completedMatches: number | null = null;
+    let completedPct: number | null = null;
 
     try {
       await page.waitForTimeout(1500);
 
       let matchText = await page
-        .$eval(
-          ".m11c-scoreBoard__box .m11c-matchTxt",
-          (el) => el.textContent.trim()
+        .$eval(".m11c-scoreBoard__box .m11c-matchTxt", (el) =>
+          el.textContent?.trim()
         )
         .catch(() => null);
 
       if (!matchText) {
         matchText = await page
-          .$eval(".m11c-matchTxt", (el) => el.textContent.trim())
+          .$eval(".m11c-matchTxt", (el) => el.textContent?.trim())
           .catch(() => null);
       }
 
@@ -92,13 +85,12 @@ async function scrapeIPL() {
     // ==============================
     // 👇 LEADERBOARD
     // ==============================
-
     await page.waitForSelector("#leadersList li", { timeout: 10000 });
     const rows = await page.$$("#leadersList li");
 
     console.log(`📊 Rows found: ${rows.length}`);
 
-    const results = [];
+    const results: any[] = [];
 
     for (let i = 0; i < rows.length; i++) {
       try {
@@ -125,9 +117,10 @@ async function scrapeIPL() {
         await row.scrollIntoViewIfNeeded();
         await row.click({ timeout: 5000 });
 
+        // Wait for match points
         await page.waitForFunction(() => {
           const el = document.querySelector(".m11c-pitch__fix-rgt em");
-          return el && el.textContent.trim() !== "";
+          return el && el.textContent?.trim() !== "";
         }, { timeout: 10000 }).catch(() => {});
 
         await page.waitForTimeout(300);
@@ -139,9 +132,64 @@ async function scrapeIPL() {
               .catch(() => "0")
           ) || 0;
 
-        let transfersLeft = null;
+        // ==========================
+        // 🧑‍✈️ CAPTAIN / VC (RESTORED)
+        // ==========================
+        let captain = null;
+        let viceCaptain = null;
 
         try {
+          const players = await page.$$(".m11c-pitch__plyr");
+
+          for (const player of players) {
+            const className = (await player.getAttribute("class")) || "";
+
+            const playerName = await player
+              .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
+              .catch(() => "");
+
+            const playerPoints =
+              parseInt(
+                await player
+                  .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
+                  .catch(() => "0")
+              ) || 0;
+
+            if (className.includes("m11c-cap")) {
+              captain = {
+                name: playerName.trim(),
+                points: playerPoints,
+              };
+            }
+
+            if (className.includes("m11c-vcap")) {
+              viceCaptain = {
+                name: playerName.trim(),
+                points: playerPoints,
+              };
+            }
+          }
+        } catch {}
+
+        // ==========================
+        // 🔄 OVERALL TAB (for transfers)
+        // ==========================
+        let transfersLeft = null;
+        let boostersUsed = null;
+
+        try {
+          const tabs = await page.$$("li.swiper-slide");
+
+          for (const tab of tabs) {
+            const text = await tab.innerText();
+            if (text.trim().toUpperCase() === "OVERALL") {
+              await tab.click();
+              break;
+            }
+          }
+
+          await page.waitForTimeout(500);
+
           const transferBlock = await page.$(".m11c-transfer__head");
 
           if (transferBlock) {
@@ -155,7 +203,15 @@ async function scrapeIPL() {
                   .$eval("em", (el) => el.innerText)
                   .catch(() => null);
 
-                if (val) transfersLeft = parseInt(val.split("/")[0]);
+                if (val) {
+                  transfersLeft = parseInt(val.split("/")[0]);
+                }
+              }
+
+              if (text.includes("Boosters used")) {
+                boostersUsed = await span
+                  .$eval("em", (el) => el.innerText)
+                  .catch(() => null);
               }
             }
           }
@@ -163,12 +219,22 @@ async function scrapeIPL() {
 
         console.log(`📌 ${name} | Match: ${matchPoints} | Tx: ${transfersLeft}`);
 
+        console.log("DEBUG:", {
+          captain,
+          viceCaptain,
+          transfersLeft,
+          boostersUsed,
+        });
+
         results.push({
           rank,
           name: name.trim(),
           points,
           lastMatchPoints: matchPoints,
           transfersLeft,
+          boostersUsed,
+          captain,
+          viceCaptain,
         });
 
         try {
@@ -195,14 +261,11 @@ async function scrapeIPL() {
 
     console.log(`📦 Payload ready`);
 
-    // ==============================
-    // 🔥 FIX: ALWAYS persist to KV
-    // ==============================
-    if (!isValidSnapshot(payload)) {
+    if (!isValidPayload(payload)) {
       console.log("❌ Payload invalid, skipping push");
     } else {
       const res = await fetch(DASHBOARD_API, {
-        method: "PUT", // ✅ changed
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
