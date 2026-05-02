@@ -34,25 +34,39 @@ export default function DetailedDataTable({
     }))
     .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
 
-  // 🔥 Build previous match ranks safely
+  // 🔥 Build cumulative ranking for any match index
+  const buildRankForMatch = (matchIndex: number) => {
+    return history.teams
+      .map((t: any) => {
+        const total = t.history
+          .slice(0, matchIndex + 1)
+          .reduce((sum: number, m: any) => sum + (m.points || 0), 0);
+
+        return {
+          name: t.teamName,
+          points: total,
+        };
+      })
+      .sort((a: any, b: any) => b.points - a.points)
+      .map((t: any, idx: number) => ({
+        name: t.name,
+        rank: idx + 1,
+      }));
+  };
+
+  // 🔥 Get previous ranks correctly
   const getPrevRanks = () => {
     if (!history?.teams) return {};
 
-    const teams = history.teams;
     const prevRanks: Record<string, number> = {};
 
-    const lastMatchIndex = teams[0]?.history?.length - 1;
+    const lastMatchIndex = history.teams[0]?.history?.length - 1;
     if (lastMatchIndex < 1) return {};
 
-    const prevStandings = teams
-      .map((t: any) => ({
-        name: t.teamName,
-        points: t.history[lastMatchIndex - 1]?.points ?? 0,
-      }))
-      .sort((a: any, b: any) => b.points - a.points);
+    const prevRanking = buildRankForMatch(lastMatchIndex - 1);
 
-    prevStandings.forEach((t: any, idx: number) => {
-      prevRanks[t.name.toLowerCase().trim()] = idx + 1;
+    prevRanking.forEach((t: any) => {
+      prevRanks[t.name.toLowerCase().trim()] = t.rank;
     });
 
     return prevRanks;
@@ -97,7 +111,7 @@ export default function DetailedDataTable({
 
                   const efficiencyNum = Number(efficiency);
 
-                  // 🔥 movement logic
+                  // 🔥 Correct movement logic
                   const key = row.name.toLowerCase().trim();
                   const prevRank = prevRanks[key];
 
