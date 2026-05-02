@@ -147,11 +147,11 @@ export default function DetailedDataTable({
                           <span className="truncate">{row.name}</span>
 
                           {movement > 0 && (
-                            <span className="text-green-400 text-xs">↑</span>
+                            <span className="text-green-400 text-xs">⬆</span>
                           )}
 
                           {movement < 0 && (
-                            <span className="text-red-400 text-xs">↓</span>
+                            <span className="text-red-400 text-xs">⬇</span>
                           )}
                         </div>
                       </td>
