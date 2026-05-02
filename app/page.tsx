@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useDashboardData } from "./hooks/useDashboardData";
 
 import Summary from "./components/Summary";
+import HistoryInsights from "./components/HistoryInsights";
 import TopPerformer from "./components/TopPerformer";
 import OverallChart from "./components/OverallChart";
 import DailyChart from "./components/DailyChart";
@@ -93,10 +94,13 @@ export default function Home() {
 
         {/* TOP PERFORMER */}
         <TopPerformer
-          data={list}
-          completedPct={completedPct}
-          completedMatches={completedMatches}
-        />
+  data={list}
+  completedPct={completedPct}
+  completedMatches={completedMatches}
+/>
+
+{/* 🔥 HISTORY INSIGHTS */}
+{historyData && <HistoryInsights history={historyData} />}
 
         {/* Charts */}
         <ChartsSection list={list} />
