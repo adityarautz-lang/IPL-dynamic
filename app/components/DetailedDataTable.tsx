@@ -34,18 +34,14 @@ export default function DetailedDataTable({
     }))
     .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
 
-  // 🔥 Build previous ranks from history
+  // 🔥 Build previous match ranks safely
   const getPrevRanks = () => {
     if (!history?.teams) return {};
 
+    const teams = history.teams;
     const prevRanks: Record<string, number> = {};
 
-    // build previous match standings
-    const teams = history.teams;
-
-    // construct standings for last 2 matches
     const lastMatchIndex = teams[0]?.history?.length - 1;
-
     if (lastMatchIndex < 1) return {};
 
     const prevStandings = teams
@@ -56,7 +52,7 @@ export default function DetailedDataTable({
       .sort((a: any, b: any) => b.points - a.points);
 
     prevStandings.forEach((t: any, idx: number) => {
-      prevRanks[t.name] = idx + 1;
+      prevRanks[t.name.toLowerCase().trim()] = idx + 1;
     });
 
     return prevRanks;
@@ -102,7 +98,9 @@ export default function DetailedDataTable({
                   const efficiencyNum = Number(efficiency);
 
                   // 🔥 movement logic
-                  const prevRank = prevRanks[row.name];
+                  const key = row.name.toLowerCase().trim();
+                  const prevRank = prevRanks[key];
+
                   const movement =
                     prevRank !== undefined ? prevRank - rank : 0;
 
