@@ -103,7 +103,6 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 }}
               />
 
-              {/* ✅ Y Axis */}
               <YAxis
                 stroke="#ffffff"
                 tick={{ fill: "#ffffff", fontSize: 10 }}
@@ -113,7 +112,6 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 }
               />
 
-              {/* ✅ Tooltip */}
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.05)" }}
                 contentStyle={{
@@ -149,18 +147,38 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   );
                 })}
 
-                {/* ✅ Centered ABOVE bar (no decimals) */}
+                {/* ✅ VALUE LABEL (Mobile vs Desktop) */}
                 <LabelList
                   dataKey="points"
                   content={(props: any) => {
-                    const { x, y, width, value } = props;
+                    const { x, y, width, height, value } = props;
 
+                    // 📱 Mobile → inside bar
+                    if (isMobile) {
+                      if (height < 18) return null;
+
+                      return (
+                        <text
+                          x={x + width / 2}
+                          y={y + height / 2}
+                          fill="#fff"
+                          fontSize={10}
+                          fontWeight={600}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          {formatNumber(Number(value))}
+                        </text>
+                      );
+                    }
+
+                    // 🖥 Desktop → above bar
                     return (
                       <text
                         x={x + width / 2}
                         y={y - 6}
                         fill="#fff"
-                        fontSize={isMobile ? 10 : 12}
+                        fontSize={12}
                         fontWeight={600}
                         textAnchor="middle"
                       >
