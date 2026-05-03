@@ -150,32 +150,33 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
 <LabelList
   dataKey="points"
   content={(props: any) => {
-    const { x, y, width, height, value } = props;
+    const { x, y, width, value } = props;
 
-    // 📱 Mobile → horizontal inside bar (left aligned)
+    const centerX = x + width / 2;
+    const topY = y - 6;
+
+    // 📱 Mobile → angled labels
     if (isMobile) {
-      if (height < 18) return null;
-
       return (
         <text
-          x={x + 6} // 👈 left padding inside bar
-          y={y + height / 2}
+          x={centerX}
+          y={topY}
           fill="#fff"
           fontSize={10}
           fontWeight={600}
-          textAnchor="start"
-          dominantBaseline="middle"
+          textAnchor="end"
+          transform={`rotate(-30, ${centerX}, ${topY})`}
         >
           {formatNumber(Number(value))}
         </text>
       );
     }
 
-    // 🖥 Desktop → keep above bar
+    // 🖥 Desktop → normal
     return (
       <text
-        x={x + width / 2}
-        y={y - 6}
+        x={centerX}
+        y={topY}
         fill="#fff"
         fontSize={12}
         fontWeight={600}
