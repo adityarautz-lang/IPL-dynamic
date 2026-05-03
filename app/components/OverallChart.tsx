@@ -147,46 +147,45 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                   );
                 })}
 
-                {/* ✅ VALUE LABEL (Mobile vs Desktop) */}
-                <LabelList
-                  dataKey="points"
-                  content={(props: any) => {
-                    const { x, y, width, height, value } = props;
+<LabelList
+  dataKey="points"
+  content={(props: any) => {
+    const { x, y, width, height, value } = props;
 
-                    // 📱 Mobile → inside bar
-                    if (isMobile) {
-                      if (height < 18) return null;
+    // 📱 Mobile → horizontal inside bar (left aligned)
+    if (isMobile) {
+      if (height < 18) return null;
 
-                      return (
-                        <text
-                          x={x + width / 2}
-                          y={y + height / 2}
-                          fill="#fff"
-                          fontSize={10}
-                          fontWeight={600}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                        >
-                          {formatNumber(Number(value))}
-                        </text>
-                      );
-                    }
+      return (
+        <text
+          x={x + 6} // 👈 left padding inside bar
+          y={y + height / 2}
+          fill="#fff"
+          fontSize={10}
+          fontWeight={600}
+          textAnchor="start"
+          dominantBaseline="middle"
+        >
+          {formatNumber(Number(value))}
+        </text>
+      );
+    }
 
-                    // 🖥 Desktop → above bar
-                    return (
-                      <text
-                        x={x + width / 2}
-                        y={y - 6}
-                        fill="#fff"
-                        fontSize={12}
-                        fontWeight={600}
-                        textAnchor="middle"
-                      >
-                        {formatNumber(Number(value))}
-                      </text>
-                    );
-                  }}
-                />
+    // 🖥 Desktop → keep above bar
+    return (
+      <text
+        x={x + width / 2}
+        y={y - 6}
+        fill="#fff"
+        fontSize={12}
+        fontWeight={600}
+        textAnchor="middle"
+      >
+        {formatNumber(Number(value))}
+      </text>
+    );
+  }}
+/>
 
                 {/* Rank */}
                 <LabelList
