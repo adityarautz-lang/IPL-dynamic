@@ -61,20 +61,31 @@ export default function HistoryInsights({ history }: any) {
         sub={`${metrics.maxBottom.count} times`}
         glow="bg-red-500"
       />
+<Card
+  title="🔥 Highest Score"
+  value={metrics.highest.points}
+  sub={
+    <>
+      {metrics.highest.team}
+      <br />
+      • Match {metrics.highest.match}
+    </>
+  }
+  glow="bg-orange-500"
+/>
 
-      <Card
-        title="🔥 Highest Score"
-        value={metrics.highest.points}
-        sub={`${metrics.highest.team} • Match ${metrics.highest.match}`}
-        glow="bg-orange-500"
-      />
-
-      <Card
-        title="❄️ Lowest Score"
-        value={metrics.lowest.points}
-        sub={`${metrics.lowest.team} • Match ${metrics.lowest.match}`}
-        glow="bg-blue-500"
-      />
+<Card
+  title="❄️ Lowest Score"
+  value={metrics.lowest.points}
+  sub={
+    <>
+      {metrics.lowest.team}
+      <br />
+      • Match {metrics.lowest.match}
+    </>
+  }
+  glow="bg-blue-500"
+/>
     </div>
   );
 }
