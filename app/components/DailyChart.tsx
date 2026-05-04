@@ -9,6 +9,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
   Cell,
   LabelList,
 } from "recharts";
@@ -97,6 +98,12 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
               }}
               barCategoryGap={isMobile ? "12%" : "20%"}
             >
+
+<CartesianGrid
+                stroke="rgba(255,255,255,0.08)"
+                vertical={false}
+              />
+              
               <XAxis
                 dataKey="name"
                 stroke="#ffffff"
