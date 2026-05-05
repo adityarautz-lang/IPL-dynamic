@@ -90,18 +90,18 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 vertical={false}
               />
 
-              <XAxis
-                dataKey="name"
-                stroke="#ffffff"
-                interval={0}
-                angle={-25}
-                textAnchor="end"
-                height={isMobile ? 45 : 50}
-                tick={{
-                  fill: "#ffffff",
-                  fontSize: isMobile ? 9 : 11,
-                }}
-              />
+<XAxis
+  dataKey="name"
+  stroke="#ffffff"
+  interval={0}
+  angle={isMobile ? -45 : 0}
+  textAnchor={isMobile ? "end" : "middle"}
+  height={isMobile ? 60 : 40}
+  tick={{
+    fill: "#ffffff",
+    fontSize: isMobile ? 9 : 11,
+  }}
+/>
 
               {/* ✅ Y Axis */}
               <YAxis
