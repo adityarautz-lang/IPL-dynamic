@@ -155,18 +155,20 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
   content={(props: any) => {
     const { x, y, width, value } = props;
 
-    const cx = x + width / 2; // center of bar
-    const cy = y - 6; // just above bar
+    const cx = x + width / 2;
+
+    // 👇 push label ABOVE bar safely
+    const cy = isMobile ? y - 10 : y - 14;
 
     return (
       <text
         x={cx}
         y={cy}
-        fill="#fff"
+        fill="rgba(255,255,255,0.9)"
         fontSize={isMobile ? 9 : 12}
         fontWeight={600}
         textAnchor="middle"
-        transform={`rotate(-70, ${cx}, ${cy})`}
+        transform={`rotate(-40, ${cx}, ${cy})`}
       >
         {formatNumber(Number(value))}
       </text>
