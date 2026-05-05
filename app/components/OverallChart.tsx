@@ -158,7 +158,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
     const cx = x + width / 2;
 
     // 👇 push label ABOVE bar safely
-    const cy = isMobile ? y - 10 : y - 14;
+    const cy = isMobile ? y - 10 : y - 16;
 
     return (
       <text
