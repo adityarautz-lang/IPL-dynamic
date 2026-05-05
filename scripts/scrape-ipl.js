@@ -12,14 +12,14 @@ const TOTAL_MATCHES = 70;
 
 const now = () => new Date().toISOString();
 
-// -----------------------------
-// 🛡 Validation
-// -----------------------------
 function isValidPayload(payload) {
   if (!payload?.leaders?.length) return false;
 
   return payload.leaders.every(
-    (t) => typeof t.lastMatchPoints === "number"
+    (t) =>
+      typeof t.lastMatchPoints === "number" &&
+      t.captain?.name &&
+      t.viceCaptain?.name
   );
 }
 
@@ -37,33 +37,23 @@ async function scrapeIPL() {
 
   try {
     await page.goto(TARGET_URL, {
-      waitUntil: "domcontentloaded",
-      timeout: 15000,
+      waitUntil: "networkidle",
+      timeout: 20000,
     });
 
+    await page.waitForSelector("#leadersList li", { timeout: 10000 });
+
     // ==============================
-    // 📊 MATCH PROGRESS
+    // 📊 MATCH PROGRESS (RESTORED)
     // ==============================
     let currentMatch = null;
     let completedMatches = null;
     let completedPct = null;
 
     try {
-      await page.waitForTimeout(1500);
-
-      let matchText = await page
-        .$eval(".m11c-scoreBoard__box .m11c-matchTxt", (el) =>
-          el.textContent?.trim()
-        )
+      const matchText = await page
+        .$eval(".m11c-matchTxt", (el) => el.textContent?.trim())
         .catch(() => null);
-
-      if (!matchText) {
-        matchText = await page
-          .$eval(".m11c-matchTxt", (el) => el.textContent?.trim())
-          .catch(() => null);
-      }
-
-      console.log(`📍 Raw match text:`, matchText);
 
       if (matchText) {
         const matchNumber = matchText.match(/\d+/);
@@ -76,18 +66,9 @@ async function scrapeIPL() {
       }
     } catch {}
 
-    console.log(`📊 Match Progress:`, {
-      currentMatch,
-      completedMatches,
-      completedPct,
-    });
+    console.log("📊 Match:", { currentMatch, completedPct });
 
-    // ==============================
-    // 👇 LEADERBOARD
-    // ==============================
-    await page.waitForSelector("#leadersList li", { timeout: 10000 });
     const rows = await page.$$("#leadersList li");
-
     console.log(`📊 Rows found: ${rows.length}`);
 
     const results = [];
@@ -117,11 +98,9 @@ async function scrapeIPL() {
         await row.scrollIntoViewIfNeeded();
         await row.click({ timeout: 5000 });
 
-        // Wait for match points
-        await page.waitForFunction(() => {
-          const el = document.querySelector(".m11c-pitch__fix-rgt em");
-          return el && el.textContent?.trim() !== "";
-        }, { timeout: 10000 }).catch(() => {});
+        await page.waitForSelector(".m11c-pitch__plyr", {
+          timeout: 5000,
+        });
 
         await page.waitForTimeout(300);
 
@@ -133,46 +112,72 @@ async function scrapeIPL() {
           ) || 0;
 
         // ==========================
-        // 🧑‍✈️ CAPTAIN / VC
+        // CAPTAIN / VC (FULL FIX)
         // ==========================
         let captain = null;
         let viceCaptain = null;
 
-        try {
-          const players = await page.$$(".m11c-pitch__plyr");
+        const players = await page.$$(".m11c-pitch__plyr");
 
-          for (const player of players) {
-            const className = (await player.getAttribute("class")) || "";
+        for (const player of players) {
+          const className = (await player.getAttribute("class")) || "";
 
-            const playerName = await player
-              .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
-              .catch(() => "");
+          const playerName = await player
+            .$eval(".m11c-pitch__plyr-name span", (el) => el.innerText)
+            .catch(() => "");
 
-            const playerPoints =
-              parseInt(
-                await player
-                  .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
-                  .catch(() => "0")
-              ) || 0;
+          const playerPoints =
+            parseInt(
+              await player
+                .$eval(".m11c-pitch__plyr-num span", (el) => el.innerText)
+                .catch(() => "0")
+            ) || 0;
 
-            if (className.includes("m11c-cap")) {
-              captain = {
-                name: playerName.trim(),
-                points: playerPoints,
-              };
+          const image = await player.evaluate(async (el) => {
+            const thumb = el.querySelector(".m11c-pitch__plyr-thumb");
+            if (!thumb) return null;
+
+            function extract(bg) {
+              if (!bg || bg === "none") return null;
+              const match = bg.match(/url\(["']?(.*?)["']?\)/);
+              return match ? match[1] : null;
             }
 
-            if (className.includes("m11c-vcap")) {
-              viceCaptain = {
-                name: playerName.trim(),
-                points: playerPoints,
-              };
+            for (let i = 0; i < 5; i++) {
+              let style = thumb.getAttribute("style");
+              let img = extract(style);
+              if (img) return img;
+
+              let computed =
+                window.getComputedStyle(thumb).backgroundImage;
+              img = extract(computed);
+              if (img) return img;
+
+              await new Promise((r) => setTimeout(r, 200));
             }
+
+            return null;
+          });
+
+          if (className.includes("m11c-cap")) {
+            captain = {
+              name: playerName.trim(),
+              points: playerPoints,
+              image,
+            };
           }
-        } catch {}
+
+          if (className.includes("m11c-vcap")) {
+            viceCaptain = {
+              name: playerName.trim(),
+              points: playerPoints,
+              image,
+            };
+          }
+        }
 
         // ==========================
-        // 🔄 OVERALL TAB
+        // TRANSFERS + BOOSTERS (RESTORED)
         // ==========================
         let transfersLeft = null;
         let boostersUsed = null;
@@ -217,7 +222,11 @@ async function scrapeIPL() {
           }
         } catch {}
 
-        console.log(`📌 ${name} | Match: ${matchPoints}`);
+        console.log("DEBUG:", {
+          name,
+          captainImage: captain?.image,
+          transfersLeft,
+        });
 
         results.push({
           rank,
@@ -230,18 +239,11 @@ async function scrapeIPL() {
           viceCaptain,
         });
 
-        try {
-          await page.keyboard.press("Escape");
-        } catch {
-          await page.mouse.click(10, 10);
-        }
-
+        await page.keyboard.press("Escape").catch(() => {});
       } catch {
         console.log(`⚠️ Row ${i} failed`);
       }
     }
-
-    console.log(`✅ Scraped ${results.length} teams`);
 
     const payload = {
       updatedAt: now(),
@@ -251,10 +253,10 @@ async function scrapeIPL() {
       completedPct,
     };
 
-    console.log(`📦 Payload ready`);
+    console.log("📦 Payload ready");
 
     if (!isValidPayload(payload)) {
-      console.log("❌ Payload invalid, skipping push");
+      console.log("❌ Payload invalid");
     } else {
       const res = await fetch(DASHBOARD_API, {
         method: "PUT",
@@ -266,7 +268,7 @@ async function scrapeIPL() {
     }
 
   } catch (err) {
-    console.error(`❌ Fatal error:`, err);
+    console.error("❌ Fatal error:", err);
   } finally {
     await browser.close();
     console.log(`🏁 END scrape at: ${now()}`);
