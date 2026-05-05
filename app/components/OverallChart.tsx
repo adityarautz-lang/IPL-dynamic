@@ -168,7 +168,7 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
         fontSize={isMobile ? 9 : 12}
         fontWeight={600}
         textAnchor="middle"
-        transform={`rotate(-40, ${cx}, ${cy})`}
+        transform={`rotate(-30, ${cx}, ${cy})`}
       >
         {formatNumber(Number(value))}
       </text>
