@@ -19,13 +19,9 @@ export default function TeamCards({ teams }: { teams: any[] }) {
 
   return (
     <div className="mt-6">
-      {/* 🔥 OUTER GLASS CONTAINER */}
       <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-
-        {/* ✨ Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
 
-        {/* Content */}
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
           
           {/* Header */}
@@ -57,7 +53,6 @@ export default function TeamCards({ teams }: { teams: any[] }) {
             </div>
           </div>
 
-          {/* Divider */}
           <div className="border-t border-white/10" />
 
           {/* Cards */}
@@ -74,15 +69,16 @@ export default function TeamCards({ teams }: { teams: any[] }) {
                     #{t.rank} {t.name}
                   </div>
 
-                  {/* Players */}
                   <div className="space-y-2 sm:space-y-3">
                     
                     {/* Captain */}
                     <div className="flex justify-between items-center text-yellow-300">
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <img
-                          src={t.captain?.image}
-                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/10"
+                        <div
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/10 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(${t.captain?.image})`,
+                          }}
                         />
                         <span className="text-xs sm:text-sm font-medium">
                           {t.captain?.name}
@@ -96,9 +92,11 @@ export default function TeamCards({ teams }: { teams: any[] }) {
                     {/* Vice Captain */}
                     <div className="flex justify-between items-center text-blue-300">
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <img
-                          src={t.viceCaptain?.image}
-                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/10"
+                        <div
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/10 bg-cover bg-center"
+                          style={{
+                            backgroundImage: `url(${t.viceCaptain?.image})`,
+                          }}
                         />
                         <span className="text-xs sm:text-sm font-medium">
                           {t.viceCaptain?.name}

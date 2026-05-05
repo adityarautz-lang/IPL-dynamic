@@ -13,13 +13,13 @@ const TOTAL_MATCHES = 70;
 const now = () => new Date().toISOString();
 
 // -----------------------------
-// 🛡 Validation (minimal + safe)
+// 🛡 Validation
 // -----------------------------
-function isValidPayload(payload: any) {
+function isValidPayload(payload) {
   if (!payload?.leaders?.length) return false;
 
   return payload.leaders.every(
-    (t: any) => typeof t.lastMatchPoints === "number"
+    (t) => typeof t.lastMatchPoints === "number"
   );
 }
 
@@ -44,9 +44,9 @@ async function scrapeIPL() {
     // ==============================
     // 📊 MATCH PROGRESS
     // ==============================
-    let currentMatch: number | null = null;
-    let completedMatches: number | null = null;
-    let completedPct: number | null = null;
+    let currentMatch = null;
+    let completedMatches = null;
+    let completedPct = null;
 
     try {
       await page.waitForTimeout(1500);
@@ -90,7 +90,7 @@ async function scrapeIPL() {
 
     console.log(`📊 Rows found: ${rows.length}`);
 
-    const results: any[] = [];
+    const results = [];
 
     for (let i = 0; i < rows.length; i++) {
       try {
@@ -133,7 +133,7 @@ async function scrapeIPL() {
           ) || 0;
 
         // ==========================
-        // 🧑‍✈️ CAPTAIN / VC (RESTORED)
+        // 🧑‍✈️ CAPTAIN / VC
         // ==========================
         let captain = null;
         let viceCaptain = null;
@@ -172,7 +172,7 @@ async function scrapeIPL() {
         } catch {}
 
         // ==========================
-        // 🔄 OVERALL TAB (for transfers)
+        // 🔄 OVERALL TAB
         // ==========================
         let transfersLeft = null;
         let boostersUsed = null;
@@ -217,14 +217,7 @@ async function scrapeIPL() {
           }
         } catch {}
 
-        console.log(`📌 ${name} | Match: ${matchPoints} | Tx: ${transfersLeft}`);
-
-        console.log("DEBUG:", {
-          captain,
-          viceCaptain,
-          transfersLeft,
-          boostersUsed,
-        });
+        console.log(`📌 ${name} | Match: ${matchPoints}`);
 
         results.push({
           rank,
@@ -245,7 +238,6 @@ async function scrapeIPL() {
 
       } catch {
         console.log(`⚠️ Row ${i} failed`);
-        continue;
       }
     }
 
