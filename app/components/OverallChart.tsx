@@ -90,18 +90,18 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
                 vertical={false}
               />
 
-<XAxis
-  dataKey="name"
-  stroke="#ffffff"
-  interval={0}
-  angle={isMobile ? -45 : 0}
-  textAnchor={isMobile ? "end" : "middle"}
-  height={isMobile ? 60 : 40}
-  tick={{
-    fill: "#ffffff",
-    fontSize: isMobile ? 9 : 11,
-  }}
-/>
+              <XAxis
+                dataKey="name"
+                stroke="#ffffff"
+                interval={0}
+                angle={-25}
+                textAnchor="end"
+                height={isMobile ? 45 : 50}
+                tick={{
+                  fill: "#ffffff",
+                  fontSize: isMobile ? 9 : 11,
+                }}
+              />
 
               {/* ✅ Y Axis */}
               <YAxis
@@ -151,24 +151,28 @@ export default function OverallChart({ data }: { data?: Leader[] }) {
 
                 {/* ✅ Centered ABOVE bar (no decimals) */}
                 <LabelList
-                  dataKey="points"
-                  content={(props: any) => {
-                    const { x, y, width, value } = props;
+  dataKey="points"
+  content={(props: any) => {
+    const { x, y, width, value } = props;
 
-                    return (
-                      <text
-                        x={x + width / 2}
-                        y={y - 6}
-                        fill="#fff"
-                        fontSize={isMobile ? 10 : 12}
-                        fontWeight={600}
-                        textAnchor="middle"
-                      >
-                        {formatNumber(Number(value))}
-                      </text>
-                    );
-                  }}
-                />
+    const cx = x + width / 2; // center of bar
+    const cy = y - 6; // just above bar
+
+    return (
+      <text
+        x={cx}
+        y={cy}
+        fill="#fff"
+        fontSize={isMobile ? 9 : 12}
+        fontWeight={600}
+        textAnchor="middle"
+        transform={`rotate(-70, ${cx}, ${cy})`}
+      >
+        {formatNumber(Number(value))}
+      </text>
+    );
+  }}
+/>
 
                 {/* Rank */}
                 <LabelList
