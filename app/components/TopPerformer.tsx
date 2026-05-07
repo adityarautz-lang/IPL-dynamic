@@ -26,12 +26,13 @@ export default function TopPerformer({
   return (
     <div className="mt-2 w-full">
       {/* 🔥 Top Performer */}
-      <div className="text-sm text-slate-300 animate-pulse">
+      <div className="text-[12px] sm:text-sm text-slate-300 animate-pulse">
         🔥 Today’s top performer:{" "}
         <span className="font-semibold text-white">
           {top.name}
         </span>{" "}
-        (<span className="text-green-400 font-semibold">
+        (
+        <span className="text-green-400 font-semibold">
           {top.lastMatchPoints}
         </span>{" "}
         pts)

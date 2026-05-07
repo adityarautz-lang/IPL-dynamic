@@ -259,7 +259,7 @@ async function scrapeIPL() {
       console.log("❌ Payload invalid");
     } else {
       const res = await fetch(DASHBOARD_API, {
-        method: "PUT",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
