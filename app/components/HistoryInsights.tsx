@@ -61,7 +61,7 @@ export default function HistoryInsights({ history }: any) {
 
 <Card
   title={
-    <span className="text-[11px] sm:text-base">
+    <span className="text-[10px] sm:text-base">
       🪵 Most Bottom Finishes
     </span>
   }
