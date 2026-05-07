@@ -36,20 +36,27 @@ export default function Trivia({ data }: { data: any[] }) {
 
         {/* 🔥 CORE INSIGHTS */}
         <div>
-          🏆 Highest Score:{" "}
-          <span className="font-semibold">
-            {insights.highest.team}
-          </span>{" "}
-          ({insights.highest.points} pts – Match {insights.highest.match})
-        </div>
+  🏆 Highest Score:{" "}
+  <span className="font-semibold">
+    {insights.highest.team}
+  </span>{" "}
+  ({insights.highest.points} pts
+  <br />
+  – Match {insights.highest.match})
+</div>
 
         <div>
-          💀 Lowest Score:{" "}
-          <span className="font-semibold">
-            {insights.lowest.team}
-          </span>{" "}
-          ({insights.lowest.points} pts – Match {insights.lowest.match})
-        </div>
+  💀 Lowest Score:{" "}
+  <span className="font-semibold">
+    {insights.lowest.team}
+  </span>{" "}
+  <div>
+    ({insights.lowest.points} pts)
+  </div>
+  <div>
+    – Match {insights.lowest.match}
+  </div>
+</div>
 
         {/* 📊 AVERAGE SUMMARY */}
         <div className="mt-3 pt-3 border-t">
