@@ -76,7 +76,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
       {/* Header */}
       <div className="p-4 sm:p-6">
         <h2 className="text-lg sm:text-xl font-bold text-cyan-300">
-          📊 Current Match Performance
+          📊 Current Match Score
         </h2>
         <p className="text-slate-400 text-xs sm:text-sm mt-1">
           Runs, regrets, and questionable decisions
