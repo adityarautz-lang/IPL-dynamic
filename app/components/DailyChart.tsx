@@ -79,7 +79,7 @@ export default function DailyChart({ data }: { data?: Leader[] }) {
           📊 Current Match Score
         </h2>
         <p className="text-slate-400 text-xs sm:text-sm mt-1">
-          Runs, regrets, and questionable decisions
+          Runs, regrets, & questionable decisions
         </p>
       </div>
 
