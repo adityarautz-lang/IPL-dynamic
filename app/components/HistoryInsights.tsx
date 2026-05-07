@@ -62,7 +62,7 @@ export default function HistoryInsights({ history }: any) {
 <Card
   title={
     <span className="text-[11px] sm:text-base">
-      🪵 Most Bottom Finishes
+      🙊 Most Bottom Finishes
     </span>
   }
   value={metrics.maxBottom.team}
