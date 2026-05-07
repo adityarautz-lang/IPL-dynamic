@@ -1,39 +1,54 @@
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 import { kv } from "@vercel/kv";
 
-// freshness check (10 seconds)
-function isFresh(updatedAt: string | undefined) {
+// --------------------------------------------
+// 🧠 freshness check (10 mins)
+// --------------------------------------------
+function isFresh(updatedAt?: string) {
   if (!updatedAt) return false;
-  const diff = Date.now() - new Date(updatedAt).getTime();
-  return diff < 10 * 1000;
+
+  const diff =
+    Date.now() -
+    new Date(updatedAt).getTime();
+
+  return diff < 10 * 60 * 1000;
 }
 
+// --------------------------------------------
+// 🧠 JSON response
+// --------------------------------------------
 function jsonResponse(data: any) {
-  return new Response(JSON.stringify(data), {
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store",
-    },
-  });
+  return new Response(
+    JSON.stringify(data),
+    {
+      headers: {
+        "Content-Type":
+          "application/json",
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate",
+      },
+    }
+  );
 }
 
 // --------------------------------------------
-// 🧠 Match window
+// 🧠 Merge leaders
 // --------------------------------------------
-function isLiveTime() {
-  const hour = new Date().getHours();
-  return hour >= 19 && hour <= 23;
-}
-
-// --------------------------------------------
-// 🧠 Merge leaders (sticky fields)
-// --------------------------------------------
-function mergeLeaders(newLeaders: any[], oldLeaders: any[]) {
-  if (!oldLeaders?.length) return newLeaders;
+function mergeLeaders(
+  newLeaders: any[],
+  oldLeaders: any[]
+) {
+  if (!oldLeaders?.length)
+    return newLeaders;
 
   const map = new Map();
-  oldLeaders.forEach((l) => map.set(l.name, l));
+
+  oldLeaders.forEach((l) =>
+    map.set(l.name, l)
+  );
 
   return newLeaders.map((l) => {
     const prev = map.get(l.name);
@@ -43,39 +58,81 @@ function mergeLeaders(newLeaders: any[], oldLeaders: any[]) {
     return {
       ...l,
 
-      // 🔥 Preserve fields if scraper misses them
-      captain: l.captain ?? prev.captain ?? null,
-      viceCaptain: l.viceCaptain ?? prev.viceCaptain ?? null,
-      boostersUsed: l.boostersUsed ?? prev.boostersUsed ?? null,
-      transfersLeft: l.transfersLeft ?? prev.transfersLeft ?? null,
+      captain:
+        l.captain ??
+        prev.captain ??
+        null,
+
+      viceCaptain:
+        l.viceCaptain ??
+        prev.viceCaptain ??
+        null,
+
+      boostersUsed:
+        l.boostersUsed ??
+        prev.boostersUsed ??
+        null,
+
+      transfersLeft:
+        l.transfersLeft ??
+        prev.transfersLeft ??
+        null,
     };
   });
 }
 
 // --------------------------------------------
 // 📤 GET
+// ALWAYS prefer fresh LIVE data
 // --------------------------------------------
 export async function GET() {
   try {
-    const liveData: any = await kv.get("live");
-    const snapshot: any = await kv.get("snapshot");
+    const liveData: any =
+      await kv.get("live");
 
-    // 🟢 LIVE
-    if (isLiveTime() && liveData && isFresh(liveData.updatedAt)) {
-      console.log("📡 Serving LIVE data");
-      return jsonResponse({ ...liveData, mode: "live" });
-    }
+    const snapshot: any =
+      await kv.get("snapshot");
 
-    // 🔵 SNAPSHOT
-    if (snapshot) {
-      console.log("📸 Serving SNAPSHOT");
+    console.log("📡 GET called");
+
+    console.log(
+      "LIVE updatedAt:",
+      liveData?.updatedAt
+    );
+
+    console.log(
+      "SNAPSHOT updatedAt:",
+      snapshot?.updatedAt
+    );
+
+    // 🟢 ALWAYS prioritize fresh LIVE
+    if (
+      liveData &&
+      isFresh(liveData.updatedAt)
+    ) {
+      console.log(
+        "🟢 Serving LIVE data"
+      );
+
       return jsonResponse({
-        ...snapshot,
-        mode: "snapshot_kv",
+        ...liveData,
+        mode: "live",
       });
     }
 
-    // ❌ No data
+    // 🔵 fallback snapshot
+    if (snapshot) {
+      console.log(
+        "🔵 Serving SNAPSHOT"
+      );
+
+      return jsonResponse({
+        ...snapshot,
+        mode: "snapshot",
+      });
+    }
+
+    // ❌ empty
     return jsonResponse({
       updatedAt: null,
       leaders: [],
@@ -86,7 +143,11 @@ export async function GET() {
     });
 
   } catch (err) {
-    console.error("❌ GET error:", err);
+    console.error(
+      "❌ GET error:",
+      err
+    );
+
     return jsonResponse({
       updatedAt: null,
       leaders: [],
@@ -101,28 +162,42 @@ export async function GET() {
 // --------------------------------------------
 // 📥 POST → LIVE
 // --------------------------------------------
-export async function POST(req: Request) {
+export async function POST(
+  req: Request
+) {
   try {
     const body = await req.json();
 
-    console.log("📥 Incoming keys:", Object.keys(body));
+    console.log(
+      "📥 LIVE update received"
+    );
 
-    let existing: any = (await kv.get("live")) || {
-      leaders: [],
-      leagueData: [],
-      updatedAt: null,
-      completedPct: null,
-      completedMatches: null,
-    };
+    console.log(
+      "Leaders:",
+      body?.leaders?.length
+    );
 
-    // 🔥 Merge leaders safely (key fix)
+    let existing: any =
+      (await kv.get("live")) || {
+        leaders: [],
+        leagueData: [],
+        updatedAt: null,
+        completedPct: null,
+        completedMatches: null,
+      };
+
     const mergedLeaders =
       body.leaders !== undefined
-        ? mergeLeaders(body.leaders, existing.leaders)
+        ? mergeLeaders(
+            body.leaders,
+            existing.leaders
+          )
         : existing.leaders;
 
     const payload = {
-      updatedAt: body.updatedAt || new Date().toISOString(),
+      updatedAt:
+        body.updatedAt ||
+        new Date().toISOString(),
 
       leaders: mergedLeaders,
 
@@ -137,61 +212,89 @@ export async function POST(req: Request) {
           : existing.completedPct,
 
       completedMatches:
-        body.completedMatches !== undefined
+        body.completedMatches !==
+        undefined
           ? body.completedMatches
           : existing.completedMatches,
     };
 
     await kv.set("live", payload);
 
-    console.log("✅ LIVE Stored:", {
-      leaders: payload.leaders?.length || 0,
-      completedPct: payload.completedPct,
+    console.log(
+      "✅ LIVE stored"
+    );
+
+    return jsonResponse({
+      success: true,
     });
 
-    return jsonResponse({ success: true });
-
   } catch (err) {
-    console.error("❌ POST error:", err);
-    return jsonResponse({ error: "Server error" });
+    console.error(
+      "❌ POST error:",
+      err
+    );
+
+    return jsonResponse({
+      error: "Server error",
+    });
   }
 }
 
 // --------------------------------------------
 // 📸 PUT → SNAPSHOT
 // --------------------------------------------
-export async function PUT(req: Request) {
+export async function PUT(
+  req: Request
+) {
   try {
     const body = await req.json();
 
     if (!body?.leaders?.length) {
-      console.log("⚠️ Snapshot skipped (invalid)");
-      return jsonResponse({ skipped: true });
+      console.log(
+        "⚠️ Snapshot skipped"
+      );
+
+      return jsonResponse({
+        skipped: true,
+      });
     }
 
-    const age = Date.now() - new Date(body.updatedAt).getTime();
-    if (age > 6 * 60 * 60 * 1000) {
-      console.log("⚠️ Snapshot skipped (too old)");
-      return jsonResponse({ skipped: true });
-    }
+    const existing: any =
+      (await kv.get("snapshot")) ||
+      {};
 
-    // 🔥 Also merge snapshot (important!)
-    const existing: any = (await kv.get("snapshot")) || {};
-    const mergedLeaders = mergeLeaders(body.leaders, existing.leaders || []);
+    const mergedLeaders =
+      mergeLeaders(
+        body.leaders,
+        existing.leaders || []
+      );
 
     const payload = {
       ...body,
       leaders: mergedLeaders,
     };
 
-    await kv.set("snapshot", payload);
+    await kv.set(
+      "snapshot",
+      payload
+    );
 
-    console.log("📸 Snapshot stored");
+    console.log(
+      "📸 Snapshot stored"
+    );
 
-    return jsonResponse({ success: true });
+    return jsonResponse({
+      success: true,
+    });
 
   } catch (err) {
-    console.error("❌ SNAPSHOT error:", err);
-    return jsonResponse({ error: "Server error" });
+    console.error(
+      "❌ SNAPSHOT error:",
+      err
+    );
+
+    return jsonResponse({
+      error: "Server error",
+    });
   }
 }

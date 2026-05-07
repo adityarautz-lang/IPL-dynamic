@@ -27,6 +27,13 @@ async function scrapeIPL() {
   console.log(`\n==============================`);
   console.log(`🚀 START scrape at: ${now()}`);
 
+  console.log("🌍 TARGET:", process.env.TARGET);
+  console.log("🌍 DASHBOARD_API:", DASHBOARD_API);
+  console.log(
+    "🌍 SNAPSHOT:",
+    process.env.SNAPSHOT
+  );
+
   const browser = await chromium.launch({
     headless: true,
   });
@@ -186,7 +193,8 @@ async function scrapeIPL() {
               if (!thumb) return null;
 
               function extract(bg) {
-                if (!bg || bg === "none") return null;
+                if (!bg || bg === "none")
+                  return null;
 
                 const match = bg.match(
                   /url\(["']?(.*?)["']?\)/
@@ -331,8 +339,9 @@ async function scrapeIPL() {
         await page.keyboard
           .press("Escape")
           .catch(() => {});
-      } catch {
+      } catch (err) {
         console.log(`⚠️ Row ${i} failed`);
+        console.log(err);
       }
     }
 
@@ -348,6 +357,16 @@ async function scrapeIPL() {
     };
 
     console.log("📦 Payload ready");
+
+    console.log(
+      "📦 Leaders:",
+      payload.leaders.length
+    );
+
+    console.log(
+      "📦 First Leader:",
+      payload.leaders?.[0]
+    );
 
     if (!isValidPayload(payload)) {
       console.log("❌ Payload invalid");
@@ -370,26 +389,47 @@ async function scrapeIPL() {
         } update`
       );
 
-      const res = await fetch(
-        DASHBOARD_API,
-        {
-          method,
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify(payload),
+      console.log("📡 URL:", DASHBOARD_API);
+
+      try {
+        const res = await fetch(
+          DASHBOARD_API,
+          {
+            method,
+            headers: {
+              "Content-Type":
+                "application/json",
+              "Cache-Control":
+                "no-cache",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
+        const text = await res.text();
+
+        console.log(
+          `📡 ${method} status:`,
+          res.status
+        );
+
+        console.log("📨 Response:", text);
+
+        if (!res.ok) {
+          console.log(
+            "❌ API returned non-200"
+          );
+        } else {
+          console.log(
+            "✅ API accepted payload"
+          );
         }
-      );
-
-      const text = await res.text();
-
-      console.log(
-        `📡 ${method} status:`,
-        res.status
-      );
-
-      console.log("📨 Response:", text);
+      } catch (err) {
+        console.error(
+          "❌ POST failed:",
+          err
+        );
+      }
     }
   } catch (err) {
     console.error("❌ Fatal error:", err);
