@@ -49,18 +49,26 @@ export default function HistoryInsights({ history }: any) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
       <Card
-        title="🏆 Most Top Finishes"
-        value={metrics.maxTopper.team}
-        sub={`${metrics.maxTopper.count} times`}
-        glow="bg-green-500"
-      />
+  title={
+    <span className="text-[11px] sm:text-base">
+      🏆 Most Top Finishes
+    </span>
+  }
+  value={metrics.maxTopper.team}
+  sub={`${metrics.maxTopper.count} times`}
+  glow="bg-green-500"
+/>
 
-      <Card
-        title="🪵 Most Bottom Finishes"
-        value={metrics.maxBottom.team}
-        sub={`${metrics.maxBottom.count} times`}
-        glow="bg-red-500"
-      />
+<Card
+  title={
+    <span className="text-[11px] sm:text-base">
+      🪵 Most Bottom Finishes
+    </span>
+  }
+  value={metrics.maxBottom.team}
+  sub={`${metrics.maxBottom.count} times`}
+  glow="bg-red-500"
+/>
 
       <Card
         title="🔥 Highest Score"
