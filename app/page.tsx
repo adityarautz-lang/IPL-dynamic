@@ -98,7 +98,7 @@ export default function Home() {
           </div>
 
           {/* PLAYOFF BADGE */}
-          <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 pt-20">
+          <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 pt-10">
             <div className="px-5 py-2 rounded-full border border-yellow-400/30 bg-yellow-400/10 backdrop-blur-xl text-yellow-300 text-xs sm:text-sm font-bold tracking-[0.25em] shadow-[0_0_30px_rgba(250,204,21,0.25)] animate-pulse">
               🏆 PLAYOFF MODE
             </div>
