@@ -10,119 +10,428 @@ const TARGET_URL =
 
 const now = () => new Date().toISOString();
 
+function safeNumber(value, fallback = 0) {
+  const n = Number(value);
+
+  return Number.isFinite(n)
+    ? n
+    : fallback;
+}
+
 async function scrapeHistory() {
-  console.log("📊 Starting per-match history scrape...");
+  console.log(
+    "📊 Starting per-match history scrape..."
+  );
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    storageState: "state.json",
-  });
+  const browser =
+    await chromium.launch({
+      headless: true,
 
-  const page = await context.newPage();
+      args: [
+        "--disable-blink-features=AutomationControlled",
+        "--disable-dev-shm-usage",
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+      ],
+    });
+
+  const context =
+    await browser.newContext({
+      storageState: "state.json",
+    });
+
+  const page =
+    await context.newPage();
 
   try {
-    await page.goto(TARGET_URL, { waitUntil: "networkidle" });
-    await page.waitForSelector("#leadersList li", { timeout: 30000 });
+    // ======================================
+    // 🌐 LOAD PAGE
+    // ======================================
 
-    const teams = await page.$$("#leadersList li");
+    await page.goto(TARGET_URL, {
+      waitUntil:
+        "domcontentloaded",
+
+      timeout: 45000,
+    });
+
+    await page.waitForSelector(
+      "#leadersList li",
+      {
+        timeout: 30000,
+      }
+    );
+
+    // ======================================
+    // 📊 TOTAL TEAMS
+    // ======================================
+
+    const totalTeams =
+      await page.$$eval(
+        "#leadersList li",
+        (els) => els.length
+      );
+
+    console.log(
+      "📊 Teams found:",
+      totalTeams
+    );
 
     const allTeams = [];
 
-    for (let i = 0; i < teams.length; i++) {
-      const row = teams[i];
+    // ======================================
+    // 🧠 LOOP TEAMS
+    // ======================================
 
-      const teamName = await row
-        .$eval(".m11c-plyrSel__name span", el => el.innerText.trim())
-        .catch(() => `Team-${i}`);
+    for (
+      let i = 0;
+      i < totalTeams;
+      i++
+    ) {
+      try {
+        // ======================================
+        // 🔄 RE-QUERY ROWS EACH LOOP
+        // ======================================
 
-      console.log("👉", teamName);
+        const teams =
+          await page.$$(
+            "#leadersList li"
+          );
 
-      // open modal
-      await row.click();
-      await page.waitForSelector(".m11c-overlay__header");
-      await page.waitForTimeout(800);
+        const row = teams[i];
 
-      // click OVERALL tab
-      const tabs = await page.$$("li.swiper-slide");
+        const teamName =
+          await row
+            .$eval(
+              ".m11c-plyrSel__name span",
+              (el) =>
+                el.innerText.trim()
+            )
+            .catch(
+              () => `Team-${i}`
+            );
 
-      for (const tab of tabs) {
-        const text = await tab.innerText();
-        if (text.trim().toUpperCase() === "OVERALL") {
-          await tab.click();
-          break;
+        console.log(
+          "\n👉",
+          teamName
+        );
+
+        // ======================================
+        // 🟢 CLICK WITH RETRIES
+        // ======================================
+
+        let clicked = false;
+
+        for (
+          let retry = 1;
+          retry <= 3;
+          retry++
+        ) {
+          try {
+            await row.scrollIntoViewIfNeeded();
+
+            await page.waitForTimeout(
+              500
+            );
+
+            await row.click({
+              timeout: 10000,
+            });
+
+            clicked = true;
+
+            break;
+          } catch (err) {
+            console.log(
+              `⚠️ click retry ${retry}`
+            );
+
+            await page.waitForTimeout(
+              1000
+            );
+          }
         }
-      }
 
-      await page.waitForTimeout(800);
-
-      const scrollContainer = await page.$(".m11c-pitch__area");
-
-      let results = [];
-      let seen = new Set();
-      let lastScrollTop = -1;
-
-      while (true) {
-        const matches = await page.$$(".m11c-contest__box");
-
-        for (const match of matches) {
-          const matchName = await match
-            .$eval(".m11c-contest__box-head span", el => el.innerText.trim())
-            .catch(() => "");
-
-          if (!matchName || seen.has(matchName)) continue;
-
-          const points = parseFloat(
-            await match
-              .$eval(".m11c-contest__pitch-num span", el => el.innerText)
-              .catch(() => "0")
-          ) || 0;
-
-          seen.add(matchName);
-
-          results.push({
-            matchIndex: results.length + 1,
-            matchName,
-            points,
-          });
+        if (!clicked) {
+          throw new Error(
+            `Could not click ${teamName}`
+          );
         }
 
-        const scrollTop = await scrollContainer.evaluate(el => el.scrollTop);
+        // ======================================
+        // 🧠 WAIT FOR MODAL
+        // ======================================
 
-        await scrollContainer.evaluate(el => el.scrollTop += 300);
-        await page.waitForTimeout(600);
+        await page.waitForSelector(
+          ".m11c-overlay__header",
+          {
+            timeout: 10000,
+          }
+        );
 
-        const newScrollTop = await scrollContainer.evaluate(el => el.scrollTop);
+        await page.waitForTimeout(
+          1200
+        );
 
-        if (newScrollTop === lastScrollTop) break;
-        lastScrollTop = newScrollTop;
+        // ======================================
+        // 📊 CLICK OVERALL TAB
+        // ======================================
+
+        const tabs =
+          await page.$$(
+            "li.swiper-slide"
+          );
+
+        for (const tab of tabs) {
+          const text =
+            await tab.innerText();
+
+          if (
+            text
+              .trim()
+              .toUpperCase() ===
+            "OVERALL"
+          ) {
+            await tab.click();
+
+            break;
+          }
+        }
+
+        await page.waitForTimeout(
+          1200
+        );
+
+        const scrollContainer =
+          await page.$(
+            ".m11c-pitch__area"
+          );
+
+        let results = [];
+
+        let seen = new Set();
+
+        let lastScrollTop =
+          -1;
+
+        // ======================================
+        // 🔄 SCROLL HISTORY
+        // ======================================
+
+        while (true) {
+          const matches =
+            await page.$$(
+              ".m11c-contest__box"
+            );
+
+          for (const match of matches) {
+            const matchName =
+              await match
+                .$eval(
+                  ".m11c-contest__box-head span",
+                  (el) =>
+                    el.innerText.trim()
+                )
+                .catch(() => "");
+
+            if (
+              !matchName ||
+              seen.has(matchName)
+            )
+              continue;
+
+            // ======================================
+            // 🧪 DEBUG SPANS
+            // ======================================
+
+            const spans =
+              await match.$$eval(
+                ".m11c-contest__pitch-num span",
+                (els) =>
+                  els.map((el) =>
+                    el.innerText.trim()
+                  )
+              );
+
+            console.log(
+              "🧪 HISTORY SPANS:",
+              matchName,
+              spans
+            );
+
+            // ======================================
+            // 🎯 FIX COMMA PARSING
+            // ======================================
+
+            const numericValues =
+              spans
+                .map((v) =>
+                  parseFloat(
+                    v.replace(
+                      /,/g,
+                      ""
+                    )
+                  )
+                )
+                .filter(
+                  (v) =>
+                    !isNaN(v)
+                );
+
+            const points =
+              numericValues.length >
+              0
+                ? Math.max(
+                    ...numericValues
+                  )
+                : 0;
+
+            seen.add(matchName);
+
+            results.push({
+              matchIndex:
+                results.length +
+                1,
+
+              matchName,
+
+              points:
+                safeNumber(
+                  points
+                ),
+            });
+          }
+
+          // ======================================
+          // 🔽 SCROLL
+          // ======================================
+
+          const scrollTop =
+            await scrollContainer.evaluate(
+              (el) => el.scrollTop
+            );
+
+          await scrollContainer.evaluate(
+            (el) =>
+              (el.scrollTop += 300)
+          );
+
+          await page.waitForTimeout(
+            700
+          );
+
+          const newScrollTop =
+            await scrollContainer.evaluate(
+              (el) => el.scrollTop
+            );
+
+          if (
+            newScrollTop ===
+            lastScrollTop
+          )
+            break;
+
+          lastScrollTop =
+            newScrollTop;
+        }
+
+        // ======================================
+        // 📦 SAVE TEAM
+        // ======================================
+
+        allTeams.push({
+          teamName,
+
+          history:
+            results.reverse(),
+        });
+
+        console.log(
+          `✅ ${teamName} → ${results.length} matches`
+        );
+
+        // ======================================
+        // ❌ CLOSE MODAL
+        // ======================================
+
+        await page.keyboard.press(
+          "Escape"
+        );
+
+        await page.waitForTimeout(
+          1000
+        );
+      } catch (err) {
+        console.log(
+          `❌ Team ${i} failed`
+        );
+
+        console.log(err.message);
       }
-      allTeams.push({
-        teamName,
-        history: results.reverse(),
-      });
-
-      console.log(`✅ ${teamName} → ${results.length} matches`);
-
-      // close modal
-      await page.keyboard.press("Escape");
-      await page.waitForTimeout(800);
     }
 
-    console.log("📦 Done:", allTeams.length);
+    // ======================================
+    // 📦 FINAL PAYLOAD
+    // ======================================
 
-    await fetch(DASHBOARD_API, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        updatedAt: now(),
-        teams: allTeams,
-      }),
-    });
+    console.log(
+      "\n📦 Done:",
+      allTeams.length
+    );
 
-    console.log("📡 History saved");
+    const payload = {
+      updatedAt: now(),
 
+      teams: allTeams,
+    };
+
+    // ======================================
+    // 🚀 SEND
+    // ======================================
+
+    const res = await fetch(
+      DASHBOARD_API,
+      {
+        method: "PUT",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify(
+          payload
+        ),
+      }
+    );
+
+    const text =
+      await res.text();
+
+    console.log(
+      "📡 History status:",
+      res.status
+    );
+
+    console.log(
+      "📨 Response:",
+      text
+    );
+
+    if (!res.ok) {
+      console.log(
+        "❌ History save failed"
+      );
+    } else {
+      console.log(
+        "✅ History saved"
+      );
+    }
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error(
+      "❌ Fatal error:",
+      err.message
+    );
   } finally {
     await browser.close();
   }

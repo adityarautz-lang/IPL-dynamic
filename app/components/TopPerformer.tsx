@@ -39,10 +39,10 @@ export default function TopPerformer({
       </div>
 
       {/* 📊 Progress Bar */}
-      <ProgressBar
+      {/* <ProgressBar
         completedPct={completedPct}
         completedMatches={completedMatches}
-      />
+      /> */}
     </div>
   );
 }
