@@ -8,31 +8,43 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-mukta);
-  --font-mono: var(--font-geist-mono);
+
+  /* ✅ MAIN FONT */
+  --font-family: var(--font-inter);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #020617;
     --foreground: #ededed;
   }
 }
 
+/* ✅ GLOBAL BODY */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: monospace;
+
+  /* ✅ USE INTER */
+  font-family: var(--font-inter),
+    sans-serif;
+
+  overflow-x: hidden;
 }
 
-/* Animated gradient text */
+/* =========================================
+   🌈 Animated Gradient
+========================================= */
+
 @keyframes gradientMove {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -40,40 +52,62 @@ body {
 
 .animate-gradient {
   background-size: 200% 200%;
-  animation: gradientMove 6s ease infinite;
+
+  animation:
+    gradientMove 6s ease infinite;
 }
-/* shimmer animation */
+
+/* =========================================
+   ✨ SHIMMER
+========================================= */
+
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
 }
 
 .animate-shimmer {
-  animation: shimmer 3s infinite linear;
+  animation:
+    shimmer 3s infinite linear;
 }
 
-/* reusable glass card (optional cleanup) */
+/* =========================================
+   🧊 GLASS CARD
+========================================= */
+
 .glass-card {
   @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl;
 }
 
+/* =========================================
+   🏆 PLAYOFF TITLE
+========================================= */
+
 .title {
-  @apply text-2xl font-bold bg-linear-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent;
+  @apply text-2xl font-bold bg-linear-to-r from-yellow-200 via-yellow-400 to-orange-400 bg-clip-text text-transparent;
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+/* =========================================
+   🌟 PLAYOFF GLOW
+========================================= */
+
+.playoff-glow {
+  box-shadow:
+    0 0 30px rgba(250, 204, 21, 0.08),
+    0 0 80px rgba(250, 204, 21, 0.04);
 }
 
-.animate-shimmer {
-  animation: shimmer 3s infinite linear;
+/* =========================================
+   📈 SMOOTH RENDERING
+========================================= */
+
+* {
+  -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
 }
