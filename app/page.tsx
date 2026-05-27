@@ -93,11 +93,7 @@ export default function Home() {
         </div>
 
         {/* TOP PERFORMER */}
-        <TopPerformer
-  data={list}
-  completedPct={completedPct}
-  completedMatches={completedMatches}
-/>
+        <TopPerformer data={list} />
 
 {/* 🔥 HISTORY INSIGHTS */}
 {historyData && <HistoryInsights history={historyData} />}
