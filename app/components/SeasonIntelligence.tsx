@@ -25,7 +25,7 @@ export default function SeasonIntelligence({
 
     return () =>
       clearInterval(interval);
-  }, [insights]);
+}, []);
 
   if (!insights?.length)
     return null;
