@@ -23,16 +23,16 @@ export function computeHistoryMetrics(
   let highest = {
     team: "",
     points: -Infinity,
-    match: 0,
+    match: "",
   };
 
   let lowest = {
     team: "",
     points: Infinity,
-    match: 0,
+    match: "",
   };
 
-  // 🔥 NEW
+  // 🔥 TRACK ALL SCORES
   const allScores: any[] = [];
 
   for (
@@ -73,15 +73,28 @@ export function computeHistoryMetrics(
 
     ranking.forEach(
       (r: any) => {
+        const teamHistory =
+          teams.find(
+            (x: any) =>
+              x.teamName ===
+              r.name
+          )?.history[m];
+
+        const matchName =
+          teamHistory
+            ?.matchName ||
+          `Match ${m + 1}`;
+
         // 🔥 TRACK ALL SCORES
         allScores.push({
           team: r.name,
 
           points: r.points,
 
-          match: m + 1,
+          match: matchName,
         });
 
+        // 🔥 HIGHEST
         if (
           r.points >
           highest.points
@@ -91,10 +104,11 @@ export function computeHistoryMetrics(
 
             points: r.points,
 
-            match: m + 1,
+            match: matchName,
           };
         }
 
+        // 🔥 LOWEST
         if (
           r.points <
           lowest.points
@@ -104,7 +118,7 @@ export function computeHistoryMetrics(
 
             points: r.points,
 
-            match: m + 1,
+            match: matchName,
           };
         }
       }
@@ -155,7 +169,6 @@ export function computeHistoryMetrics(
 
     lowest,
 
-    // 🔥 NEW
     topScores,
   };
 }
