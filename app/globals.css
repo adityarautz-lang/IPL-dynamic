@@ -57,6 +57,24 @@ body {
     gradientMove 6s ease infinite;
 }
 
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: inline-block;
+  min-width: 200%;
+
+  animation:
+    marquee 45s linear infinite;
+}
+
 /* =========================================
    ✨ SHIMMER
 ========================================= */

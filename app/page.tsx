@@ -18,6 +18,7 @@ import DetailedDataTable from "./components/DetailedDataTable";
 import TeamCards from "./components/TeamCards";
 import SeasonIntelligence from "./components/SeasonIntelligence";
 import { computeSeasonInsights } from "./utils/computeSeasonInsights";
+import InsightTicker from "./components/InsightTicker";
 
 /* ⚡ PLAYOFF MODE */
 const PLAYOFF_MODE = true;
@@ -389,6 +390,10 @@ export default function Home() {
 
       <LiveMatchTicker />
 
+      <InsightTicker
+  insights={insights}
+/>
+
       <div className="max-w-7xl mx-auto px-5 pt-24 pb-10 relative z-10">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-2">
@@ -469,9 +474,9 @@ export default function Home() {
         <div className="mt-6">
           <GlassCard>
             <div className="p-5">
-            <SeasonIntelligence
+            {/* <SeasonIntelligence
   insights={insights}
-/>
+/> */}
             </div>
           </GlassCard>
         </div>
