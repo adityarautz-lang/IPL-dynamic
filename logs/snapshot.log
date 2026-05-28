@@ -22068,3 +22068,132 @@ DEBUG: {
 🏁 END scrape at: 2026-05-28T11:30:33.507Z
 ==============================
 
+
+==============================
+🚀 START scrape at: 2026-05-28T12:00:01.165Z
+🌍 TARGET: prod
+🌍 DASHBOARD_API: https://ipl-dynamic.vercel.app/api/ipl
+🌍 SNAPSHOT: true
+🌐 Connectivity OK: 200
+🌐 Loading page attempt 1
+✅ IPL page loaded
+📊 Match: { currentMatch: 2, completedPct: 1.4285714285714286 }
+📊 Rows found: 8
+
+🟢 Opening team: SquadSeven9
+🎯 RAW MATCH POINTS: SquadSeven9 736
+DEBUG: {
+  name: 'SquadSeven9',
+  matchPoints: 736,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: Deccan Dominators
+🎯 RAW MATCH POINTS: Deccan Dominators 652
+DEBUG: {
+  name: 'Deccan Dominators',
+  matchPoints: 652,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/66799.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: RSAwesome 11
+🎯 RAW MATCH POINTS: RSAwesome 11 732
+DEBUG: {
+  name: 'RSAwesome 11',
+  matchPoints: 732,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/64712.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: VATVAGHOOL XI
+🎯 RAW MATCH POINTS: VATVAGHOOL XI 742
+DEBUG: {
+  name: 'VATVAGHOOL XI',
+  matchPoints: 742,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/64712.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: Watapi
+🎯 RAW MATCH POINTS: Watapi 730
+DEBUG: {
+  name: 'Watapi',
+  matchPoints: 730,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: PKs11
+🎯 RAW MATCH POINTS: PKs11 715.5
+DEBUG: {
+  name: 'PKs11',
+  matchPoints: 715.5,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/69238.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: Bat Bowl XI
+🎯 RAW MATCH POINTS: Bat Bowl XI 0
+DEBUG: {
+  name: 'Bat Bowl XI',
+  matchPoints: 0,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/3993.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: RushS01
+🎯 RAW MATCH POINTS: RushS01 185
+DEBUG: {
+  name: 'RushS01',
+  matchPoints: 185,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/3852.png',
+  transfersLeft: 10
+}
+📦 Payload ready
+📦 Leaders: 8
+📦 First Leader: {
+  rank: 2,
+  name: 'SquadSeven9',
+  points: 23159,
+  lastMatchPoints: 736,
+  transfersLeft: 10,
+  boostersUsed: '8',
+  captain: {
+    name: 'V. Sooryavanshi',
+    points: 304,
+    image: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png'
+  },
+  viceCaptain: {
+    name: 'I. Kishan',
+    points: 102,
+    image: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/64712.png'
+  }
+}
+🧪 Payload sample: {
+  "rank": 1,
+  "name": "Deccan Dominators",
+  "points": 24638,
+  "lastMatchPoints": 652,
+  "transfersLeft": 10,
+  "boostersUsed": "8",
+  "captain": {
+    "name": "A. Sharma",
+    "points": 60,
+    "image": "https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/66799.png"
+  },
+  "viceCaptain": {
+    "name": "V. Sooryavanshi",
+    "points": 228,
+    "image": "https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png"
+  }
+}
+📡 Sending SNAPSHOT update
+📡 URL: https://ipl-dynamic.vercel.app/api/ipl
+📡 PUT status: 200
+📨 Response: {"success":true}
+✅ API accepted payload
+🏁 END scrape at: 2026-05-28T12:00:35.466Z
+==============================
+

@@ -61,7 +61,7 @@ function StatusBadge({
       }`}
     >
       {isLive
-        ? "● LIVE"
+        ? "LIVE"
         : "SNAPSHOT"}
     </div>
   );
