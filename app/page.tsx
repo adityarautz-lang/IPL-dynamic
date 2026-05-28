@@ -74,9 +74,27 @@ function GlassCard({
 }: any) {
   return (
     <div
-      className={`rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_0_60px_rgba(15,23,42,0.5)] ${className}`}
+      className={`
+        relative
+        overflow-hidden
+        rounded-3xl
+        border
+        border-cyan-400/10
+        bg-[linear-gradient(135deg,rgba(15,23,42,0.92),rgba(2,6,23,0.95))]
+        backdrop-blur-2xl
+        shadow-[0_0_60px_rgba(34,211,238,0.08)]
+        ${className}
+      `}
     >
-      {children}
+      {/* INNER GLOW */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.05),transparent_55%)] pointer-events-none" />
+
+      {/* EDGE LIGHT */}
+      <div className="absolute inset-0 rounded-3xl ring-1 ring-white/[0.03] pointer-events-none" />
+
+      <div className="relative z-10">
+        {children}
+      </div>
     </div>
   );
 }
@@ -286,13 +304,13 @@ const ChartsSection =
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <GlassCard>
-          <div className="p-5">
+        <div className="p-5 bg-gradient-to-b from-cyan-400/[0.02] to-transparent">
             <DailyChart data={list} />
           </div>
         </GlassCard>
 
         <GlassCard>
-          <div className="p-5">
+        <div className="p-5 bg-gradient-to-b from-cyan-400/[0.02] to-transparent">
             <OverallChart data={list} />
           </div>
         </GlassCard>
