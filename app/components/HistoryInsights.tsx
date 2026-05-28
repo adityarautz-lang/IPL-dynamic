@@ -10,10 +10,13 @@ export default function HistoryInsights({
 
   if (!metrics) return null;
 
-  const topScores = metrics.topScores
-  .filter(Boolean)
-  .sort((a, b) => b.points - a.points)
-  .slice(0, 10);
+  const topScores =
+  allScores
+    .sort(
+      (a, b) =>
+        b.points - a.points
+    )
+    .slice(0, 10);
 
   return (
     <div className="mt-6">
