@@ -13,7 +13,7 @@ export default function HistoryInsights({
   const topScores = metrics.topScores
   .filter(Boolean)
   .sort((a, b) => b.points - a.points)
-  .slice(0, 5);
+  .slice(0, 10);
 
   return (
     <div className="mt-6">
@@ -31,7 +31,7 @@ export default function HistoryInsights({
           </div>
 
           <div className="hidden sm:block text-xs text-slate-500">
-            Top 5 individual match performances
+            Top 10 individual match performances
           </div>
         </div>
 
@@ -44,7 +44,7 @@ export default function HistoryInsights({
             ) => (
               <div
                 key={`${item.team}-${item.match}`}
-                className="flex items-center justify-between px-5 sm:px-6 py-4 hover:bg-white/[0.03] transition-all"
+                className="flex items-center justify-between px-5 sm:px-6 py-3 hover:bg-white/[0.03] transition-all"
               >
                 {/* LEFT */}
                 <div className="flex items-center gap-4">
