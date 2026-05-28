@@ -20,6 +20,32 @@ import TeamCards from "./components/TeamCards";
 /* ⚡ PLAYOFF MODE */
 const PLAYOFF_MODE = true;
 
+/* TEAM LOGOS */
+const TEAM_LOGOS: Record<
+  string,
+  string
+> = {
+  "Deccan Dominators":
+    "🦁",
+
+  SquadSeven9: "⚔️",
+
+  "RSAwesome 11":
+    "🛡️",
+
+  "VATVAGHOOL XI":
+    "👹",
+
+  Watapi: "🌊",
+
+  PKs11: "🔥",
+
+  "Bat Bowl XI":
+    "🏏",
+
+  RushS01: "💀",
+};
+
 /* STATUS */
 function StatusBadge({
   isLive,
@@ -73,10 +99,13 @@ function PlayoffBattles({
       return {
         label:
           "🔥 VERY CLOSE",
+
         color:
           "text-red-400",
+
         bar:
           "bg-red-400",
+
         pct: "18%",
       };
 
@@ -84,10 +113,13 @@ function PlayoffBattles({
       return {
         label:
           "⚠️ HIGH",
+
         color:
           "text-orange-400",
+
         bar:
           "bg-orange-400",
+
         pct: "35%",
       };
 
@@ -95,44 +127,52 @@ function PlayoffBattles({
       return {
         label:
           "🟡 MEDIUM",
+
         color:
           "text-yellow-300",
+
         bar:
           "bg-yellow-300",
+
         pct: "55%",
       };
 
     return {
       label: "❄️ SAFE",
+
       color:
         "text-cyan-300",
+
       bar:
         "bg-cyan-300",
+
       pct: "82%",
     };
   };
 
   return (
-    <GlassCard className="p-6 mt-6 overflow-hidden relative">
+    <GlassCard className="p-5 mt-6 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-cyan-400/10 blur-[120px]" />
 
-      <div className="flex items-center justify-between mb-6 relative z-10">
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-5 relative z-10">
         <div>
-          <div className="text-cyan-300 text-xs uppercase tracking-[0.3em] mb-2">
+          <div className="text-cyan-300 text-[10px] uppercase tracking-[0.35em] mb-2">
             PLAYOFF RACE
           </div>
 
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-xl font-bold">
             ⚔️ Playoff Battles
           </h2>
         </div>
 
-        <div className="px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-300 text-xs border border-emerald-400/20">
+        <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-[10px] border border-emerald-400/20">
           LIVE
         </div>
       </div>
 
-      <div className="space-y-4 relative z-10">
+      {/* ROWS */}
+      <div className="space-y-3 relative z-10">
         {sorted
           .slice(0, -1)
           .map(
@@ -153,23 +193,31 @@ function PlayoffBattles({
               return (
                 <div
                   key={team.name}
-                  className="rounded-2xl border border-white/5 bg-gradient-to-r from-white/[0.04] to-transparent p-5"
+                  className="rounded-2xl border border-white/5 bg-gradient-to-r from-white/[0.04] to-transparent px-5 py-3"
                 >
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-                    {/* LEFT */}
-                    <div>
-                      <div className="text-slate-500 text-sm mb-1">
-                        #
-                        {idx + 1}
-                      </div>
+                  <div className="flex items-center gap-4">
+                    {/* RANK */}
+                    <div className="text-slate-500 text-sm font-semibold w-8">
+                      #
+                      {idx + 1}
+                    </div>
 
-                      <div className="text-2xl font-bold text-white">
+                    {/* LOGO */}
+                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(34,211,238,0.08)]">
+                      {TEAM_LOGOS[
+                        team.name
+                      ] || "🏏"}
+                    </div>
+
+                    {/* TEAM INFO */}
+                    <div className="min-w-[180px]">
+                      <div className="text-lg font-bold text-white leading-tight">
                         {
                           team.name
                         }
                       </div>
 
-                      <div className="text-slate-400 mt-1">
+                      <div className="text-slate-400 text-sm">
                         vs{" "}
                         {
                           rival.name
@@ -177,9 +225,9 @@ function PlayoffBattles({
                       </div>
                     </div>
 
-                    {/* CENTER */}
-                    <div className="flex-1 max-w-md">
-                      <div className="flex justify-between mb-2 text-sm">
+                    {/* BAR */}
+                    <div className="flex-1">
+                      <div className="flex justify-between items-center mb-1 text-xs">
                         <span
                           className={`font-semibold ${threat.color}`}
                         >
@@ -188,13 +236,13 @@ function PlayoffBattles({
                           }
                         </span>
 
-                        <span className="text-slate-400">
+                        <span className="text-slate-500">
                           Gap
                           Pressure
                         </span>
                       </div>
 
-                      <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
                         <div
                           className={`h-full ${threat.bar} rounded-full shadow-[0_0_20px_currentColor]`}
                           style={{
@@ -205,18 +253,17 @@ function PlayoffBattles({
                       </div>
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="text-right">
-                      <div className="text-4xl font-black text-white">
+                    {/* GAP */}
+                    <div className="text-right min-w-[120px]">
+                      <div className="text-2xl font-black text-white leading-none">
                         +
                         {Number(
                           gap
                         ).toLocaleString()}
                       </div>
 
-                      <div className="text-slate-500 text-sm">
-                        points
-                        ahead
+                      <div className="text-slate-500 text-xs mt-1">
+                        pts ahead
                       </div>
                     </div>
                   </div>
@@ -336,7 +383,7 @@ export default function Home() {
         {/* TOP PERFORMER */}
         <TopPerformer data={list} />
 
-        {/* NEW PLAYOFF PANEL */}
+        {/* NEW PANEL */}
         <PlayoffBattles
           teams={list}
         />
