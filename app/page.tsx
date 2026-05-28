@@ -44,11 +44,188 @@ function StatusBadge({
 /* GLASS CARD */
 function GlassCard({
   children,
+  className = "",
 }: any) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_0_60px_rgba(15,23,42,0.5)] transition-all">
+    <div
+      className={`rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_0_60px_rgba(15,23,42,0.5)] ${className}`}
+    >
       {children}
     </div>
+  );
+}
+
+/* ⚔️ PLAYOFF BATTLES */
+function PlayoffBattles({
+  teams,
+}: any) {
+  if (!teams?.length) return null;
+
+  const sorted = [...teams].sort(
+    (a: any, b: any) =>
+      b.points - a.points
+  );
+
+  const getThreat = (
+    gap: number
+  ) => {
+    if (gap < 200)
+      return {
+        label:
+          "🔥 VERY CLOSE",
+        color:
+          "text-red-400",
+        bar:
+          "bg-red-400",
+        pct: "18%",
+      };
+
+    if (gap < 500)
+      return {
+        label:
+          "⚠️ HIGH",
+        color:
+          "text-orange-400",
+        bar:
+          "bg-orange-400",
+        pct: "35%",
+      };
+
+    if (gap < 1000)
+      return {
+        label:
+          "🟡 MEDIUM",
+        color:
+          "text-yellow-300",
+        bar:
+          "bg-yellow-300",
+        pct: "55%",
+      };
+
+    return {
+      label: "❄️ SAFE",
+      color:
+        "text-cyan-300",
+      bar:
+        "bg-cyan-300",
+      pct: "82%",
+    };
+  };
+
+  return (
+    <GlassCard className="p-6 mt-6 overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-cyan-400/10 blur-[120px]" />
+
+      <div className="flex items-center justify-between mb-6 relative z-10">
+        <div>
+          <div className="text-cyan-300 text-xs uppercase tracking-[0.3em] mb-2">
+            PLAYOFF RACE
+          </div>
+
+          <h2 className="text-2xl font-bold">
+            ⚔️ Playoff Battles
+          </h2>
+        </div>
+
+        <div className="px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-300 text-xs border border-emerald-400/20">
+          LIVE
+        </div>
+      </div>
+
+      <div className="space-y-4 relative z-10">
+        {sorted
+          .slice(0, -1)
+          .map(
+            (
+              team: any,
+              idx: number
+            ) => {
+              const rival =
+                sorted[idx + 1];
+
+              const gap =
+                team.points -
+                rival.points;
+
+              const threat =
+                getThreat(gap);
+
+              return (
+                <div
+                  key={team.name}
+                  className="rounded-2xl border border-white/5 bg-gradient-to-r from-white/[0.04] to-transparent p-5"
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+                    {/* LEFT */}
+                    <div>
+                      <div className="text-slate-500 text-sm mb-1">
+                        #
+                        {idx + 1}
+                      </div>
+
+                      <div className="text-2xl font-bold text-white">
+                        {
+                          team.name
+                        }
+                      </div>
+
+                      <div className="text-slate-400 mt-1">
+                        vs{" "}
+                        {
+                          rival.name
+                        }
+                      </div>
+                    </div>
+
+                    {/* CENTER */}
+                    <div className="flex-1 max-w-md">
+                      <div className="flex justify-between mb-2 text-sm">
+                        <span
+                          className={`font-semibold ${threat.color}`}
+                        >
+                          {
+                            threat.label
+                          }
+                        </span>
+
+                        <span className="text-slate-400">
+                          Gap
+                          Pressure
+                        </span>
+                      </div>
+
+                      <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${threat.bar} rounded-full shadow-[0_0_20px_currentColor]`}
+                          style={{
+                            width:
+                              threat.pct,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* RIGHT */}
+                    <div className="text-right">
+                      <div className="text-4xl font-black text-white">
+                        +
+                        {Number(
+                          gap
+                        ).toLocaleString()}
+                      </div>
+
+                      <div className="text-slate-500 text-sm">
+                        points
+                        ahead
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+          )}
+      </div>
+    </GlassCard>
   );
 }
 
@@ -116,7 +293,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#020617] text-white relative overflow-hidden">
-      {/* ⚡ PLAYOFF FX */}
+      {/* PLAYOFF FX */}
       {PLAYOFF_MODE && (
         <>
           <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -158,6 +335,11 @@ export default function Home() {
 
         {/* TOP PERFORMER */}
         <TopPerformer data={list} />
+
+        {/* NEW PLAYOFF PANEL */}
+        <PlayoffBattles
+          teams={list}
+        />
 
         {/* HISTORY */}
         {historyData && (
