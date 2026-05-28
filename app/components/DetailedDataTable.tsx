@@ -17,19 +17,16 @@ export default function DetailedDataTable({
     return (
       <div className="mt-6">
         <div className="relative overflow-hidden rounded-3xl border border-cyan-400/10 bg-[linear-gradient(135deg,rgba(15,23,42,0.92),rgba(2,6,23,0.96))] backdrop-blur-2xl shadow-[0_0_60px_rgba(34,211,238,0.08)]">
-          
-          {/* INNER GLOW */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.05),transparent_55%)] pointer-events-none" />
 
-          {/* EDGE LIGHT */}
           <div className="absolute inset-0 rounded-3xl ring-1 ring-white/[0.03] pointer-events-none" />
 
-          <div className="relative z-10 p-6">
+          <div className="relative z-10 p-4 sm:p-6">
             <div className="text-cyan-300 text-[10px] uppercase tracking-[0.35em] mb-2">
               LEADERBOARD
             </div>
 
-            <h2 className="text-2xl font-black bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
+            <h2 className="text-xl sm:text-3xl font-black bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
               📋 Detailed
               Leaderboard
             </h2>
@@ -68,7 +65,7 @@ export default function DetailedDataTable({
     );
 
   // =====================================
-  // 🔥 BUILD PREVIOUS RANKS
+  // 🔥 PREVIOUS RANKS
   // =====================================
   const buildRankForMatch = (
     matchIndex: number
@@ -163,15 +160,15 @@ export default function DetailedDataTable({
         {/* EDGE LIGHT */}
         <div className="absolute inset-0 rounded-3xl ring-1 ring-white/[0.03] pointer-events-none" />
 
-        <div className="relative z-10 p-4 sm:p-6">
+        <div className="relative z-10 p-3 sm:p-6">
           
           {/* HEADER */}
-          <div className="mb-5">
+          <div className="mb-4">
             <div className="text-cyan-300 text-[10px] uppercase tracking-[0.35em] mb-2">
               LEADERBOARD
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
+            <h2 className="text-xl sm:text-3xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
               📋 Detailed
               Leaderboard
             </h2>
@@ -179,36 +176,36 @@ export default function DetailedDataTable({
 
           {/* TABLE WRAPPER */}
           <div className="relative overflow-x-auto rounded-2xl border border-cyan-400/10 bg-white/[0.02]">
-            <table className="w-full text-[10px] sm:text-sm text-left border-collapse">
+            <table className="w-full text-[9px] sm:text-sm text-left border-collapse">
               
               {/* HEADER */}
               <thead className="bg-cyan-400/[0.04] backdrop-blur-xl">
                 <tr>
-                  <th className="px-2 sm:px-4 py-3 text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     Rk
                   </th>
 
-                  <th className="px-2 sm:px-4 py-3 text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     Name
                   </th>
 
-                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     Pts
                   </th>
 
-                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     LM
                   </th>
 
-                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     Tr
                   </th>
 
-                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     Bst
                   </th>
 
-                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                  <th className="px-1.5 sm:px-4 py-2 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
                     Eff
                   </th>
                 </tr>
@@ -278,12 +275,12 @@ export default function DetailedDataTable({
                         className="border-b border-white/[0.04] hover:bg-cyan-400/[0.03] transition-all"
                       >
                         {/* RANK */}
-                        <td className="px-2 sm:px-4 py-4">
-                          <div className="flex items-center gap-2">
+                        <td className="px-1.5 sm:px-4 py-2.5">
+                          <div className="flex items-center gap-1">
                             {rank <=
                               3 && (
                               <div
-                                className={`w-1 h-8 rounded-full ${
+                                className={`w-1 h-6 rounded-full ${
                                   rank ===
                                   1
                                     ? "bg-emerald-400"
@@ -318,7 +315,7 @@ export default function DetailedDataTable({
                         </td>
 
                         {/* NAME */}
-                        <td className="px-2 sm:px-4 py-4 font-medium text-white max-w-[140px] truncate">
+                        <td className="px-1.5 sm:px-4 py-2.5 font-medium text-white max-w-[90px] sm:max-w-[140px] truncate">
                           <div className="flex items-center gap-1">
                             <span className="truncate">
                               {
@@ -328,14 +325,14 @@ export default function DetailedDataTable({
 
                             {movement >
                               0 && (
-                              <span className="text-green-400 text-xs">
+                              <span className="text-green-400 text-[10px]">
                                 ⬆️
                               </span>
                             )}
 
                             {movement <
                               0 && (
-                              <span className="text-red-400 text-xs">
+                              <span className="text-red-400 text-[10px]">
                                 ⬇️
                               </span>
                             )}
@@ -343,34 +340,34 @@ export default function DetailedDataTable({
                         </td>
 
                         {/* POINTS */}
-                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                        <td className="px-1.5 sm:px-4 py-2.5 text-center text-white">
                           {row.points.toLocaleString(
                             "en-IN"
                           )}
                         </td>
 
                         {/* LAST MATCH */}
-                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                        <td className="px-1.5 sm:px-4 py-2.5 text-center text-white">
                           {row.lastMatchPoints ||
                             "-"}
                         </td>
 
                         {/* TRANSFERS */}
-                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                        <td className="px-1.5 sm:px-4 py-2.5 text-center text-white">
                           {
                             transfersLeft
                           }
                         </td>
 
                         {/* BOOSTERS */}
-                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                        <td className="px-1.5 sm:px-4 py-2.5 text-center text-white">
                           {row.boostersUsed ??
                             "-"}
                         </td>
 
                         {/* EFFICIENCY */}
                         <td
-                          className={`px-2 sm:px-4 py-4 text-center font-bold ${
+                          className={`px-1.5 sm:px-4 py-2.5 text-center font-bold ${
                             efficiency ===
                             "–"
                               ? "text-slate-400"
@@ -396,7 +393,7 @@ export default function DetailedDataTable({
           </div>
 
           {/* FOOTER */}
-          <div className="flex flex-wrap gap-5 mt-5 text-[10px] sm:text-xs text-slate-500">
+          <div className="hidden sm:flex flex-wrap gap-5 mt-5 text-[10px] sm:text-xs text-slate-500">
             <div>
               Pts: Points
             </div>
