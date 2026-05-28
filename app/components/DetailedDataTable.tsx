@@ -9,16 +9,34 @@ export default function DetailedDataTable({
   data?: Leader[];
   history?: any;
 }) {
-  const list = Array.isArray(data) ? data : [];
+  const list = Array.isArray(data)
+    ? data
+    : [];
 
   if (!list.length) {
     return (
       <div className="mt-6">
-        <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
+        <div className="relative overflow-hidden rounded-3xl border border-cyan-400/10 bg-[linear-gradient(135deg,rgba(15,23,42,0.92),rgba(2,6,23,0.96))] backdrop-blur-2xl shadow-[0_0_60px_rgba(34,211,238,0.08)]">
+          
+          {/* INNER GLOW */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.05),transparent_55%)] pointer-events-none" />
+
+          {/* EDGE LIGHT */}
+          <div className="absolute inset-0 rounded-3xl ring-1 ring-white/[0.03] pointer-events-none" />
+
           <div className="relative z-10 p-6">
-            <h2 className="text-xl font-bold">📋 Detailed Leaderboard</h2>
-            <p className="text-slate-400 text-sm">No data available.</p>
+            <div className="text-cyan-300 text-[10px] uppercase tracking-[0.35em] mb-2">
+              LEADERBOARD
+            </div>
+
+            <h2 className="text-2xl font-black bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
+              📋 Detailed
+              Leaderboard
+            </h2>
+
+            <p className="text-slate-400 text-sm mt-3">
+              No data available.
+            </p>
           </div>
         </div>
       </div>
@@ -28,173 +46,377 @@ export default function DetailedDataTable({
   const sorted = [...list]
     .map((d) => ({
       ...d,
-      points: Number(d.points ?? 0),
-      lastMatchPoints: Number(d.lastMatchPoints ?? 0),
-      transfersLeft: Number(d.transfersLeft ?? 0),
-    }))
-    .sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
 
-  // 🔥 Build cumulative ranking for any match index
-  const buildRankForMatch = (matchIndex: number) => {
+      points: Number(
+        d.points ?? 0
+      ),
+
+      lastMatchPoints: Number(
+        d.lastMatchPoints ??
+          0
+      ),
+
+      transfersLeft: Number(
+        d.transfersLeft ??
+          0
+      ),
+    }))
+    .sort(
+      (a, b) =>
+        (a.rank ?? 999) -
+        (b.rank ?? 999)
+    );
+
+  // =====================================
+  // 🔥 BUILD PREVIOUS RANKS
+  // =====================================
+  const buildRankForMatch = (
+    matchIndex: number
+  ) => {
     return history.teams
       .map((t: any) => {
-        const total = t.history
-          .slice(0, matchIndex + 1)
-          .reduce((sum: number, m: any) => sum + (m.points || 0), 0);
+        const total =
+          t.history
+            .slice(
+              0,
+              matchIndex + 1
+            )
+            .reduce(
+              (
+                sum: number,
+                m: any
+              ) =>
+                sum +
+                (m.points ||
+                  0),
+
+              0
+            );
 
         return {
           name: t.teamName,
+
           points: total,
         };
       })
-      .sort((a: any, b: any) => b.points - a.points)
-      .map((t: any, idx: number) => ({
-        name: t.name,
-        rank: idx + 1,
-      }));
+      .sort(
+        (a: any, b: any) =>
+          b.points - a.points
+      )
+      .map(
+        (
+          t: any,
+          idx: number
+        ) => ({
+          name: t.name,
+
+          rank: idx + 1,
+        })
+      );
   };
 
-  // 🔥 Get previous ranks correctly
   const getPrevRanks = () => {
-    if (!history?.teams) return {};
+    if (!history?.teams)
+      return {};
 
-    const prevRanks: Record<string, number> = {};
+    const prevRanks: Record<
+      string,
+      number
+    > = {};
 
-    const lastMatchIndex = history.teams[0]?.history?.length - 1;
-    if (lastMatchIndex < 1) return {};
+    const lastMatchIndex =
+      history.teams[0]
+        ?.history?.length - 1;
 
-    const prevRanking = buildRankForMatch(lastMatchIndex - 1);
+    if (lastMatchIndex < 1)
+      return {};
 
-    prevRanking.forEach((t: any) => {
-      prevRanks[t.name.toLowerCase().trim()] = t.rank;
-    });
+    const prevRanking =
+      buildRankForMatch(
+        lastMatchIndex - 1
+      );
+
+    prevRanking.forEach(
+      (t: any) => {
+        prevRanks[
+          t.name
+            .toLowerCase()
+            .trim()
+        ] = t.rank;
+      }
+    );
 
     return prevRanks;
   };
 
-  const prevRanks = getPrevRanks();
+  const prevRanks =
+    getPrevRanks();
 
   return (
     <div className="mt-6">
-      <div className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
+      {/* OUTER WRAPPER */}
+      <div className="relative overflow-hidden rounded-3xl border border-cyan-400/10 bg-[linear-gradient(135deg,rgba(15,23,42,0.92),rgba(2,6,23,0.96))] backdrop-blur-2xl shadow-[0_0_60px_rgba(34,211,238,0.08)]">
 
-        <div className="relative z-10 p-3 sm:p-6">
-          <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6">
-            📋 Detailed Leaderboard
-          </h2>
+        {/* INNER GLOW */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.05),transparent_55%)] pointer-events-none" />
 
-          <div className="overflow-x-auto">
+        {/* EDGE LIGHT */}
+        <div className="absolute inset-0 rounded-3xl ring-1 ring-white/[0.03] pointer-events-none" />
+
+        <div className="relative z-10 p-4 sm:p-6">
+          
+          {/* HEADER */}
+          <div className="mb-5">
+            <div className="text-cyan-300 text-[10px] uppercase tracking-[0.35em] mb-2">
+              LEADERBOARD
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
+              📋 Detailed
+              Leaderboard
+            </h2>
+          </div>
+
+          {/* TABLE WRAPPER */}
+          <div className="relative overflow-x-auto rounded-2xl border border-cyan-400/10 bg-white/[0.02]">
             <table className="w-full text-[10px] sm:text-sm text-left border-collapse">
-              <thead className="bg-white/10 text-slate-300">
+              
+              {/* HEADER */}
+              <thead className="bg-cyan-400/[0.04] backdrop-blur-xl">
                 <tr>
-                  <th className="px-1.5 py-2 w-[45px]">Rk</th>
-                  <th className="px-1.5 py-2">Name</th>
-                  <th className="px-1.5 py-2 text-center">Pts</th>
-                  <th className="px-1.5 py-2 text-center">LM</th>
-                  <th className="px-1.5 py-2 text-center">Tr</th>
-                  <th className="px-1.5 py-2 text-center">Bst</th>
-                  <th className="px-1.5 py-2 text-center">Eff</th>
+                  <th className="px-2 sm:px-4 py-3 text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    Rk
+                  </th>
+
+                  <th className="px-2 sm:px-4 py-3 text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    Name
+                  </th>
+
+                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    Pts
+                  </th>
+
+                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    LM
+                  </th>
+
+                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    Tr
+                  </th>
+
+                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    Bst
+                  </th>
+
+                  <th className="px-2 sm:px-4 py-3 text-center text-cyan-100 font-semibold tracking-wide border-b border-white/5">
+                    Eff
+                  </th>
                 </tr>
               </thead>
 
+              {/* BODY */}
               <tbody>
-                {sorted.map((row, idx) => {
-                  const rank = row.rank ?? idx + 1;
-                  const transfersLeft = row.transfersLeft ?? 0;
-                  const usedTransfers = Math.max(0, 160 - transfersLeft);
+                {sorted.map(
+                  (
+                    row,
+                    idx
+                  ) => {
+                    const rank =
+                      row.rank ??
+                      idx + 1;
 
-                  const efficiency =
-                    usedTransfers > 0
-                      ? (row.points / usedTransfers).toFixed(2)
-                      : "–";
+                    const transfersLeft =
+                      row.transfersLeft ??
+                      0;
 
-                  const efficiencyNum = Number(efficiency);
+                    const usedTransfers =
+                      Math.max(
+                        0,
+                        160 -
+                          transfersLeft
+                      );
 
-                  // 🔥 Correct movement logic
-                  const key = row.name.toLowerCase().trim();
-                  const prevRank = prevRanks[key];
+                    const efficiency =
+                      usedTransfers >
+                      0
+                        ? (
+                            row.points /
+                            usedTransfers
+                          ).toFixed(
+                            2
+                          )
+                        : "–";
 
-                  const movement =
-                    prevRank !== undefined ? prevRank - rank : 0;
+                    const efficiencyNum =
+                      Number(
+                        efficiency
+                      );
 
-                  return (
-                    <tr
-                      key={row.name + idx}
-                      className="border-b border-white/10 hover:bg-white/5 transition"
-                    >
-                      {/* Rank */}
-                      <td
-                        className={`px-1.5 py-2 w-[45px] border-l-4 ${
-                          rank <= 3
-                            ? "border-green-400"
-                            : rank >= 6
-                            ? "border-red-400"
-                            : "border-transparent"
-                        }`}
+                    const key =
+                      row.name
+                        .toLowerCase()
+                        .trim();
+
+                    const prevRank =
+                      prevRanks[
+                        key
+                      ];
+
+                    const movement =
+                      prevRank !==
+                      undefined
+                        ? prevRank -
+                          rank
+                        : 0;
+
+                    return (
+                      <tr
+                        key={
+                          row.name +
+                          idx
+                        }
+                        className="border-b border-white/[0.04] hover:bg-cyan-400/[0.03] transition-all"
                       >
-                        <div className="flex items-center gap-[2px]">
-                          {rank === 1 && "🏆"}
-                          {rank === 2 && "🥈"}
-                          {rank === 3 && "🥉"}
-                          <span>{rank}</span>
-                        </div>
-                      </td>
+                        {/* RANK */}
+                        <td className="px-2 sm:px-4 py-4">
+                          <div className="flex items-center gap-2">
+                            {rank <=
+                              3 && (
+                              <div
+                                className={`w-1 h-8 rounded-full ${
+                                  rank ===
+                                  1
+                                    ? "bg-emerald-400"
+                                    : rank ===
+                                      2
+                                    ? "bg-slate-300"
+                                    : "bg-orange-400"
+                                }`}
+                              />
+                            )}
 
-                      {/* Name + Arrow */}
-                      <td className="px-1.5 py-2 font-medium text-white max-w-[90px] truncate">
-                        <div className="flex items-center gap-1">
-                          <span className="truncate">{row.name}</span>
+                            <div className="flex items-center gap-1">
+                              {rank ===
+                                1 &&
+                                "🏆"}
 
-                          {movement > 0 && (
-                            <span className="text-green-400 text-xs">⬆️</span>
+                              {rank ===
+                                2 &&
+                                "🥈"}
+
+                              {rank ===
+                                3 &&
+                                "🥉"}
+
+                              <span className="text-white font-medium">
+                                {
+                                  rank
+                                }
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* NAME */}
+                        <td className="px-2 sm:px-4 py-4 font-medium text-white max-w-[140px] truncate">
+                          <div className="flex items-center gap-1">
+                            <span className="truncate">
+                              {
+                                row.name
+                              }
+                            </span>
+
+                            {movement >
+                              0 && (
+                              <span className="text-green-400 text-xs">
+                                ⬆️
+                              </span>
+                            )}
+
+                            {movement <
+                              0 && (
+                              <span className="text-red-400 text-xs">
+                                ⬇️
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* POINTS */}
+                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                          {row.points.toLocaleString(
+                            "en-IN"
                           )}
+                        </td>
 
-                          {movement < 0 && (
-                            <span className="text-red-400 text-xs">⬇️</span>
-                          )}
-                        </div>
-                      </td>
+                        {/* LAST MATCH */}
+                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                          {row.lastMatchPoints ||
+                            "-"}
+                        </td>
 
-                      {/* Points */}
-                      <td className="px-1.5 py-2 text-center">
-                        {row.points.toLocaleString("en-IN")}
-                      </td>
+                        {/* TRANSFERS */}
+                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                          {
+                            transfersLeft
+                          }
+                        </td>
 
-                      {/* Last Match */}
-                      <td className="px-1.5 py-2 text-center">
-                        {row.lastMatchPoints || "-"}
-                      </td>
+                        {/* BOOSTERS */}
+                        <td className="px-2 sm:px-4 py-4 text-center text-white">
+                          {row.boostersUsed ??
+                            "-"}
+                        </td>
 
-                      {/* Transfers */}
-                      <td className="px-1.5 py-2 text-center">
-                        {transfersLeft}
-                      </td>
-
-                      {/* Boosters */}
-                      <td className="px-1.5 py-2 text-center">
-                        {row.boostersUsed ?? "-"}
-                      </td>
-
-                      {/* Efficiency */}
-                      <td
-                        className={`px-1.5 py-2 text-center font-semibold ${
-                          efficiency === "–"
-                            ? "text-slate-400"
-                            : efficiencyNum > 70
-                            ? "text-green-400"
-                            : efficiencyNum > 50
-                            ? "text-yellow-400"
-                            : "text-slate-400"
-                        }`}
-                      >
-                        {efficiency}
-                      </td>
-                    </tr>
-                  );
-                })}
+                        {/* EFFICIENCY */}
+                        <td
+                          className={`px-2 sm:px-4 py-4 text-center font-bold ${
+                            efficiency ===
+                            "–"
+                              ? "text-slate-400"
+                              : efficiencyNum >
+                                150
+                              ? "text-emerald-400"
+                              : efficiencyNum >
+                                120
+                              ? "text-cyan-300"
+                              : "text-slate-400"
+                          }`}
+                        >
+                          {
+                            efficiency
+                          }
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
               </tbody>
             </table>
+          </div>
+
+          {/* FOOTER */}
+          <div className="flex flex-wrap gap-5 mt-5 text-[10px] sm:text-xs text-slate-500">
+            <div>
+              Pts: Points
+            </div>
+
+            <div>
+              • LM: Last Match
+            </div>
+
+            <div>
+              • Tr: Transfers
+            </div>
+
+            <div>
+              • Bst: Boosters
+            </div>
+
+            <div>
+              • Eff:
+              Efficiency
+            </div>
           </div>
         </div>
       </div>
