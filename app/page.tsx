@@ -354,7 +354,7 @@ export default function Home() {
           </div>
 
           {/* BADGE */}
-          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 wd-pt-10">
             <div className="px-6 py-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 backdrop-blur-xl text-cyan-200 text-xs sm:text-sm font-bold tracking-[0.25em] shadow-[0_0_35px_rgba(34,211,238,0.2)] animate-pulse">
               ⚡ PLAYOFF WAR ROOM
             </div>
@@ -373,7 +373,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
-              ADSK WAR ROOM
+              ADSK IPL FANTASY LEAGUE
             </h1>
           </div>
 
