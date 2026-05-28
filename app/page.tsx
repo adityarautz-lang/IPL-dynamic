@@ -151,7 +151,7 @@ function PlayoffBattles({
   };
 
   return (
-    <GlassCard className="p-5 mt-6 overflow-hidden relative">
+    <GlassCard className="p-4 sm:p-5 mt-6 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-cyan-400/10 blur-[120px]" />
 
       {/* HEADER */}
@@ -161,12 +161,12 @@ function PlayoffBattles({
             PLAYOFF RACE
           </div>
 
-          <h2 className="text-xl font-bold">
+          <h2 className="text-lg sm:text-xl font-bold">
             ⚔️ Playoff Battles
           </h2>
         </div>
 
-        <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-[10px] border border-emerald-400/20">
+        <div className="hidden sm:block px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-[10px] border border-emerald-400/20">
           LIVE
         </div>
       </div>
@@ -193,41 +193,58 @@ function PlayoffBattles({
               return (
                 <div
                   key={team.name}
-                  className="rounded-2xl border border-white/5 bg-gradient-to-r from-white/[0.04] to-transparent px-5 py-3"
+                  className="rounded-2xl border border-white/5 bg-gradient-to-r from-white/[0.04] to-transparent px-4 py-4"
                 >
-                  <div className="flex items-center gap-4">
-                    {/* RANK */}
-                    <div className="text-slate-500 text-sm font-semibold w-8">
-                      #
-                      {idx + 1}
-                    </div>
-
-                    {/* LOGO */}
-                    <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(34,211,238,0.08)]">
-                      {TEAM_LOGOS[
-                        team.name
-                      ] || "🏏"}
-                    </div>
-
-                    {/* TEAM INFO */}
-                    <div className="min-w-[180px]">
-                      <div className="text-lg font-bold text-white leading-tight">
-                        {
-                          team.name
-                        }
+                  <div className="flex flex-col gap-4">
+                    {/* TOP */}
+                    <div className="flex items-center gap-3">
+                      {/* RANK */}
+                      <div className="text-slate-500 text-sm font-semibold w-6 shrink-0">
+                        #
+                        {idx + 1}
                       </div>
 
-                      <div className="text-slate-400 text-sm">
-                        vs{" "}
-                        {
-                          rival.name
-                        }
+                      {/* LOGO */}
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-xl sm:text-2xl shrink-0">
+                        {TEAM_LOGOS[
+                          team.name
+                        ] || "🏏"}
+                      </div>
+
+                      {/* TEAM INFO */}
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm sm:text-lg font-bold text-white truncate">
+                          {
+                            team.name
+                          }
+                        </div>
+
+                        <div className="text-slate-400 text-xs sm:text-sm truncate">
+                          vs{" "}
+                          {
+                            rival.name
+                          }
+                        </div>
+                      </div>
+
+                      {/* GAP */}
+                      <div className="text-right shrink-0">
+                        <div className="text-lg sm:text-2xl font-black text-white leading-none">
+                          +
+                          {Number(
+                            gap
+                          ).toLocaleString()}
+                        </div>
+
+                        <div className="text-slate-500 text-[10px] sm:text-xs mt-1">
+                          pts
+                        </div>
                       </div>
                     </div>
 
                     {/* BAR */}
-                    <div className="flex-1">
-                      <div className="flex justify-between items-center mb-1 text-xs">
+                    <div>
+                      <div className="flex justify-between items-center mb-2 text-[10px] sm:text-xs">
                         <span
                           className={`font-semibold ${threat.color}`}
                         >
@@ -237,7 +254,6 @@ function PlayoffBattles({
                         </span>
 
                         <span className="text-slate-500">
-                          Gap
                           Pressure
                         </span>
                       </div>
@@ -250,20 +266,6 @@ function PlayoffBattles({
                               threat.pct,
                           }}
                         />
-                      </div>
-                    </div>
-
-                    {/* GAP */}
-                    <div className="text-right min-w-[120px]">
-                      <div className="text-2xl font-black text-white leading-none">
-                        +
-                        {Number(
-                          gap
-                        ).toLocaleString()}
-                      </div>
-
-                      <div className="text-slate-500 text-xs mt-1">
-                        pts ahead
                       </div>
                     </div>
                   </div>
