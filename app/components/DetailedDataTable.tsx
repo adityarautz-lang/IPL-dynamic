@@ -272,7 +272,13 @@ export default function DetailedDataTable({
                           row.name +
                           idx
                         }
-                        className="border-b border-white/[0.04] hover:bg-cyan-400/[0.03] transition-all"
+                        className={`border-b border-white/[0.04] transition-all ${
+                          rank <= 3
+                            ? "bg-gradient-to-r from-emerald-500/[0.08] to-transparent hover:from-emerald-500/[0.12]"
+                            : rank <= 5
+                            ? "bg-gradient-to-r from-cyan-500/[0.07] to-transparent hover:from-cyan-500/[0.10]"
+                            : "bg-gradient-to-r from-red-500/[0.05] to-transparent hover:from-red-500/[0.08]"
+                        }`}
                       >
                         {/* RANK */}
                         <td className="px-1.5 sm:px-4 py-2.5">
