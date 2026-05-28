@@ -60,7 +60,7 @@ export default function HistoryInsights({
                     </div>
 
                     <div className="text-slate-400 text-xs sm:text-sm">
-                      Match{" "}
+                      {" "}
                       {item.match}
                     </div>
                   </div>
