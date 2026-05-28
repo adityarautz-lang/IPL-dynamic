@@ -471,15 +471,15 @@ export default function Home() {
         </div>
 
         {/* SUMMARY */}
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <GlassCard>
             <div className="p-5">
-            {/* <SeasonIntelligence
+            <SeasonIntelligence
   insights={insights}
-/> */}
+/>
             </div>
           </GlassCard>
-        </div>
+        </div> */}
       </div>
     </main>
   );

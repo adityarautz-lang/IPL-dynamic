@@ -398407,3 +398407,34 @@ DEBUG: {
 🏁 END scrape at: 2026-05-28T12:36:34.288Z
 ==============================
 
+
+==============================
+🚀 START scrape at: 2026-05-28T12:38:00.994Z
+🌍 TARGET: prod
+🌍 DASHBOARD_API: https://ipl-dynamic.vercel.app/api/ipl
+🌍 SNAPSHOT: undefined
+🌐 Connectivity OK: 200
+🌐 Loading page attempt 1
+✅ IPL page loaded
+📊 Match: { currentMatch: 2, completedPct: 1.4285714285714286 }
+📊 Rows found: 8
+
+🟢 Opening team: SquadSeven9
+🎯 RAW MATCH POINTS: SquadSeven9 736
+DEBUG: {
+  name: 'SquadSeven9',
+  matchPoints: 736,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/114349.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: Deccan Dominators
+🎯 RAW MATCH POINTS: Deccan Dominators 652
+DEBUG: {
+  name: 'Deccan Dominators',
+  matchPoints: 652,
+  captainImage: 'https://fantasy.iplt20.com/classic/static-assets/build/images/players/onpitch/66799.png',
+  transfersLeft: 10
+}
+
+🟢 Opening team: RSAwesome 11
