@@ -1,7 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+
 import { motion } from "framer-motion";
+
 import { useDashboardData } from "./hooks/useDashboardData";
 
 import Summary from "./components/Summary";
@@ -14,49 +20,62 @@ import LiveMatchTicker from "./components/LiveMatchTicker";
 import DetailedDataTable from "./components/DetailedDataTable";
 import TeamCards from "./components/TeamCards";
 
-/* 🏆 PLAYOFF MODE */
+/* ❄️ TITANIUM PLAYOFF MODE */
 const PLAYOFF_MODE = true;
 
 /* STATUS */
-function StatusBadge({ isLive }: { isLive: boolean }) {
+function StatusBadge({
+  isLive,
+}: {
+  isLive: boolean;
+}) {
   return (
     <div
       className={`text-xs px-3 py-1.5 rounded-full border backdrop-blur-xl font-semibold tracking-wide ${
         isLive
-          ? "bg-green-500/20 text-green-300 border-green-400/20 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
-          : "bg-yellow-500/20 text-yellow-200 border-yellow-400/20 shadow-[0_0_20px_rgba(250,204,21,0.2)]"
+          ? "bg-cyan-400/15 text-cyan-200 border-cyan-300/20 shadow-[0_0_20px_rgba(34,211,238,0.18)]"
+          : "bg-slate-300/10 text-slate-200 border-slate-200/15 shadow-[0_0_20px_rgba(226,232,240,0.12)]"
       }`}
     >
-      {isLive ? "LIVE" : "SNAPSHOT"}
+      {isLive
+        ? "LIVE"
+        : "SNAPSHOT"}
     </div>
   );
 }
 
-/* 🔥 CHARTS ISOLATED */
-const ChartsSection = React.memo(function ChartsSection({ list }: any) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-      <GlassCard playoff={PLAYOFF_MODE}>
-        <DailyChart data={list} />
-      </GlassCard>
+/* 🔥 CHARTS */
+const ChartsSection =
+  React.memo(function ChartsSection({
+    list,
+  }: any) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <GlassCard playoff={PLAYOFF_MODE}>
+          <DailyChart data={list} />
+        </GlassCard>
 
-      <GlassCard playoff={PLAYOFF_MODE}>
-        <OverallChart data={list} />
-      </GlassCard>
-    </div>
-  );
-});
+        <GlassCard playoff={PLAYOFF_MODE}>
+          <OverallChart data={list} />
+        </GlassCard>
+      </div>
+    );
+  });
 
 export default function Home() {
-  const { data, loading } = useDashboardData();
+  const { data, loading } =
+    useDashboardData();
 
-  const [historyData, setHistoryData] = useState<any>(null);
+  const [historyData, setHistoryData] =
+    useState<any>(null);
 
   useEffect(() => {
     fetch("/api/ipl/history-test")
       .then((res) => res.json())
       .then(setHistoryData)
-      .catch(() => setHistoryData(null));
+      .catch(() =>
+        setHistoryData(null)
+      );
   }, []);
 
   if (loading) {
@@ -67,40 +86,46 @@ export default function Home() {
     );
   }
 
-  const list = data?.leaders || [];
+  const list =
+    data?.leaders || [];
 
-  const updatedAt = data?.updatedAt
-    ? new Date(data.updatedAt)
-    : null;
+  const updatedAt =
+    data?.updatedAt
+      ? new Date(
+          data.updatedAt
+        )
+      : null;
 
   const isLive =
     updatedAt &&
-    Date.now() - updatedAt.getTime() < 120000;
+    Date.now() -
+      updatedAt.getTime() <
+      120000;
 
   return (
     <main
       className={`min-h-screen text-white relative overflow-hidden ${
         PLAYOFF_MODE
-          ? "bg-black"
+          ? "bg-[#020617]"
           : "bg-[#020617]"
       }`}
     >
-      {/* 🏆 PLAYOFF EFFECTS */}
+      {/* ❄️ TITANIUM FX */}
       {PLAYOFF_MODE && (
         <>
-          {/* GOLD LIGHTING */}
+          {/* SILVER GLOW */}
           <div className="fixed inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-yellow-400/10 blur-[180px]" />
+            <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[900px] h-[900px] bg-slate-200/10 blur-[180px]" />
 
-            <div className="absolute bottom-[-200px] right-[-100px] w-[700px] h-[700px] bg-orange-500/10 blur-[180px]" />
+            <div className="absolute bottom-[-200px] right-[-100px] w-[700px] h-[700px] bg-cyan-300/10 blur-[180px]" />
 
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,215,0,0.08),transparent_45%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(226,232,240,0.06),transparent_45%)]" />
           </div>
 
           {/* PLAYOFF BADGE */}
           <div className="fixed top-3 left-1/2 -translate-x-1/2 z-50 pt-10">
-            <div className="px-5 py-2 rounded-full border border-yellow-400/30 bg-yellow-400/10 backdrop-blur-xl text-yellow-300 text-xs sm:text-sm font-bold tracking-[0.25em] shadow-[0_0_30px_rgba(250,204,21,0.25)] animate-pulse">
-              🏆 PLAYOFF MODE
+            <div className="px-5 py-2 rounded-full border border-slate-200/20 bg-slate-100/5 backdrop-blur-xl text-slate-100 text-xs sm:text-sm font-bold tracking-[0.25em] shadow-[0_0_30px_rgba(226,232,240,0.12)] animate-pulse">
+              PLAYOFFS MODE
             </div>
           </div>
         </>
@@ -111,21 +136,28 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-5 pt-20 pb-8 relative z-10">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-2">
-          <h1 className="text-xl sm:text-3xl font-bold">
-            {PLAYOFF_MODE
-              ? "🏆 ADSK IPL PLAYOFFS 2026"
-              : "🏆 ADSK IPL Fantasy"}
+          <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-slate-100 via-cyan-200 to-slate-300 bg-clip-text text-transparent">
+            ❄️ ADSK IPL PLAYOFFS
+            2026
           </h1>
 
-          <StatusBadge isLive={!!isLive} />
+          <StatusBadge
+            isLive={!!isLive}
+          />
         </div>
 
         {/* TOP PERFORMER */}
-        <TopPerformer data={list} />
+        <TopPerformer
+          data={list}
+        />
 
         {/* HISTORY */}
         {historyData && (
-          <HistoryInsights history={historyData} />
+          <HistoryInsights
+            history={
+              historyData
+            }
+          />
         )}
 
         {/* CHARTS */}
@@ -133,19 +165,25 @@ export default function Home() {
 
         {/* TEAM CARDS */}
         <div className="mt-6">
-          <TeamCards teams={list} />
+          <TeamCards
+            teams={list}
+          />
         </div>
 
         {/* DIFFERENCES */}
         <div className="mt-6">
-          <PointDifferences data={list} />
+          <PointDifferences
+            data={list}
+          />
         </div>
 
         {/* TABLE */}
         <div className="mt-6">
           <DetailedDataTable
             data={list}
-            history={historyData}
+            history={
+              historyData
+            }
           />
         </div>
 
@@ -164,7 +202,8 @@ function RaceSection({
   onMatchChange,
   onFinish,
 }: any) {
-  const [step, setStep] = useState(0);
+  const [step, setStep] =
+    useState(0);
 
   const [finished, setFinished] =
     useState(false);
@@ -279,7 +318,7 @@ function RaceSection({
           <motion.div
             key={t.team}
             layout
-            className="p-3 rounded-xl border border-yellow-400/20 bg-yellow-400/5 shadow-[0_0_25px_rgba(250,204,21,0.08)]"
+            className="p-3 rounded-xl border border-slate-200/15 bg-slate-100/5 shadow-[0_0_25px_rgba(226,232,240,0.06)]"
           >
             <div className="flex justify-between text-sm mb-1">
               <span>
@@ -291,9 +330,9 @@ function RaceSection({
               </span>
             </div>
 
-            <div className="bg-slate-700 h-2 rounded">
+            <div className="bg-slate-800 h-2 rounded">
               <motion.div
-                className="h-2 rounded bg-yellow-400"
+                className="h-2 rounded bg-cyan-300"
                 animate={{
                   width: `${width}%`,
                 }}
@@ -314,7 +353,7 @@ function GlassCard({
     <div
       className={`rounded-2xl p-4 border backdrop-blur-xl transition-all ${
         playoff
-          ? "border-yellow-400/20 bg-yellow-400/5 shadow-[0_0_40px_rgba(250,204,21,0.08)]"
+          ? "border-slate-200/15 bg-slate-100/5 shadow-[0_0_40px_rgba(226,232,240,0.05)]"
           : "border-white/10 bg-white/5"
       }`}
     >
