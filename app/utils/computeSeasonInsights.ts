@@ -30,6 +30,7 @@ export function computeSeasonInsights(
   
         return {
           team: t.teamName,
+  
           avg,
         };
       }
@@ -37,8 +38,10 @@ export function computeSeasonInsights(
   
     const bestAvg =
       averages.sort(
-        (a, b) =>
-          b.avg - a.avg
+        (
+          a: any,
+          b: any
+        ) => b.avg - a.avg
       )[0];
   
     insights.push(
@@ -111,7 +114,10 @@ export function computeSeasonInsights(
   
     const hottest =
       momentum.sort(
-        (a, b) =>
+        (
+          a: any,
+          b: any
+        ) =>
           b.total - a.total
       )[0];
   
@@ -165,7 +171,10 @@ export function computeSeasonInsights(
   
     const volatile =
       volatility.sort(
-        (a, b) =>
+        (
+          a: any,
+          b: any
+        ) =>
           b.variance -
           a.variance
       )[0];
@@ -194,12 +203,204 @@ export function computeSeasonInsights(
   
     const mostConsistent =
       consistency.sort(
-        (a, b) =>
+        (
+          a: any,
+          b: any
+        ) =>
           b.top3 - a.top3
       )[0];
   
     insights.push(
       `🧠 ${mostConsistent.team} has delivered the highest number of 300+ point performances this season.`
+    );
+  
+    // =====================================
+    // 🚀 Late Season Surge
+    // =====================================
+    const surges = teams.map(
+      (t: any) => {
+        const recent =
+          t.history
+            .slice(-10)
+            .reduce(
+              (
+                s: number,
+                m: any
+              ) =>
+                s +
+                (m.points || 0),
+  
+              0
+            );
+  
+        return {
+          team: t.teamName,
+  
+          recent,
+        };
+      }
+    );
+  
+    const surgeLeader =
+      surges.sort(
+        (
+          a: any,
+          b: any
+        ) =>
+          b.recent -
+          a.recent
+      )[0];
+  
+    insights.push(
+      `🚀 ${surgeLeader.team} has dominated the last 10 matches with ${surgeLeader.recent.toFixed(
+        0
+      )} total points.`
+    );
+  
+    // =====================================
+    // 🎯 Elite Ceiling
+    // =====================================
+    const ceiling = teams.map(
+      (t: any) => {
+        const max =
+          Math.max(
+            ...t.history.map(
+              (m: any) =>
+                m.points || 0
+            )
+          );
+  
+        return {
+          team: t.teamName,
+  
+          max,
+        };
+      }
+    );
+  
+    const highestCeiling =
+      ceiling.sort(
+        (
+          a: any,
+          b: any
+        ) => b.max - a.max
+      )[0];
+  
+    insights.push(
+      `🎯 ${highestCeiling.team} owns the highest scoring ceiling this season with a peak of ${highestCeiling.max} points.`
+    );
+  
+    // =====================================
+    // 🧱 Stability
+    // =====================================
+    const stability = teams.map(
+      (t: any) => {
+        const avg =
+          t.history.reduce(
+            (
+              s: number,
+              m: any
+            ) =>
+              s +
+              (m.points || 0),
+  
+            0
+          ) /
+          t.history.length;
+  
+        const lowGames =
+          t.history.filter(
+            (m: any) =>
+              (m.points || 0) <
+              avg * 0.5
+          ).length;
+  
+        return {
+          team: t.teamName,
+  
+          lowGames,
+        };
+      }
+    );
+  
+    const safest =
+      stability.sort(
+        (
+          a: any,
+          b: any
+        ) =>
+          a.lowGames -
+          b.lowGames
+      )[0];
+  
+    insights.push(
+      `🧱 ${safest.team} has been the steadiest playoff performer with the fewest low-scoring collapses.`
+    );
+  
+    // =====================================
+    // 💥 Explosive Team
+    // =====================================
+    const explosive =
+      teams.map((t: any) => {
+        const bigGames =
+          t.history.filter(
+            (m: any) =>
+              m.points > 500
+          ).length;
+  
+        return {
+          team: t.teamName,
+  
+          bigGames,
+        };
+      });
+  
+    const boomTeam =
+      explosive.sort(
+        (
+          a: any,
+          b: any
+        ) =>
+          b.bigGames -
+          a.bigGames
+      )[0];
+  
+    insights.push(
+      `💥 ${boomTeam.team} has recorded the highest number of 500+ point explosions this season.`
+    );
+  
+    // =====================================
+    // ⚠️ Collapse Detection
+    // =====================================
+    const collapses =
+      teams.map((t: any) => {
+        const worst =
+          Math.min(
+            ...t.history.map(
+              (m: any) =>
+                m.points || 0
+            )
+          );
+  
+        return {
+          team: t.teamName,
+  
+          worst,
+        };
+      });
+  
+    const collapseLeader =
+      collapses.sort(
+        (
+          a: any,
+          b: any
+        ) =>
+          a.worst -
+          b.worst
+      )[0];
+  
+    insights.push(
+      `⚠️ ${collapseLeader.team} suffered the harshest single-match collapse with only ${collapseLeader.worst} points.`
     );
   
     return insights;
