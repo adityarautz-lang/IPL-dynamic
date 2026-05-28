@@ -16,6 +16,8 @@ import PointDifferences from "./components/PointDifferences";
 import LiveMatchTicker from "./components/LiveMatchTicker";
 import DetailedDataTable from "./components/DetailedDataTable";
 import TeamCards from "./components/TeamCards";
+import SeasonIntelligence from "./components/SeasonIntelligence";
+import { computeSeasonInsights } from "./utils/computeSeasonInsights";
 
 /* ⚡ PLAYOFF MODE */
 const PLAYOFF_MODE = true;
@@ -345,6 +347,11 @@ export default function Home() {
   const list =
     data?.leaders || [];
 
+    const insights =
+  computeSeasonInsights(
+    historyData
+  );
+
   const updatedAt =
     data?.updatedAt
       ? new Date(
@@ -462,7 +469,9 @@ export default function Home() {
         <div className="mt-6">
           <GlassCard>
             <div className="p-5">
-              <Summary />
+            <SeasonIntelligence
+  insights={insights}
+/>
             </div>
           </GlassCard>
         </div>
