@@ -44,33 +44,35 @@ function StatusBadge({
 /* GLASS CARD */
 function GlassCard({
   children,
-  className = "",
 }: any) {
   return (
-    <div
-      className={`rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_0_60px_rgba(15,23,42,0.5)] ${className}`}
-    >
+    <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl shadow-[0_0_60px_rgba(15,23,42,0.5)] transition-all">
       {children}
     </div>
   );
 }
 
 /* CHARTS */
-function ChartsSection({
-  list,
-}: any) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <GlassCard className="p-5">
-        <DailyChart data={list} />
-      </GlassCard>
+const ChartsSection =
+  React.memo(function ChartsSection({
+    list,
+  }: any) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <GlassCard>
+          <div className="p-5">
+            <DailyChart data={list} />
+          </div>
+        </GlassCard>
 
-      <GlassCard className="p-5">
-        <OverallChart data={list} />
-      </GlassCard>
-    </div>
-  );
-}
+        <GlassCard>
+          <div className="p-5">
+            <OverallChart data={list} />
+          </div>
+        </GlassCard>
+      </div>
+    );
+  });
 
 export default function Home() {
   const { data, loading } =
@@ -91,7 +93,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#020617] text-white text-xl">
-        Loading War Room...
+        Loading...
       </div>
     );
   }
@@ -114,7 +116,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#020617] text-white relative overflow-hidden">
-      {/* BACKGROUND FX */}
+      {/* ⚡ PLAYOFF FX */}
       {PLAYOFF_MODE && (
         <>
           <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -137,167 +139,82 @@ export default function Home() {
       <LiveMatchTicker />
 
       <div className="max-w-7xl mx-auto px-5 pt-24 pb-10 relative z-10">
-        {/* HERO */}
-        <GlassCard className="p-8 mb-6 overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-cyan-400/10 blur-[120px] rounded-full" />
-
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
-            <div>
-              <div className="text-cyan-300 text-xs tracking-[0.35em] uppercase mb-3 font-semibold">
-                IPL PLAYOFFS 2026
-              </div>
-
-              <h1 className="text-4xl sm:text-6xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
-                ADSK WAR ROOM
-              </h1>
-
-              <p className="text-slate-400 mt-4 max-w-xl text-sm sm:text-base">
-                Real-time fantasy
-                analytics, momentum
-                tracking and playoff
-                race intelligence.
-              </p>
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <div className="text-cyan-300 text-xs tracking-[0.35em] uppercase mb-2 font-semibold">
+              IPL PLAYOFFS 2026
             </div>
 
-            <div className="flex flex-col items-start lg:items-end gap-4">
-              <StatusBadge
-                isLive={!!isLive}
-              />
-
-              <div className="text-right">
-                <div className="text-xs uppercase tracking-[0.25em] text-slate-500 mb-1">
-                  Last Updated
-                </div>
-
-                <div className="text-sm text-cyan-200 font-semibold">
-                  {updatedAt
-                    ? updatedAt.toLocaleTimeString()
-                    : "--"}
-                </div>
-              </div>
-            </div>
+            <h1 className="text-3xl sm:text-5xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
+              ADSK WAR ROOM
+            </h1>
           </div>
-        </GlassCard>
+
+          <StatusBadge
+            isLive={!!isLive}
+          />
+        </div>
 
         {/* TOP PERFORMER */}
         <TopPerformer data={list} />
 
-        {/* MAIN GRID */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
-          {/* LEFT */}
-          <div className="xl:col-span-2 space-y-6">
-            {/* CHARTS */}
-            <ChartsSection list={list} />
-
-            {/* HISTORY */}
-            {historyData && (
-              <GlassCard className="p-5">
-                <HistoryInsights
-                  history={
-                    historyData
-                  }
-                />
-              </GlassCard>
-            )}
-
-            {/* CAPTAINS */}
-            <GlassCard className="p-5">
-              <TeamCards
-                teams={list}
-              />
-            </GlassCard>
-          </div>
-
-          {/* RIGHT */}
-          <div className="space-y-6">
-            <GlassCard className="p-5">
-              <div className="mb-4">
-                <div className="text-cyan-300 text-xs uppercase tracking-[0.25em] mb-2">
-                  Point Delta
-                </div>
-
-                <h2 className="text-xl font-bold">
-                  Momentum Tracker
-                </h2>
-              </div>
-
-              <PointDifferences
-                data={list}
-              />
-            </GlassCard>
-
-            <GlassCard className="p-5">
-              <div className="text-cyan-300 text-xs uppercase tracking-[0.25em] mb-2">
-                Race Status
-              </div>
-
-              <div className="space-y-4 mt-4">
-                {list
-                  .slice()
-                  .sort(
-                    (
-                      a: any,
-                      b: any
-                    ) =>
-                      b.points -
-                      a.points
-                  )
-                  .slice(0, 5)
-                  .map(
-                    (
-                      t: any,
-                      idx: number
-                    ) => (
-                      <div
-                        key={t.name}
-                        className="flex items-center justify-between"
-                      >
-                        <div>
-                          <div className="text-sm text-slate-400">
-                            #
-                            {idx + 1}
-                          </div>
-
-                          <div className="font-semibold text-white">
-                            {t.name}
-                          </div>
-                        </div>
-
-                        <div className="text-right">
-                          <div className="text-cyan-300 font-bold text-lg">
-                            {Number(
-                              t.points
-                            ).toLocaleString()}
-                          </div>
-
-                          <div className="text-xs text-slate-500">
-                            total pts
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  )}
-              </div>
-            </GlassCard>
-          </div>
-        </div>
-
-        {/* TABLE */}
-        <div className="mt-6">
-          <GlassCard className="p-5">
-            <DetailedDataTable
-              data={list}
+        {/* HISTORY */}
+        {historyData && (
+          <div className="mt-4">
+            <HistoryInsights
               history={
                 historyData
               }
             />
+          </div>
+        )}
+
+        {/* CHARTS */}
+        <ChartsSection list={list} />
+
+        {/* TEAM CARDS */}
+        <div className="mt-6">
+          <GlassCard>
+            <div className="p-5">
+              <TeamCards
+                teams={list}
+              />
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* DIFFERENCES */}
+        <div className="mt-6">
+          <GlassCard>
+            <div className="p-5">
+              <PointDifferences
+                data={list}
+              />
+            </div>
+          </GlassCard>
+        </div>
+
+        {/* TABLE */}
+        <div className="mt-6">
+          <GlassCard>
+            <div className="p-5">
+              <DetailedDataTable
+                data={list}
+                history={
+                  historyData
+                }
+              />
+            </div>
           </GlassCard>
         </div>
 
         {/* SUMMARY */}
         <div className="mt-6">
-          <GlassCard className="p-5">
-            <Summary />
+          <GlassCard>
+            <div className="p-5">
+              <Summary />
+            </div>
           </GlassCard>
         </div>
       </div>
