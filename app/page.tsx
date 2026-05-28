@@ -354,11 +354,9 @@ export default function Home() {
           </div>
 
           {/* BADGE */}
-          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 wd-pt-10">
-            <div className="px-6 py-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 backdrop-blur-xl text-cyan-200 text-xs sm:text-sm font-bold tracking-[0.25em] shadow-[0_0_35px_rgba(34,211,238,0.2)] animate-pulse">
-              ⚡ PLAYOFF WAR ROOM
-            </div>
-          </div>
+          <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 wd-pt-10" style="
+    padding-top: 30px;
+"><div class="px-6 py-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 backdrop-blur-xl text-cyan-200 text-xs sm:text-sm font-bold tracking-[0.25em] shadow-[0_0_35px_rgba(34,211,238,0.2)] animate-pulse">⚡ PLAYOFF MODE</div></div>
         </>
       )}
 
