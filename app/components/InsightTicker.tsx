@@ -21,8 +21,8 @@ export default function InsightTicker({
 
       {/* SCROLL */}
       <div className="whitespace-nowrap animate-marquee text-sm text-cyan-100 font-medium tracking-wide px-4">
-        🧠 {text}
-      </div>
+  🧠 {text} ✦ 🧠 {text}
+</div>
     </div>
   );
 }

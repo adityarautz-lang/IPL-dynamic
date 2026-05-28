@@ -63,7 +63,7 @@ body {
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-100%);
   }
 }
 
@@ -72,7 +72,7 @@ body {
   min-width: 200%;
 
   animation:
-    marquee 45s linear infinite;
+    marquee 55s linear infinite;
 }
 
 /* =========================================
