@@ -416,7 +416,7 @@ export default function Home() {
         </div>
 
         {/* DIFFERENCES */}
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <GlassCard>
             <div className="p-5">
               <PointDifferences
@@ -424,7 +424,7 @@ export default function Home() {
               />
             </div>
           </GlassCard>
-        </div>
+        </div> */}
 
         {/* TABLE */}
         <div className="mt-6">
