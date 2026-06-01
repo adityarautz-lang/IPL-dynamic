@@ -403,7 +403,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-3xl sm:text-5xl font-black leading-none bg-gradient-to-r from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
-              ADSK IPL FANTASY LEAGUE
+              ADSK IPL FANTASY LEAGUE HAS ENDED
             </h1>
           </div>
 
@@ -412,13 +412,47 @@ export default function Home() {
           />
         </div>
 
-        {/* TOP PERFORMER */}
-        <TopPerformer data={list} />
+        {/* <TopPerformer data={list} />
 
-        {/* NEW PANEL */}
+
         <PlayoffBattles
           teams={list}
-        />
+        /> */}
+
+        {/* 🏆 CHAMPION BANNER */}
+<div className="mt-6 relative overflow-hidden rounded-3xl border border-yellow-400/20 bg-[linear-gradient(135deg,rgba(15,23,42,0.96),rgba(2,6,23,0.98))] backdrop-blur-2xl shadow-[0_0_80px_rgba(250,204,21,0.12)] p-6 sm:p-8">
+
+<div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(250,204,21,0.12),transparent_45%)] pointer-events-none" />
+
+<div className="relative z-10 text-center">
+
+  <div className="text-yellow-300 text-xs tracking-[0.35em] uppercase mb-3">
+    🏆 IPL Fantasy 2026 Champion
+  </div>
+
+  <div className="text-6xl mb-4">
+    🏆
+  </div>
+
+  <h1 className="text-3xl sm:text-6xl font-black bg-gradient-to-r from-yellow-200 via-white to-yellow-400 bg-clip-text text-transparent">
+    DECCAN DOMINATORS
+  </h1>
+
+  <p className="mt-4 text-slate-300 text-lg sm:text-2xl">
+    Congratulations on an incredible season!
+  </p>
+
+  <div className="mt-6 max-w-3xl mx-auto text-slate-400 text-sm sm:text-base">
+    Consistency, smart captaincy decisions and season-long excellence have earned
+    Deccan Dominators the Autodesk IPL Fantasy 2026 crown.
+  </div>
+
+  <div className="mt-8 inline-flex items-center gap-3 px-5 py-2 rounded-full border border-yellow-400/10 bg-yellow-400/[0.06] text-yellow-200 text-xs tracking-[0.25em] uppercase">
+    Champions • 2026 Season
+  </div>
+
+</div>
+</div>
 
         {/* HISTORY */}
         {historyData && (
